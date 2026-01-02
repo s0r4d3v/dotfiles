@@ -16,8 +16,8 @@ jobs:
             system: x86_64-linux
           - os: macos-latest
             system: aarch64-darwin
-          - os: macos-15-large
-            system: x86_64-darwin
+          # x86_64-darwin: macos-13 deprecated, macos-15-large requires payment
+          # aarch64-linux: ubuntu-*-arm not available for private repos
 
     runs-on: ${{ matrix.os }}
     name: Build (${{ matrix.system }})
