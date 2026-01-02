@@ -201,7 +201,7 @@ pip install ...
 | `<leader>fg` | Live grep                     |
 | `<leader>gg` | Lazygit                       |
 | `s` / `S`    | Flash jump                    |
-| `-`          | Oil file manager              |
+| `\`          | Oil file manager              |
 
 ---
 
