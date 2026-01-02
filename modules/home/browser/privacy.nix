@@ -1,10 +1,7 @@
-# Firefox Privacy Settings
-# プライバシー強化設定（強め）
 { ... }:
 {
   flake.modules.homeManager.firefox-privacy = { lib, ... }: {
     programs.firefox.profiles.default.settings = {
-      # === 拡張機能の自動有効化 ===
       "extensions.autoDisableScopes" = 0;
 
       # === テレメトリ完全無効化 ===

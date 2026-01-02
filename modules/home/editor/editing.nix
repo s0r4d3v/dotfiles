@@ -1,6 +1,5 @@
 { ... }:
 {
-  # Editing utilities: Treesitter, Flash, Oil, Mini, Which-key
   flake.modules.homeManager.neovim-editing = {
     programs.nixvim = {
       plugins.treesitter = {
@@ -29,6 +28,7 @@
           bufremove = { };
           splitjoin = { };
           move = { };
+          ai = { };
         };
       };
 

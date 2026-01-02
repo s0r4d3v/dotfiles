@@ -1,5 +1,3 @@
-# Firefox Search Engines
-# デフォルト検索エンジンとカスタム検索エンジンの設定
 { ... }:
 {
   flake.modules.homeManager.firefox-search = { ... }: {
@@ -7,7 +5,6 @@
       default = "google";
       force = true;
       engines = {
-        # Nix関連
         "Nix Packages" = {
           urls = [{ template = "https://search.nixos.org/packages?query={searchTerms}"; }];
           icon = "https://nixos.org/favicon.png";

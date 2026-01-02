@@ -1,12 +1,9 @@
-# Firefox Bookmarks
-# 宣言的ブックマーク管理
 { ... }:
 {
   flake.modules.homeManager.firefox-bookmarks = { ... }: {
     programs.firefox.profiles.default.bookmarks = {
       force = true;
       settings = [
-        # ツールバーブックマーク
         {
           name = "Dev";
           toolbar = true;

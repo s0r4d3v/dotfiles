@@ -1,5 +1,3 @@
-# Firefox Extensions
-# NUR (Nix User Repository) から拡張機能をインストール
 { ... }:
 {
   flake.modules.homeManager.firefox-extensions = { nurPkgs, ... }: {
