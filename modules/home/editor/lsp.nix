@@ -10,6 +10,11 @@
           nil_ls.enable = true;
           marksman.enable = true;
         };
+        settings = {
+          diagnostics = {
+            virtual_text = true;
+          };
+        }
       };
 
       plugins.blink-cmp = {
@@ -49,9 +54,6 @@
         settings.auto_close = true;
       };
 
-      diagnostics = {
-        virtual_text = true;
-      };
     };
   };
 }
