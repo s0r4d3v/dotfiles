@@ -1,11 +1,7 @@
 { ... }:
 {
-  flake.modules.homeManager.zoom = { pkgs, lib, ... }: {
-    home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-      pkgs.zoom-us
-    ] ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-      pkgs.zoom-us
-    ];
+  flake.modules.homeManager.zoom = { pkgs, ... }: {
+    home.packages = [ pkgs.zoom-us ];
 
     # Zoom privacy & security settings (configure in app):
     # - Settings > Video: Disable "HD" if bandwidth is limited
