@@ -117,7 +117,7 @@
         ImproveSuggest = false;
         Locked = true;
       };
-      NoDefaultBookmarks = lib.mkForce true;
+      # NoDefaultBookmarks = lib.mkForce true;  # コメントアウト - ブックマークインポートと競合する可能性
       OfferToSaveLogins = lib.mkForce false;
       PasswordManagerEnabled = lib.mkForce false;
       SearchSuggestEnabled = lib.mkForce true;
