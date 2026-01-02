@@ -81,20 +81,20 @@
           $character
         '';
         character = {
-          success_symbol = "[❯](bold green)";
-          error_symbol = "[❯](bold red)";
+          success_symbol = "[❯](bold #50fa7b)";  # Dracula green
+          error_symbol = "[❯](bold #ff5555)";    # Dracula red
         };
         directory = {
-          style = "bold cyan";
+          style = "bold #8be9fd";  # Dracula cyan
           truncation_length = 3;
           truncate_to_repo = true;
         };
         git_branch = {
           symbol = " ";
-          style = "bold purple";
+          style = "bold #bd93f9";  # Dracula purple
         };
         git_status = {
-          style = "bold yellow";
+          style = "bold #f1fa8c";  # Dracula yellow
           format = "[$all_status$ahead_behind]($style) ";
         };
         python = {

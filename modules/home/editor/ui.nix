@@ -3,9 +3,8 @@
   # UI: Colorscheme, Statusline, Snacks
   flake.modules.homeManager.neovim-ui = {
     programs.nixvim = {
-      colorschemes.tokyonight = {
+      colorschemes.dracula = {
         enable = true;
-        settings.style = "night";
       };
 
       plugins.lualine = {
