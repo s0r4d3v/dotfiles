@@ -14,7 +14,7 @@
           diagnostics = {
             virtual_text = true;
           };
-        }
+        };
       };
 
       plugins.blink-cmp = {
