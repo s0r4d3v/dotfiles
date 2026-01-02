@@ -56,10 +56,16 @@
 
       plugins.conform-nvim = {
         enable = true;
-        settings.formatters_by_ft = {
-          python = [ "ruff_format" ];
-          nix = [ "nixfmt" ];
-          markdown = [ "prettier" ];
+        settings = {
+          format_on_save = {
+            lsp_fallback = true;
+            timeout_ms = 500;
+          };
+          formatters_by_ft = {
+            python = [ "ruff_format" ];
+            nix = [ "nixfmt" ];
+            markdown = [ "prettier" ];
+          };
         };
       };
 
