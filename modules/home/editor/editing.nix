@@ -17,10 +17,7 @@
         settings = {
           default_file_explorer = true;
           keymaps = {
-            "\\" = {
-              action = "actions.close";
-              mode = "n";
-            };
+            "\\" = "actions.close";
           };
         };
       };
