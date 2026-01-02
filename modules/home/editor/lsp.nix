@@ -2,8 +2,6 @@
 {
   # LSP, Completion, Lint, Format, Diagnostics
   flake.modules.homeManager.neovim-lsp = { pkgs, ... }: {
-    nixpkgs.config.allowUnfree = true;
-
     home.packages = with pkgs; [
       # LSP servers
       pyright
@@ -78,28 +76,9 @@
         settings.auto_close = true;
       };
 
-      plugins.copilot-chat = {
+      plugins.codeium-vim = {
         enable = true;
       };
-
-      plugins.copilot-vim = {
-        enable = true;
-      };
-
-      keymaps = [
-        {
-          mode = "n";
-          key = "<leader>cc";
-          action = "<cmd>CopilotChat<CR>";
-          options.desc = "Open Copilot Chat";
-        }
-        {
-          mode = "v";
-          key = "<leader>cc";
-          action = "<cmd>CopilotChat<CR>";
-          options.desc = "Open Copilot Chat with selection";
-        }
-      ];
 
     };
   };

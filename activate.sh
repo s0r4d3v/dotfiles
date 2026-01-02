@@ -7,7 +7,7 @@ cd "$SCRIPT_DIR"
 USER_NAME="$(whoami)"
 
 echo "==> Building home-manager configuration for $USER_NAME..."
-NIXPKGS_ALLOW_UNFREE=1 nix build ".#homeConfigurations.$USER_NAME.activationPackage" --impure --no-link -o result
+nix build ".#homeConfigurations.$USER_NAME.activationPackage" --no-link -o result
 
 echo "==> Activating..."
 HOME_MANAGER_BACKUP_EXT=bak ./result/activate
