@@ -350,12 +350,12 @@ EOF
 
 ## 🛠️ Common Commands
 
-| Task               | Command                                                            |
-| :----------------- | :----------------------------------------------------------------- |
-| 🔄 Apply changes   | `./activate.sh`                                                    |
-| 📦 Update packages | `nix flake update && ./activate.sh`                                |
+| Task               | Command                                                                   |
+| :----------------- | :------------------------------------------------------------------------ |
+| 🔄 Apply changes   | `./activate.sh`                                                           |
+| 📦 Update packages | `nix flake update && ./activate.sh`                                       |
 | 🆕 New machine     | `git clone git@github.com:m02uku/dotfiles.git ~/nix_env && ./activate.sh` |
-| 👤 Add new user    | Edit `modules/core/home.nix` user list                             |
+| 👤 Add new user    | Edit `modules/core/home.nix` user list                                    |
 
 ---
 

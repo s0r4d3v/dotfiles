@@ -17,7 +17,7 @@
         settings = {
           default_file_explorer = true;
           keymaps = {
-            "<C-c>" = {
+            "\\" = {
               action = "actions.close";
               mode = "n";
             };
