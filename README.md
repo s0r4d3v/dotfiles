@@ -76,9 +76,11 @@ pip install ...
 │
 ├── 📂 modules/
 │   ├── core/
+│   │   ├── flake-modules.nix # Flake modules
 │   │   ├── systems.nix   # x86/ARM × Mac/Linux
-│   │   ├── home.nix      # Assembler
-│   │   └── devshells.nix # Global dev envs
+│   │   └── home.nix      # Assembler
+│   │
+│   ├── devshells.nix     # Global dev envs
 │   │
 │   └── 📂 home/
 │       ├── base.nix
@@ -96,7 +98,8 @@ pip install ...
 │       │   ├── shell.nix     #    zsh, zoxide, starship
 │       │   ├── utils.nix     #    eza, bat, btop, dust...
 │       │   ├── nix-tools.nix #    comma, nix-index
-│       │   └── containers.nix#    colima, docker
+│       │   ├── containers.nix#    colima, docker
+│       │   └── direnv.nix    #    direnv
 │       │
 │       ├── 📂 editor/        # ✏️ Neovim (NixVim)
 │       │   ├── neovim.nix    #    Core settings
