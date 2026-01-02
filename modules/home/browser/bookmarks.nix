@@ -18,7 +18,6 @@
           name = "Search";
           bookmarks = [
             { name = "Google"; url = "https://google.com"; }
-            { name = "DuckDuckGo"; url = "https://duckduckgo.com"; }
           ];
         }
         # Nix関連
