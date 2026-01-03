@@ -6,479 +6,65 @@
 
 [![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nixos&logoColor=white)](https://nixos.org)
 [![Neovim](https://img.shields.io/badge/Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white)](https://neovim.io)
-[![macOS](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://apple.com)
-[![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://linux.org)
 
 </div>
 
 ---
 
-## ⚡ 30-Second Setup
+## ⚡ Quick Start
 
 ```bash
+# Install Nix
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
-# Clone the repository (choose one of the following)
-git clone https://github.com/m02uku/dotfiles.git ~/nix_env && cd ~/nix_env && ./activate.sh
-# OR (if you have SSH keys configured)
-# git clone git@github.com:m02uku/dotfiles.git ~/nix_env && cd ~/nix_env && ./activate.sh
+# Clone & activate
+git clone https://github.com/m02uku/dotfiles.git ~/nix_env
+cd ~/nix_env && ./activate.sh
 ```
 
-**That's it.** Your entire dev environment is ready. ✨
+**That's it.** Your development environment is ready. ✨
 
 ---
 
-## 🎯 Why This?
+## 🛠️ Language Support
 
-<table>
-<tr>
-<td width="50%">
+| Language | LSP | Linter | Formatter |
+| :------- | :-- | :----- | :-------- |
+| **Python** | pyright | ruff | ruff |
+| **Nix** | nil | statix | nixfmt-rfc-style |
+| **Haskell** | HLS | hlint | ormolu |
+| **Vue.js** | vue-ls | eslint | prettierd |
+| **TypeScript** | vue-ls | eslint | prettierd |
+| **JavaScript** | vue-ls | eslint | prettierd |
+| **Markdown** | marksman | markdownlint | prettierd |
+| **Typst** | tinymist | - | typstyle |
 
-### 😫 Without Nix
+### 🐚 Devshells
 
-```
-brew install ...
-apt install ...
-pip install ...
-"works on my machine" 🤷
-```
+Project-specific environments with `direnv`:
 
-</td>
-<td width="50%">
-
-### 😎 With This Setup
-
-```bash
-./activate.sh
-# Done. Same on Mac, Linux, anywhere.
-```
-
-</td>
-</tr>
-</table>
+- `python` - Python development
+- `haskell` - Haskell toolchain
+- `markdown` - Markdown tools
+- `quarto` - Quarto + Jupyter
+- `typst` - Typst compiler
+- `slidev` - Node.js + pnpm
+- `nix` - Nix development
 
 ---
 
-## ✨ Features
-
-|     | Feature          | What it means                 |
-| :-: | :--------------- | :---------------------------- |
-| 🔄  | **Portable**     | Mac (Intel/M1) + Ubuntu       |
-| 🌳  | **Dendritic**    | Auto-import via `import-tree` |
-| 🧩  | **Modular**      | 1 file = 1 feature            |
-| ✅  | **Pure**         | No `--impure` needed          |
-| 📦  | **Project Envs** | direnv auto-activates         |
-
----
-
-## 📁 Structure
+## 📁 Project Structure
 
 ```
-📦 nix_env
-├── 🔧 flake.nix          # Entry point
-├── 🚀 activate.sh        # One-command setup
-│
-├── 📂 modules/
-│   ├── core/
-│   │   ├── flake-modules.nix # Flake modules
-│   │   ├── systems.nix   # x86/ARM × Mac/Linux
-│   │   └── home.nix      # Assembler
-│   │
-│   ├── 📂 devshells/     # 🐚 Development Shells
-│   │   ├── python.nix    #    Python 3.13 runtime
-│   │   ├── slidev.nix    #    Node.js + pnpm
-│   │   ├── quarto.nix    #    Quarto + Jupyter
-│   │   ├── typst.nix     #    Typst
-│   │   ├── nix.nix       #    Nix development
-│   │   ├── markdown.nix  #    Markdown development
-│   │   └── haskell.nix   #    Haskell toolchain
-│   │
-│   └── 📂 home/
-│       ├── base.nix
-│       │
-│       ├── 📂 browser/       # 🌐 Browser
-│       │   ├── firefox.nix   #    Enable & profile
-│       │   ├── extensions.nix#    uBlock Origin, Vimium C
-│       │   ├── search.nix    #    Search engines
-│       │   ├── bookmarks.nix #    Declarative bookmarks
-│       │   └── privacy.nix   #    Privacy hardening
-│       │
-│       ├── 📂 cli/           # 🔧 Command Line
-│       │   ├── git.nix       #    git, gh, ghq, lazygit
-│       │   ├── search.nix    #    ripgrep, fd, fzf
-│       │   ├── shell.nix     #    zsh, zoxide, starship
-│       │   ├── utils.nix     #    eza, bat, btop, dust...
-│       │   ├── nix-tools.nix #    comma, nix-index
-│       │   ├── containers.nix#    colima, docker
-│       │   └── direnv.nix    #    direnv
-│       │
-│       ├── 📂 editor/        # ✏️ Neovim (NixVim)
-│       │   ├── neovim.nix    #    Core settings
-│       │   ├── keymaps.nix   #    All keybindings
-│       │   ├── lsp.nix       #    LSP servers, linters, formatters
-│       │   ├── ui.nix        #    Theme, statusline
-│       │   ├── git.nix       #    Gitsigns
-│       │   └── editing.nix   #    Treesitter, mini, etc.
-│       │
-│       ├── 📂 terminal/      # 💻 Terminal Environment
-│       │   ├── wezterm.nix   #    WezTerm config
-│       │   ├── fonts.nix     #    Nerd Fonts
-│       │   ├── zellij.nix    #    Terminal multiplexer
-│       │   └── ssh.nix       #    SSH config
-│       │
-│       ├── 📂 communication/ # 💬 Communication Apps
-│       │   ├── discord.nix   #    Discord
-│       │   ├── slack.nix     #    Slack
-│       │   └── zoom.nix      #    Zoom
-│       │
-│       └── 📂 productivity/  # 📝 Productivity
-│           └── obsidian.nix  #    Note-taking
-│
-└── 📂 templates/
-    └── python-ml/        # Project templates
+📦 nix_env/
+├── flake.nix          # Main flake
+├── activate.sh        # Setup script
+├── modules/
+│   ├── devshells/     # Language-specific shells
+│   ├── home/          # Home Manager modules
+│   └── core/          # Core configuration
+└── templates/         # Project templates
 ```
-
----
-
-## 🛠️ Included Tools
-
-### 🌐 Browser Features
-
-|                   | Firefox with Privacy                                       |
-| :---------------- | :--------------------------------------------------------- |
-| 🛡️ **Extensions** | uBlock Origin, Vimium C                                    |
-| 🔒 **Privacy**    | Telemetry off, Tracking Protection, Fingerprint Resistance |
-| 🔍 **Search**     | Google + custom (`@np` Nix Packages, `@gh` GitHub)         |
-| 📑 **Bookmarks**  | Declarative management                                     |
-
-### 💻 CLI
-
-| Category          | Tools                                           |
-| :---------------- | :---------------------------------------------- |
-| 🔀 **Git**        | `git` `gh` `ghq` `lazygit` `delta`              |
-| 🔍 **Search**     | `ripgrep` `fd` `fzf` `zoxide`                   |
-| 📊 **System**     | `btop` `dust` `duf`                             |
-| 🛠️ **Utils**      | `eza` `bat` `jq` `xh` `tldr` `trash-cli` `entr` |
-| ❄️ **Nix**        | `comma` `nix-index`                             |
-| 🐚 **Shell**      | `zsh` `starship`                                |
-| 🐳 **Containers** | `colima` `docker`                               |
-
-### 📱 Apps
-
-| Category             | Apps                             |
-| :------------------- | :------------------------------- |
-| 💬 **Communication** | Discord, Slack, Zoom             |
-| 📝 **Productivity**  | Obsidian                         |
-| 🌐 **Browser**       | Firefox (with privacy hardening) |
-| 💻 **Terminal**      | WezTerm                          |
-
-### ✏️ Neovim
-
-> **Modern 2026 Setup** — blink.cmp, snacks.nvim, mini.nvim
-
-<table>
-<tr><td>
-
-| Layer             | Plugins                                             |
-| :---------------- | :-------------------------------------------------- |
-| 🧠 **LSP**        | pyright, nil_ls, marksman, tinymist, vue-ls, hls    |
-| ⚡ **Completion** | **blink.cmp** (Rust-powered)                        |
-| 🔧 **Lint**       | ruff, statix, markdownlint, eslint, hlint           |
-| 🎨 **Format**     | ruff, nixfmt-rfc-style, prettierd, typstyle, ormolu |
-
-</td><td>
-
-| Layer             | Plugins                    |
-| :---------------- | :------------------------- |
-| 🎯 **Navigation** | snacks.picker, flash.nvim  |
-| 📁 **Files**      | oil.nvim                   |
-| 🎨 **Theme**      | tokyonight                 |
-| ✨ **UI**         | lualine, snacks, mini.nvim |
-
-</td></tr>
-</table>
-
-#### ⌨️ Key Bindings
-
-| Key          | Action                        |
-| :----------- | :---------------------------- |
-| `Space`      | Leader                        |
-| `gd` / `gr`  | Go to definition / references |
-| `<leader>ff` | Find files                    |
-| `<leader>fg` | Live grep                     |
-| `<leader>gg` | Lazygit                       |
-| `s` / `S`    | Flash jump                    |
-| `\`          | Oil file manager              |
-
----
-
-## 🐚 Global Dev Shells
-
-> **No project setup needed — instant environments with LSP support**
-
-```bash
-nix develop .#python    # 🐍 Python 3.13 runtime
-nix develop .#slidev    # 🎨 Node.js + pnpm
-nix develop .#quarto    # 📖 Quarto + Jupyter
-nix develop .#typst     # 📝 Typst
-nix develop .#nix       # ❄️ Nix development
-nix develop .#markdown  # 📝 Markdown development
-nix develop .#haskell   # λ Haskell toolchain
-```
-
-### 🚀 LSP-Enabled Development Workflow
-
-#### Python Development
-
-1. `nix develop .#python` - Enter devshell with Python runtime
-2. `nvim file.py` - Open file with full LSP support (pyright, ruff)
-3. Auto lint/format with ruff on save
-
-#### Typst Development
-
-1. `nix develop .#typst` - Enter devshell with Typst + tinymist LSP
-2. `nvim file.typ` - Open file with LSP completion
-3. Auto format with typstyle on save
-
-#### JavaScript/TypeScript (Slidev)
-
-1. `nix develop .#slidev` - Enter devshell with Node.js + volar LSP
-2. `nvim file.js` - Open file with Vue/JS/TS LSP support
-3. Auto lint/format with eslint + prettier
-
-#### Quarto (Scientific Publishing)
-
-1. `nix develop .#quarto` - Enter devshell with Quarto + Python LSP
-2. `nvim file.qmd` - Open file with pyright for code blocks
-3. `quarto render file.qmd` - Render to HTML/PDF
-
-#### Nix Development
-
-1. `nix develop .#nix` - Enter devshell with Nix tools + nil LSP
-2. `nvim file.nix` - Open file with LSP completion
-3. Auto lint/format with statix + nixfmt
-
-#### Markdown Development
-
-1. `nix develop .#markdown` - Enter devshell with Markdown tools + marksman LSP
-2. `nvim file.md` - Open file with LSP support
-3. Auto format with prettier
-
-#### Haskell Development
-
-1. `nix develop .#haskell` - Enter devshell with Haskell + HLS
-2. `nvim file.hs` - Open file with LSP completion
-3. Auto lint/format with hlint + ormolu
-
-> **💡 Tip**: LSP features activate automatically when you open files in supported languages. No extra configuration needed!
-
----
-
-## 🔧 Per-Project Environments
-
-<table>
-<tr>
-<td width="60%">
-
-### 1️⃣ Create `flake.nix`
-
-```nix
-{
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  outputs = { nixpkgs, ... }:
-  let
-    systems = [ "x86_64-darwin" "aarch64-darwin" "x86_64-linux" ];
-    forAllSystems = f: nixpkgs.lib.genAttrs systems
-      (s: f nixpkgs.legacyPackages.${s});
-  in {
-    devShells = forAllSystems (pkgs: {
-      default = pkgs.mkShell {
-        packages = with pkgs; [ python313 nodejs ];
-      };
-    });
-  };
-}
-```
-
-</td>
-<td width="40%">
-
-### 2️⃣ Create `.envrc`
-
-```bash
-use flake
-```
-
-### 3️⃣ Activate
-
-```bash
-direnv allow
-# Auto-loads on cd! 🎉
-```
-
-</td>
-</tr>
-</table>
-
----
-
-## 🚀 Adding New Languages
-
-> **Add LSP support for any language in 3 steps**
-
-### Step 1: Create Devshell
-
-Create `modules/devshells/yourlang.nix`:
-
-```nix
-{ ... }:
-{
-  perSystem = { pkgs, ... }: {
-    devShells.yourlang = pkgs.mkShell {
-      packages = with pkgs; [
-        # Language runtime & tools
-        your-lang-runtime
-        # Add any language-specific tools here
-      ];
-      shell = "${pkgs.zsh}/bin/zsh";
-      shellHook = ''echo "🚀 YourLang development environment"'';
-    };
-  };
-}
-```
-
-### Step 2: Add Global LSP Tools
-
-Edit `modules/home/editor/lsp.nix`:
-
-```nix
-home.packages = with pkgs; [
-  # ... existing packages
-  your-lsp-server    # LSP server
-  your-linter        # Linter
-  your-formatter     # Formatter
-];
-
-programs.nixvim = {
-  plugins.lsp = {
-    servers = {
-      # ... existing servers
-      yourlang.enable = true;  # If supported by NixVim
-    };
-  };
-
-  plugins.lint = {
-    lintersByFt = {
-      # ... existing
-      yourlang = [ "your-linter" ];
-    };
-  };
-
-  plugins.conform-nvim = {
-    settings = {
-      formatters_by_ft = {
-        # ... existing
-        yourlang = [ "your-formatter" ];
-      };
-    };
-  };
-};
-```
-
-### Step 3: Activate
-
-```bash
-./activate.sh
-```
-
-**Done!** 🎉 Your new language is ready with full LSP support.
-
----
-
-> **Want to change something? Here's where to look:**
-
-#### 🌐 Browser Configuration
-
-| Change             | File                     |
-| :----------------- | :----------------------- |
-| Add extensions     | `browser/extensions.nix` |
-| Add search engines | `browser/search.nix`     |
-| Edit bookmarks     | `browser/bookmarks.nix`  |
-| Tweak privacy      | `browser/privacy.nix`    |
-
-</td>
-<td width="50%">
-
-#### ✏️ Neovim Configuration
-
-| Change         | File                 |
-| :------------- | :------------------- |
-| Keybindings    | `editor/keymaps.nix` |
-| LSP/Completion | `editor/lsp.nix`     |
-| Theme/UI       | `editor/ui.nix`      |
-| Plugins        | `editor/editing.nix` |
-
-</td>
-</tr>
-<tr>
-<td>
-
-#### 💻 CLI Tools
-
-| Change       | File               |
-| :----------- | :----------------- |
-| Git config   | `cli/git.nix`      |
-| Shell (zsh)  | `cli/shell.nix`    |
-| Add packages | `cli/packages.nix` |
-| Aliases      | `cli/shell.nix`    |
-
-</td>
-<td>
-
-#### 🖥️ Terminal
-
-| Change         | File                   |
-| :------------- | :--------------------- |
-| WezTerm config | `terminal/wezterm.nix` |
-| Fonts          | `terminal/fonts.nix`   |
-| SSH config     | `terminal/ssh.nix`     |
-
-</td>
-</tr>
-</table>
-
-> 📁 All files are in `modules/home/`
-
----
-
-## ➕ Adding New Features
-
-> **Just add a file. That's it.**
-
-```bash
-# Example: Add tmux
-cat > modules/home/terminal/tmux.nix << 'EOF'
-{ ... }:
-{
-  flake.modules.homeManager.tmux = {
-    programs.tmux.enable = true;
-  };
-}
-EOF
-
-./activate.sh  # Done!
-```
-
----
-
-## 🛠️ Common Commands
-
-| Task               | Command                                                                   |
-| :----------------- | :------------------------------------------------------------------------ |
-| 🔄 Apply changes   | `./activate.sh`                                                           |
-| 📦 Update packages | `nix flake update && ./activate.sh`                                       |
-| 🆕 New machine     | `git clone git@github.com:m02uku/dotfiles.git ~/nix_env && ./activate.sh` |
-| 👤 Add new user    | Edit `modules/core/home.nix` user list                                    |
 
 ---
 
