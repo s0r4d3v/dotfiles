@@ -491,6 +491,6 @@ EOF
 | 🍎  | macOS Intel         |   ✅   |
 | 🍎  | macOS Apple Silicon |   ✅   |
 | 🐧  | Ubuntu/Linux x86    |   ✅   |
-| 🐧  | Ubuntu/Linux ARM    |   ✅   |
+| 🐧  | Ubuntu/Linux ARM    |   ❓   |
 
 </div>
