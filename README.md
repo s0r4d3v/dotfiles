@@ -19,7 +19,7 @@ cd ~/nix_env && ./activate.sh
 
 ---
 
-## � What Each Directory Does
+## 📁 What Each Directory Does
 
 | Directory              | Purpose                                                          |
 | :--------------------- | :--------------------------------------------------------------- |
@@ -46,6 +46,22 @@ nix develop .#python
 ```
 
 **Tip:** LSP features activate automatically when you open files in supported languages.
+
+---
+
+## 📂 Project Environments with Direnv
+
+For project-specific environments that activate automatically:
+
+```bash
+# In your project directory
+echo "use flake" > .envrc
+direnv allow
+
+# Now environment activates automatically when you cd into the project!
+```
+
+**Tip:** Create `flake.nix` in your project for custom environments.
 
 ---
 
