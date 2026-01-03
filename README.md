@@ -1,12 +1,14 @@
 <div align="center">
 
-# 🌲 Portable Nix Dev Environment
+# Portable Nix Dev Environment
+
+*One command. Any machine. Same setup.*
 
 </div>
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 # Install Nix
@@ -19,22 +21,22 @@ cd ~/nix_env && ./activate.sh
 
 ---
 
-## 📁 What Each Directory Does
+## What Each Directory Does
 
-| Directory              | Purpose                                                          |
-| :--------------------- | :--------------------------------------------------------------- |
-| `modules/devshells/`   | 🐚 **Language support** - See available devshells here           |
-| `modules/home/editor/` | ✏️ **Neovim LSP config** - Language servers, linters, formatters |
-| `modules/home/`        | 🏠 **All other configs** - Browser, CLI, terminal, apps          |
+| Directory              | Purpose                                                    |
+| :--------------------- | :--------------------------------------------------------- |
+| `modules/devshells/`   | Language support - See available devshells here           |
+| `modules/home/editor/` | Neovim LSP config - Language servers, linters, formatters |
+| `modules/home/`        | All other configs - Browser, CLI, terminal, apps          |
 
 **Want to add a new language?**
 
--   Devshell: Check `modules/devshells/` for examples
--   LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
+- Devshell: Check `modules/devshells/` for examples
+- LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
 
 ---
 
-## 🐚 Using Devshells
+## Using Devshells
 
 Enter language-specific development environments:
 
@@ -49,7 +51,7 @@ nix develop .#python
 
 ---
 
-## 📂 Project Environments with Direnv
+## Project Environments with Direnv
 
 For project-specific environments that activate automatically:
 
@@ -65,15 +67,15 @@ direnv allow
 
 ---
 
-## �🖥️ Supported Systems
+## Supported Systems
 
 <div align="center">
 
 |     | System              | Status |
 | :-: | :------------------ | :----: |
-| 🍎  | macOS Intel         |   ✅   |
-| 🍎  | macOS Apple Silicon |   ✅   |
-| 🐧  | Ubuntu/Linux x86    |   ✅   |
-| 🐧  | Ubuntu/Linux ARM    |   ❓   |
+| macOS | macOS Intel         |   ✅   |
+| macOS | macOS Apple Silicon |   ✅   |
+| Linux | Ubuntu/Linux x86    |   ✅   |
+| Linux | Ubuntu/Linux ARM    |   ❓   |
 
 </div>
