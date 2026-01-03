@@ -332,13 +332,9 @@ Create `modules/devshells/yourlang.nix`:
   perSystem = { pkgs, ... }: {
     devShells.yourlang = pkgs.mkShell {
       packages = with pkgs; [
-        # LSP server
-        your-lsp-server
-        # Linter & formatter
-        your-linter
-        your-formatter
-        # Language runtime
+        # Language runtime & tools
         your-lang-runtime
+        # Add any language-specific tools here
       ];
       shell = "${pkgs.zsh}/bin/zsh";
       shellHook = ''echo "🚀 YourLang development environment"'';
@@ -347,27 +343,41 @@ Create `modules/devshells/yourlang.nix`:
 }
 ```
 
-### Step 2: Update Global LSP Config
+### Step 2: Add Global LSP Tools
 
 Edit `modules/home/editor/lsp.nix`:
 
 ```nix
-# Add to servers
-servers = {
-  # ... existing servers
-  yourlang.enable = true;  # If supported by NixVim
-};
+home.packages = with pkgs; [
+  # ... existing packages
+  your-lsp-server    # LSP server
+  your-linter        # Linter
+  your-formatter     # Formatter
+];
 
-# Add to lintersByFt
-lintersByFt = {
-  # ... existing
-  yourlang = [ "your-linter" ];
-};
+programs.nixvim = {
+  plugins.lsp = {
+    servers = {
+      # ... existing servers
+      yourlang.enable = true;  # If supported by NixVim
+    };
+  };
 
-# Add to formatters_by_ft
-formatters_by_ft = {
-  # ... existing
-  yourlang = [ "your-formatter" ];
+  plugins.lint = {
+    lintersByFt = {
+      # ... existing
+      yourlang = [ "your-linter" ];
+    };
+  };
+
+  plugins.conform-nvim = {
+    settings = {
+      formatters_by_ft = {
+        # ... existing
+        yourlang = [ "your-formatter" ];
+      };
+    };
+  };
 };
 ```
 
