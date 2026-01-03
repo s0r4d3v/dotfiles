@@ -26,45 +26,15 @@ cd ~/nix_env && ./activate.sh
 
 ---
 
-## 🛠️ Language Support
+## � What Each Directory Does
 
-| Language | LSP | Linter | Formatter |
-| :------- | :-- | :----- | :-------- |
-| **Python** | pyright | ruff | ruff |
-| **Nix** | nil | statix | nixfmt-rfc-style |
-| **Haskell** | HLS | hlint | ormolu |
-| **Vue.js** | vue-ls | eslint | prettierd |
-| **TypeScript** | vue-ls | eslint | prettierd |
-| **JavaScript** | vue-ls | eslint | prettierd |
-| **Markdown** | marksman | markdownlint | prettierd |
-| **Typst** | tinymist | - | typstyle |
+| Directory | Purpose |
+| :-------- | :------ |
+| `modules/devshells/` | 🐚 **Language support** - See available devshells here |
+| `modules/home/editor/` | ✏️ **Neovim LSP config** - Language servers, linters, formatters |
+| `modules/home/` | 🏠 **All other configs** - Browser, CLI, terminal, apps |
 
-### 🐚 Devshells
-
-Project-specific environments with `direnv`:
-
-- `python` - Python development
-- `haskell` - Haskell toolchain
-- `markdown` - Markdown tools
-- `quarto` - Quarto + Jupyter
-- `typst` - Typst compiler
-- `slidev` - Node.js + pnpm
-- `nix` - Nix development
-
----
-
-## 📁 Project Structure
-
-```
-📦 nix_env/
-├── flake.nix          # Main flake
-├── activate.sh        # Setup script
-├── modules/
-│   ├── devshells/     # Language-specific shells
-│   ├── home/          # Home Manager modules
-│   └── core/          # Core configuration
-└── templates/         # Project templates
-```
+**Want to add a new language?** Check `modules/devshells/` for examples!
 
 ---
 
