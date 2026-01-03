@@ -2,11 +2,6 @@
 
 # 🌲 Portable Nix Dev Environment
 
-**One command. Any machine. Same setup.**
-
-[![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nixos&logoColor=white)](https://nixos.org)
-[![Neovim](https://img.shields.io/badge/Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white)](https://neovim.io)
-
 </div>
 
 ---
@@ -22,26 +17,47 @@ git clone https://github.com/m02uku/dotfiles.git ~/nix_env
 cd ~/nix_env && ./activate.sh
 ```
 
-**That's it.** Your development environment is ready. ✨
-
 ---
 
 ## � What Each Directory Does
 
-| Directory | Purpose |
-| :-------- | :------ |
-| `modules/devshells/` | 🐚 **Language support** - See available devshells here |
+| Directory              | Purpose                                                          |
+| :--------------------- | :--------------------------------------------------------------- |
+| `modules/devshells/`   | 🐚 **Language support** - See available devshells here           |
 | `modules/home/editor/` | ✏️ **Neovim LSP config** - Language servers, linters, formatters |
-| `modules/home/` | 🏠 **All other configs** - Browser, CLI, terminal, apps |
+| `modules/home/`        | 🏠 **All other configs** - Browser, CLI, terminal, apps          |
 
 **Want to add a new language?**
 
-- Devshell: Check `modules/devshells/` for examples
-- LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
+-   Devshell: Check `modules/devshells/` for examples
+-   LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
 
 ---
 
-## 🖥️ Supported Systems
+## � Using Devshells
+
+Enter language-specific development environments:
+
+```bash
+# Python development
+nix develop .#python
+
+# Haskell development  
+nix develop .#haskell
+
+# Other languages
+nix develop .#markdown
+nix develop .#typst
+nix develop .#quarto
+nix develop .#slidev
+nix develop .#nix
+```
+
+**Tip:** LSP features activate automatically when you open files in supported languages.
+
+---
+
+## �🖥️ Supported Systems
 
 <div align="center">
 
