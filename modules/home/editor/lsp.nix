@@ -33,7 +33,7 @@
           nil_ls.enable = true;
           marksman.enable = true;
           tinymist.enable = true;
-          volar.enable = true;
+          vue_ls.enable = true;
           hls = {
             enable = true;
             installGhc = false;
