@@ -84,7 +84,9 @@ pip install ...
 │   │   ├── python.nix    #    Python 3.13 + ruff
 │   │   ├── slidev.nix    #    Node.js + pnpm
 │   │   ├── quarto.nix    #    Quarto + Jupyter
-│   │   └── typst.nix     #    Typst + tinymist
+│   │   ├── typst.nix     #    Typst + tinymist
+│   │   ├── nix.nix       #    Nix + nil LSP
+│   │   └── markdown.nix  #    Markdown + marksman LSP
 │   │
 │   └── 📂 home/
 │       ├── base.nix
