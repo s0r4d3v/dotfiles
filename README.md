@@ -27,10 +27,36 @@ _A declarative, reproducible development environment using Nix and Home Manager.
 
 ### 🆕 On a New Machine
 
-1. 📦 **Install Nix**: `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; exec $SHELL`
-2. 🔑 **Copy SSH key** (optional): `scp ~/.ssh/id_ed25519* user@new-machine:~/.ssh/`
-3. 📥 **Clone & activate**: `git clone https://github.com/m02uku/dotfiles.git && cd dotfiles && ./activate.sh`
-4. ✅ **Verify**: `cat ~/.ssh/config; nd python`
+1. 📦 **Install Nix**
+
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; exec $SHELL
+   ```
+
+2. 🔑 **Copy SSH key** (optional)
+
+   ```bash
+   scp ~/.ssh/id_ed25519* user@new-machine:~/.ssh/
+   ```
+
+3. 📥 **Clone & activate**
+
+   ```bash
+   git clone https://github.com/m02uku/dotfiles.git
+   cd dotfiles && ./activate.sh
+
+   # Move to ghq-managed location (ghq is now available)
+   rm -rf ../dotfiles
+   ghq get https://github.com/m02uku/dotfiles.git
+   cd ~/ghq/github.com/m02uku/dotfiles
+   ./activate.sh  # Run again if needed for path updates
+   ```
+
+4. ✅ **Verify**
+
+   ```bash
+   cat ~/.ssh/config; nd python
+   ```
 
 > 💡 Works on Linux/macOS. Auto-detects OS.
 
@@ -178,13 +204,3 @@ Zellij provides panes, tabs, and layouts for terminal management.
 - **Layouts**: Defined in `~/.config/zellij/layouts/`.
 
 See [Zellij documentation](https://zellij.dev/documentation/) for details.
-
-## 🤝 Contributing
-
-Issues, PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
----
-
-<div align="center">
-  <p>❤️ Made with Nix & Home Manager</p>
-</div>
