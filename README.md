@@ -8,24 +8,38 @@
 
 ## Quick Start
 
-```bash
-# Install Nix
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+### On a New Machine
 
-# Open a new shell or source the Nix profile
-# (Nix commands won't be available until you do this)
-exec $SHELL
+1. **Install Nix**:
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+   exec $SHELL  # Reload shell
+   ```
 
-# Clone & activate
-git clone https://github.com/m02uku/dotfiles.git
-cd dotfiles && ./scripts/activate.sh
+2. **Copy SSH private key** (if you have an existing setup):
+   ```bash
+   # From existing machine to new machine
+   scp ~/.ssh/id_ed25519 user@new-machine:~/.ssh/
+   scp ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
+   ```
 
-# Move to ghq-managed location (ghq is now available)
-rm -rf ../dotfiles
-ghq get https://github.com/m02uku/dotfiles.git
-cd ~/ghq/github.com/m02uku/dotfiles
-./scripts/activate.sh  # Run again if needed for path updates
-```
+3. **Clone & activate**:
+   ```bash
+   git clone https://github.com/m02uku/dotfiles.git
+   cd dotfiles && ./scripts/activate.sh
+
+   # Move to ghq-managed location (ghq is now available)
+   rm -rf ../dotfiles
+   ghq get https://github.com/m02uku/dotfiles.git
+   cd ~/ghq/github.com/m02uku/dotfiles
+   ./scripts/activate.sh  # Run again if needed for path updates
+   ```
+
+4. **Verify setup**:
+   ```bash
+   cat ~/.ssh/config  # Should show decrypted hosts
+   nd python  # Test devshell
+   ```
 
 **Note**: This setup works on both Linux and macOS. The activation script automatically detects the OS and adjusts commands accordingly.
 
@@ -180,35 +194,5 @@ Then activate on all machines:
 ```
 
 **Note**: The script updates the encrypted config in the repository. After pushing, run `./scripts/activate.sh` on each machine to apply the changes.
-
-### Setup on New Machine
-
-1. **Copy private key securely**:
-
-    ```bash
-    # From existing machine to new machine
-    scp ~/.ssh/id_ed25519 user@new-machine:~/.ssh/
-    scp ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
-    ```
-
-2. **Clone and activate**:
-
-    ```bash
-    git clone https://github.com/m02uku/dotfiles.git
-    cd dotfiles && ./scripts/activate.sh
-
-    # Move to ghq-managed location
-    rm -rf ../dotfiles
-    ghq get https://github.com/m02uku/dotfiles.git
-    cd ~/ghq/github.com/m02uku/dotfiles
-    ./scripts/activate.sh  # Run again if needed
-    ```
-
-3. **Verify SSH config**:
-
-    ```bash
-    cat ~/.ssh/config  # Should show decrypted hosts
-    ssh aces-ubuntu-2  # Test connection
-    ```
 
 **Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.
