@@ -1,57 +1,46 @@
 <div align="center">
 
-# Portable Nix Dev Environment
+# 🚀 Portable Nix Dev Environment
+
+*A declarative, reproducible development environment using Nix and Home Manager.*
+
+[![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nix&logoColor=white)](https://nixos.org/)
+[![License](https://img.shields.io/github/license/m02uku/dotfiles?style=for-the-badge)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/m02uku/dotfiles?style=for-the-badge)](https://github.com/m02uku/dotfiles/stargazers)
 
 </div>
 
 ---
 
-## Quick Start
+## 📋 Table of Contents
+
+- Quick Start
+- Directory Structure
+- Using Devshells
+- SSH Configuration
+- Zellij (Terminal Multiplexer)
+- Contributing
+
+---
+
+## 🚀 Quick Start
 
 ### On a New Machine
 
-1. **Install Nix**:
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-   exec $SHELL  # Reload shell
-   ```
+1. **Install Nix**: `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; exec $SHELL`
+2. **Copy SSH key** (if needed): `scp ~/.ssh/id_ed25519* user@new-machine:~/.ssh/`
+3. **Clone & activate**: `git clone https://github.com/m02uku/dotfiles.git && cd dotfiles && ./activate.sh`
+4. **Verify**: `cat ~/.ssh/config; nd python`
 
-2. **Copy SSH private key** (if you have an existing setup):
-   ```bash
-   # From existing machine to new machine
-   scp ~/.ssh/id_ed25519 user@new-machine:~/.ssh/
-   scp ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
-   ```
-
-3. **Clone & activate**:
-   ```bash
-   git clone https://github.com/m02uku/dotfiles.git
-   cd dotfiles && ./activate.sh
-
-   # Move to ghq-managed location (ghq is now available)
-   rm -rf ../dotfiles
-   ghq get https://github.com/m02uku/dotfiles.git
-   cd ~/ghq/github.com/m02uku/dotfiles
-   ./activate.sh  # Run again if needed for path updates
-   ```
-
-4. **Verify setup**:
-   ```bash
-   cat ~/.ssh/config  # Should show decrypted hosts
-   nd python  # Test devshell
-   ```
-
-**Note**: This setup works on both Linux and macOS. The activation script automatically detects the OS and adjusts commands accordingly.
+**Note**: Works on Linux/macOS. Script detects OS.
 
 **Troubleshooting**:
 
-- If you see warnings about 'builtins.toFile' and store paths, these are harmless and related to NixVim/Home Manager internals. The setup will continue to work.
-- If you see "SSH config decryption failed", ensure your SSH private key (~/.ssh/id_ed25519) exists and agenix is available.
-- If you encounter zsh glob errors during ghq operations, temporarily disable extended globbing: `setopt no_extended_glob`
+- Warnings about 'builtins.toFile': Harmless.
+- SSH decryption failed: Ensure ~/.ssh/id_ed25519 exists.
+- Zsh glob errors: `setopt no_extended_glob`
 
-## Updating on Existing Machines
-
-If you've updated the dotfiles on another machine and want to apply the changes:
+### Updating on Existing Machines
 
 ```bash
 cd ~/ghq/github.com/m02uku/dotfiles
@@ -59,27 +48,24 @@ git pull
 ./activate.sh
 ```
 
-This will pull the latest changes and reapply the Home Manager configuration.
-
 ---
 
-## What Each Directory Does
+## 📁 Directory Structure
 
-| Directory                     | Purpose                                                   |
-| :---------------------------- | :-------------------------------------------------------- |
-| `modules/devshells/`          | Language support - See available devshells here           |
-| `modules/home/base.nix`       | Base home-manager configuration                           |
-| `modules/home/browser/`       | Web browser settings                                      |
-| `modules/home/cli/`           | CLI tools and shell configuration                         |
-| `modules/home/communication/` | Communication apps (Slack, Discord, etc.)                 |
-| `modules/home/editor/`        | Neovim LSP config - Language servers, linters, formatters |
-| `modules/home/productivity/`  | Productivity tools (notes, calendar, etc.)                |
-| `modules/home/terminal/`      | Terminal emulator settings                                |
+| Directory                     | Purpose                                                     |
+| :---------------------------- | :---------------------------------------------------------- |
+| `modules/devshells/`          | 🐍 Language support - See available devshells here          |
+| `modules/home/base.nix`       | 🏠 Base home-manager configuration                          |
+| `modules/home/browser/`       | 🌐 Web browser settings                                     |
+| `modules/home/cli/`           | 💻 CLI tools and shell configuration                        |
+| `modules/home/communication/` | 💬 Communication apps (Slack, Discord, etc.)                |
+| `modules/home/editor/`        | ✏️ Neovim LSP config - Language servers, linters, formatters |
+| `modules/home/productivity/`  | 📅 Productivity tools (notes, calendar, etc.)               |
+| `modules/home/terminal/`      | 🖥️ Terminal emulator settings                               |
 
 **Want to add a new language?**
-
--   Devshell: Check `modules/devshells/` for examples
--   LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
+- Devshell: Check `modules/devshells/` for examples
+- LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
 
 ---
 
@@ -133,7 +119,7 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
 
 ### Architecture Overview
 
-```
+```bash
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   secrets/      │    │   ~/.ssh/        │    │   SSH Hosts     │
 │                 │    │                  │    │                 │
@@ -154,8 +140,8 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
 
 ### Key Management
 
--   **Shared Private Key**: Use the same Ed25519 private key across all machines for consistent decryption.
--   **Security**: Never commit private keys to the repository. Store securely (e.g., encrypted backup).
+- **Shared Private Key**: Use the same Ed25519 private key across all machines for consistent decryption.
+- **Security**: Never commit private keys to the repository. Store securely (e.g., encrypted backup).
 
 ### Adding SSH Hosts
 
@@ -202,21 +188,15 @@ Then activate on all machines:
 **Note**: The script updates the encrypted config in the repository. After pushing, run `./activate.sh` on each machine to apply the changes.
 
 **Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.
+
 ## Zellij (Terminal Multiplexer)
 
-Zellij is configured as a modern terminal workspace with batteries included. It provides panes, tabs, and layouts for efficient terminal management.
+Zellij provides panes, tabs, and layouts for terminal management.
 
 ### Usage
 
-- **Start Zellij**: Use the alias `ze` to launch Zellij.
-- **Development Layout**: Run `zellij --layout dev` to start with a pre-configured layout featuring Neovim and a shell pane.
-- **Basic Controls**:
-  - `Ctrl + t` + `n`: New tab
-  - `Ctrl + t` + `[` / `]`: Switch tabs
-  - `Ctrl + p`: Toggle pane focus
-  - `Ctrl + n`: New pane (horizontal split)
-  - `Ctrl + v`: New pane (vertical split)
-  - `Ctrl + t` + `q`: Quit Zellij
-- **Layouts**: Custom layouts are defined in `~/.config/zellij/layouts/`. The `dev.kdl` layout splits the screen vertically with Neovim on one side and a shell on the other.
+- **Start Zellij**: Use `ze`.
+- **Development Layout**: `zellij --layout dev` for Neovim (left), zsh (top-right), zsh (bottom-right).
+- **Layouts**: Defined in `~/.config/zellij/layouts/`.
 
-For more details, see the [Zellij documentation](https://zellij.dev/documentation/).
+See [Zellij documentation](https://zellij.dev/documentation/) for details.

@@ -13,9 +13,14 @@
     };
     home.file.".config/zellij/layouts/dev.kdl".text = ''
       layout {
-        tab name="dev" {
-          pane command="nvim"
-          pane split_direction="vertical"
+        pane split_direction="vertical" {
+          pane size="60%" focus=true {
+            command "nvim"
+          }
+          pane split_direction="horizontal" size="40%" {
+            pane size="50%"
+            pane size="50%"
+          }
         }
       }
     '';
