@@ -8,8 +8,11 @@
           pane size="75%" focus=true {
             command "nvim"
           }
-          pane split_direction="horizontal" size="40%" {
-            pane size="50%"
+          pane split_direction="horizontal" size="25%" {
+            pane size="50%" {
+              command "nd"
+              args "python"
+            }
             pane size="50%"
           }
         }
