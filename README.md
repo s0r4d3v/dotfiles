@@ -2,7 +2,7 @@
 
 # 🚀 Portable Nix Dev Environment
 
-*A declarative, reproducible development environment using Nix and Home Manager.*
+_A declarative, reproducible development environment using Nix and Home Manager._
 
 [![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nix&logoColor=white)](https://nixos.org/)
 [![License](https://img.shields.io/github/license/m02uku/dotfiles?style=for-the-badge)](LICENSE)
@@ -14,12 +14,12 @@
 
 ## 📋 Table of Contents
 
-- Quick Start
-- Directory Structure
-- Using Devshells
-- SSH Configuration
-- Zellij (Terminal Multiplexer)
-- Contributing
+-   Quick Start
+-   Directory Structure
+-   Using Devshells
+-   SSH Configuration
+-   Zellij (Terminal Multiplexer)
+-   Contributing
 
 ---
 
@@ -36,9 +36,9 @@
 
 **Troubleshooting**:
 
-- Warnings about 'builtins.toFile': Harmless.
-- SSH decryption failed: Ensure ~/.ssh/id_ed25519 exists.
-- Zsh glob errors: `setopt no_extended_glob`
+-   Warnings about 'builtins.toFile': Harmless.
+-   SSH decryption failed: Ensure ~/.ssh/id_ed25519 exists.
+-   Zsh glob errors: `setopt no_extended_glob`
 
 ### Updating on Existing Machines
 
@@ -52,20 +52,21 @@ git pull
 
 ## 📁 Directory Structure
 
-| Directory                     | Purpose                                                     |
-| :---------------------------- | :---------------------------------------------------------- |
-| `modules/devshells/`          | 🐍 Language support - See available devshells here          |
-| `modules/home/base.nix`       | 🏠 Base home-manager configuration                          |
-| `modules/home/browser/`       | 🌐 Web browser settings                                     |
-| `modules/home/cli/`           | 💻 CLI tools and shell configuration                        |
-| `modules/home/communication/` | 💬 Communication apps (Slack, Discord, etc.)                |
+| Directory                     | Purpose                                                      |
+| :---------------------------- | :----------------------------------------------------------- |
+| `modules/devshells/`          | 🐍 Language support - See available devshells here           |
+| `modules/home/base.nix`       | 🏠 Base home-manager configuration                           |
+| `modules/home/browser/`       | 🌐 Web browser settings                                      |
+| `modules/home/cli/`           | 💻 CLI tools and shell configuration                         |
+| `modules/home/communication/` | 💬 Communication apps (Slack, Discord, etc.)                 |
 | `modules/home/editor/`        | ✏️ Neovim LSP config - Language servers, linters, formatters |
-| `modules/home/productivity/`  | 📅 Productivity tools (notes, calendar, etc.)               |
-| `modules/home/terminal/`      | 🖥️ Terminal emulator settings                               |
+| `modules/home/productivity/`  | 📅 Productivity tools (notes, calendar, etc.)                |
+| `modules/home/terminal/`      | 🖥️ Terminal emulator settings                                |
 
 **Want to add a new language?**
-- Devshell: Check `modules/devshells/` for examples
-- LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
+
+-   Devshell: Check `modules/devshells/` for examples
+-   LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
 
 ---
 
@@ -116,27 +117,6 @@ direnv allow
 ## SSH Configuration Management
 
 SSH settings are securely encrypted using [agenix](https://github.com/ryantm/agenix). Sensitive host information (IP addresses, ports) is protected while maintaining declarative configuration.
-
-### Architecture Overview
-
-```bash
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   secrets/      │    │   ~/.ssh/        │    │   SSH Hosts     │
-│                 │    │                  │    │                 │
-│ config.age      │───▶│ id_ed25519       │───▶│ aces-ubuntu-2   │
-│ (encrypted)     │    │ (private key)    │    │ aces-desktop-24 │
-│                 │    │                  │    │ etc.            │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-       ▲                        ▲                        │
-       │                        │                        │
-       └───── secrets.nix ───────┘                        │
-              (public keys)                               │
-                                                         ▼
-                                                ┌─────────────────┐
-                                                │   ~/.ssh/config │
-                                                │   (decrypted)   │
-                                                └─────────────────┘
-```
 
 ### Key Management
 
@@ -200,3 +180,19 @@ Zellij provides panes, tabs, and layouts for terminal management.
 - **Layouts**: Defined in `~/.config/zellij/layouts/`.
 
 See [Zellij documentation](https://zellij.dev/documentation/) for details.
+
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to submit issues, feature requests, or pull requests.
+
+- **Report Issues**: Found a bug? [Open an issue](https://github.com/m02uku/dotfiles/issues).
+- **Feature Requests**: Have an idea? [Suggest it here](https://github.com/m02uku/dotfiles/discussions).
+- **Contribute Code**: Fork the repo, make changes, and submit a PR.
+
+For more details, see [CONTRIBUTING.md](CONTRIBUTING.md) (if available).
+
+---
+
+<div align="center">
+  <p>Made with ❤️ using Nix and Home Manager</p>
+</div>
