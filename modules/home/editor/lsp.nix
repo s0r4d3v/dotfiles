@@ -26,6 +26,12 @@
     ];
 
     programs.nixvim = {
+      filetype = {
+        extension = {
+          qmd = "quarto";
+        };
+      };
+
       plugins.lsp = {
         enable = true;
         servers = {
@@ -103,15 +109,6 @@
         enable = true;
         settings.auto_close = true;
       };
-
-      # Quarto support: treat .qmd files as quarto for LSP
-      extraConfigLua = ''
-        vim.filetype.add({
-          extension = {
-            qmd = "quarto",
-          },
-        })
-      '';
 
     };
   };
