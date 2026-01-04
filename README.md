@@ -39,8 +39,14 @@ cd ~/nix_env && ./activate.sh
 Enter language-specific development environments:
 
 ```bash
-# Example: Python development
+# From dotfiles directory
 nix develop .#python
+
+# From any project directory (after running ./activate.sh)
+nd python
+
+# Or explicitly
+nix develop $DOTFILES_PATH#python
 
 # Other languages: Check modules/devshells/ directory!
 ```

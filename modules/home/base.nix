@@ -8,5 +8,13 @@
     home.sessionVariables = {
       DOTFILES_PATH = "/Users/soranagano/nix_env";
     };
+    programs.zsh = {
+      enable = true;
+      initContent = ''
+        nd() {
+          nix develop "$DOTFILES_PATH#$1"
+        }
+      '';
+    };
   };
 }
