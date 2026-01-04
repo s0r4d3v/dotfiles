@@ -8,11 +8,11 @@ nix develop .#other
 
 ## Available Tools
 
-- **Python 3.13**: Programming language
-- **pip**: Python package installer
-- **virtualenv**: Python virtual environment tool
-- **Pyright**: Python type checker (LSP)
-- **Ruff**: Fast Python linter and formatter
+-   **Python 3.13**: Programming language
+-   **pip**: Python package installer
+-   **virtualenv**: Python virtual environment tool
+-   **Pyright**: Python type checker (LSP)
+-   **Ruff**: Fast Python linter and formatter
 
 ## Usage Examples
 

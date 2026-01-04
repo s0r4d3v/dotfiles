@@ -8,10 +8,10 @@ nix develop .#quarto
 
 ## Available Tools
 
-- **Quarto**: Scientific and technical publishing
-- **Jupyter**: Python code execution backend
-- **Matplotlib**: Python plotting library
-- **Pandas**: Python data analysis library
+-   **Quarto**: Scientific and technical publishing
+-   **Jupyter**: Python code execution backend
+-   **Matplotlib**: Python plotting library
+-   **Pandas**: Python data analysis library
 
 ## Usage Examples
 

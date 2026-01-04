@@ -8,11 +8,11 @@ nix develop .#hask
 
 ## Available Tools
 
-- **GHC**: Glasgow Haskell Compiler
-- **Haskell Language Server**: LSP for IDE support
-- **HLint**: Haskell linter
-- **Ormolu**: Haskell code formatter
-- **Cabal**: Haskell build tool
+-   **GHC**: Glasgow Haskell Compiler
+-   **Haskell Language Server**: LSP for IDE support
+-   **HLint**: Haskell linter
+-   **Ormolu**: Haskell code formatter
+-   **Cabal**: Haskell build tool
 
 ## Usage Examples
 

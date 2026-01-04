@@ -8,7 +8,7 @@ nix develop .#typst
 
 ## Available Tools
 
-- **Typst**: Markup-based typesetting system
+-   **Typst**: Markup-based typesetting system
 
 ## Usage Examples
 

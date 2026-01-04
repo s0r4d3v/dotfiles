@@ -1,6 +1,5 @@
 {
   description = "Portable dev environment";
-  version = "0.5";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
