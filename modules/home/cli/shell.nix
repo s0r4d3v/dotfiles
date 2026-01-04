@@ -96,7 +96,7 @@
         enableZshIntegration = true;
         settings = {
           format = ''
-            [🚀](bold #50fa7b)$directory$git_branch$git_status$nix_shell$python$nodejs$rust$golang$cmd_duration$time$memory$ battery
+            [🚀](bold #50fa7b)$directory$git_branch$git_status$nix_shell$python$nodejs$rust$golang$cmd_duration$time$memory$battery
             $character
           '';
           character = {
