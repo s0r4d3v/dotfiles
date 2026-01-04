@@ -178,3 +178,37 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
    ```
 
 **Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.
+
+### Troubleshooting
+
+#### SSH Config Decryption Errors
+
+If `./activate.sh` fails with SSH-related errors, check the following:
+
+##### Error: "age: error: no identity matched any of the recipients"
+
+- **Cause**: Private key (`~/.ssh/id_ed25519`) is missing or incorrect.
+- **Solution**: Copy the correct private key from an existing machine:
+
+  ```bash
+  scp ~/.ssh/id_ed25519 user@new-machine:~/.ssh/
+  scp ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
+  ```
+
+##### Error: "age: error: failed to decrypt" or similar decryption failure
+
+- **Cause**: Private key doesn't match the encrypted file, or key is corrupted.
+- **Solution**: Verify the key matches existing machines, or regenerate if necessary.
+
+##### Error: Permission denied or file not found
+
+- **Cause**: SSH directory permissions or key file permissions are incorrect.
+- **Solution**: Ensure correct permissions:
+
+  ```bash
+  chmod 700 ~/.ssh
+  chmod 600 ~/.ssh/id_ed25519
+  chmod 644 ~/.ssh/id_ed25519.pub
+  ```
+
+After fixing, re-run `./activate.sh`. If issues persist, verify the key is the same across all machines.
