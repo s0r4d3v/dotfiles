@@ -6,7 +6,6 @@
         ghc
         haskellPackages.cabal-install
       ];
-      shell = "${pkgs.zsh}/bin/zsh";
       shellHook = ''echo "λ Haskell development environment"'';
     };
   };

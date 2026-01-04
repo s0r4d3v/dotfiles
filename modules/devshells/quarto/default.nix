@@ -8,7 +8,6 @@
         python313Packages.matplotlib
         python313Packages.pandas
       ];
-      shell = "${pkgs.zsh}/bin/zsh";
       shellHook = ''echo "📊 Quarto $(quarto --version)"'';
     };
   };

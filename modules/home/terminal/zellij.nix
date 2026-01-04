@@ -10,8 +10,8 @@
           }
           pane split_direction="horizontal" size="25%" {
             pane size="50%" {
-              command "zsh"
-              args "-c" "nix develop \"$DOTFILES_PATH#python\""
+              command "nix"
+              args ["develop", "/placeholder/dotfiles/path#python"]
             }
             pane size="50%"
           }
