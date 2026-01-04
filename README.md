@@ -85,69 +85,37 @@ direnv allow
 
 ## SSH Configuration Management
 
-SSH settings are securely encrypted using [agenix](https://github.com/ryantm/agenix). Sensitive host information (IP addresses, ports) is protected while maintaining declarative configuration.
+SSH settings are managed declaratively using Home Manager's `programs.ssh` module. Host configurations are defined in `modules/home/ssh.nix` and automatically applied to `~/.ssh/config` during activation.
 
-### Architecture Overview
+### Current SSH Hosts
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   secrets/      │    │   ~/.ssh/        │    │   SSH Hosts     │
-│                 │    │                  │    │                 │
-│ config.age      │───▶│ id_ed25519       │───▶│ aces-ubuntu-2   │
-│ (encrypted)     │    │ (private key)    │    │ aces-desktop-24 │
-│                 │    │                  │    │ etc.            │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-       ▲                        ▲                        │
-       │                        │                        │
-       └───── secrets.nix ───────┘                        │
-              (public keys)                               │
-                                                         ▼
-                                                ┌─────────────────┐
-                                                │   ~/.ssh/config │
-                                                │   (decrypted)   │
-                                                └─────────────────┘
-```
-
-### Key Management
-
--   **Shared Private Key**: Use the same Ed25519 private key across all machines for consistent decryption.
--   **Security**: Never commit private keys to the repository. Store securely (e.g., encrypted backup).
+- **aces-ubuntu-2**: Jump server (150.249.250.83:11022)
+- **aces-desktop-24**: Desktop via jump server (192.168.0.219)
+- **aces-desktop-13**: Desktop via jump server (192.168.0.242)
 
 ### Adding SSH Hosts
 
-1. **Decrypt current config**:
+1. **Edit SSH configuration**:
 
     ```bash
-    nix run nixpkgs#age -- -d -i ~/.ssh/id_ed25519 modules/core/secrets/ssh/config.age > temp_ssh_config
+    # Edit modules/home/ssh.nix
+    # Add new host to matchBlocks
+    "new-server" = {
+      hostname = "192.168.1.100";
+      user = "username";
+      port = 22;
+    };
     ```
 
-2. **Edit the config**:
+2. **Commit changes**:
 
     ```bash
-    # Add new host entries to temp_ssh_config
-    # Example:
-    # Host new-server
-    #     HostName 192.168.1.100
-    #     User username
-    #     Port 22
-    ```
-
-3. **Re-encrypt and update**:
-
-    ```bash
-    nix run nixpkgs#age -- -e -i ~/.ssh/id_ed25519 -o modules/core/secrets/ssh/config.age temp_ssh_config
-    rm temp_ssh_config
-    ```
-
-4. **Commit changes**:
-
-    ```bash
-    git add modules/core/secrets/ssh/config.age
+    git add modules/home/ssh.nix
     git commit -m "Add new SSH host: new-server"
     git push
     ```
 
-5. **Activate on all machines**:
+3. **Activate on all machines**:
 
     ```bash
     ./activate.sh
@@ -155,26 +123,18 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
 
 ### Setup on New Machine
 
-1. **Copy private key securely**:
-
-    ```bash
-    # From existing machine to new machine
-    scp ~/.ssh/id_ed25519 user@new-machine:~/.ssh/
-    scp ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
-    ```
-
-2. **Clone and activate**:
+1. **Clone and activate**:
 
     ```bash
     git clone https://github.com/m02uku/dotfiles.git ~/nix_env
     cd ~/nix_env && ./activate.sh
     ```
 
-3. **Verify SSH config**:
+2. **Verify SSH config**:
 
     ```bash
-    cat ~/.ssh/config  # Should show decrypted hosts
+    cat ~/.ssh/config  # Should show configured hosts
     ssh aces-ubuntu-2  # Test connection
     ```
 
-**Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.
+**Note**: SSH configurations are now fully declarative and version-controlled. No manual encryption/decryption required.
