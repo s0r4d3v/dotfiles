@@ -8,6 +8,7 @@
         python313Packages.jupyter
         uv
       ];
+      shell = "${pkgs.zsh}/bin/zsh";
       shellHook = ''
         if [ ! -d venv ]; then
           uv venv venv
