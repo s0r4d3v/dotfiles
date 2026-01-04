@@ -85,37 +85,69 @@ direnv allow
 
 ## SSH Configuration Management
 
-SSH settings are managed declaratively using Home Manager's `programs.ssh` module. Host configurations are defined in `modules/home/ssh.nix` and automatically applied to `~/.ssh/config` during activation.
+SSH settings are securely encrypted using [agenix](https://github.com/ryantm/agenix). Sensitive host information (IP addresses, ports) is protected while maintaining declarative configuration.
 
-### Current SSH Hosts
+### Architecture Overview
 
-- **aces-ubuntu-2**: Jump server (150.249.250.83:11022)
-- **aces-desktop-24**: Desktop via jump server (192.168.0.219)
-- **aces-desktop-13**: Desktop via jump server (192.168.0.242)
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   secrets/      │    │   ~/.ssh/        │    │   SSH Hosts     │
+│                 │    │                  │    │                 │
+│ config.age      │───▶│ id_ed25519       │───▶│ aces-ubuntu-2   │
+│ (encrypted)     │    │ (private key)    │    │ aces-desktop-24 │
+│                 │    │                  │    │ etc.            │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+       ▲                        ▲                        │
+       │                        │                        │
+       └───── secrets.nix ───────┘                        │
+              (public keys)                               │
+                                                         ▼
+                                                ┌─────────────────┐
+                                                │   ~/.ssh/config │
+                                                │   (decrypted)   │
+                                                └─────────────────┘
+```
+
+### Key Management
+
+-   **Shared Private Key**: Use the same Ed25519 private key across all machines for consistent decryption.
+-   **Security**: Never commit private keys to the repository. Store securely (e.g., encrypted backup).
 
 ### Adding SSH Hosts
 
-1. **Edit SSH configuration**:
+1. **Decrypt current config**:
 
     ```bash
-    # Edit modules/home/ssh.nix
-    # Add new host to matchBlocks
-    "new-server" = {
-      hostname = "192.168.1.100";
-      user = "username";
-      port = 22;
-    };
+    nix shell github:ryantm/agenix --command agenix -d secrets/ssh/config.age -i ~/.ssh/id_ed25519 > temp_ssh_config
     ```
 
-2. **Commit changes**:
+2. **Edit the config**:
 
     ```bash
-    git add modules/home/ssh.nix
+    # Add new host entries to temp_ssh_config
+    # Example:
+    # Host new-server
+    #     HostName 192.168.1.100
+    #     User username
+    #     Port 22
+    ```
+
+3. **Re-encrypt and update**:
+
+    ```bash
+    nix shell github:ryantm/agenix --command agenix -e secrets/ssh/config.age -i ~/.ssh/id_ed25519 < temp_ssh_config
+    rm temp_ssh_config
+    ```
+
+4. **Commit changes**:
+
+    ```bash
+    git add secrets/ssh/config.age
     git commit -m "Add new SSH host: new-server"
     git push
     ```
 
-3. **Activate on all machines**:
+5. **Activate on all machines**:
 
     ```bash
     ./activate.sh
@@ -123,18 +155,26 @@ SSH settings are managed declaratively using Home Manager's `programs.ssh` modul
 
 ### Setup on New Machine
 
-1. **Clone and activate**:
+1. **Copy private key securely**:
+
+    ```bash
+    # From existing machine to new machine
+    scp ~/.ssh/id_ed25519 user@new-machine:~/.ssh/
+    scp ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
+    ```
+
+2. **Clone and activate**:
 
     ```bash
     git clone https://github.com/m02uku/dotfiles.git ~/nix_env
     cd ~/nix_env && ./activate.sh
     ```
 
-2. **Verify SSH config**:
+3. **Verify SSH config**:
 
     ```bash
-    cat ~/.ssh/config  # Should show configured hosts
+    cat ~/.ssh/config  # Should show decrypted hosts
     ssh aces-ubuntu-2  # Test connection
     ```
 
-**Note**: SSH configurations are now fully declarative and version-controlled. No manual encryption/decryption required.
+**Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.

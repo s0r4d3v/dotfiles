@@ -1,3 +1,7 @@
 result
 .direnv
 local.nix
+
+# Temporary files for SSH config editing
+temp_ssh_config
+temp_*
