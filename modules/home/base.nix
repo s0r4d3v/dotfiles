@@ -6,7 +6,7 @@
     home.stateVersion = "25.05";
     programs.home-manager.enable = true;
     home.sessionVariables = {
-      DOTFILES_PATH = "/Users/soranagano/nix_env";
+      DOTFILES_PATH = "/placeholder/dotfiles/path";
     };
   };
 }
