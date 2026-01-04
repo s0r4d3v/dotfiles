@@ -115,43 +115,45 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
 
 ### Adding SSH Hosts
 
-1. **Decrypt current config**:
+Use the provided script to add new SSH hosts securely:
 
-    ```bash
-    nix shell github:ryantm/agenix --command agenix -d secrets/ssh/config.age -i ~/.ssh/id_ed25519 > temp_ssh_config
-    ```
+```bash
+# Set your editor if not already set
+export EDITOR=nvim  # or code, vim, etc.
 
-2. **Edit the config**:
+# Run the script
+./scripts/add-ssh-host.sh
+```
 
-    ```bash
-    # Add new host entries to temp_ssh_config
-    # Example:
-    # Host new-server
-    #     HostName 192.168.1.100
-    #     User username
-    #     Port 22
-    ```
+The script will:
 
-3. **Re-encrypt and update**:
+1. Decrypt the current SSH config
+2. Open your editor to add new host entries
+3. Re-encrypt and save the config
 
-    ```bash
-    nix shell github:ryantm/agenix --command agenix -e secrets/ssh/config.age -i ~/.ssh/id_ed25519 < temp_ssh_config
-    rm temp_ssh_config
-    ```
+**Example host entry to add:**
 
-4. **Commit changes**:
+```bash
+Host new-server
+    HostName 192.168.1.100
+    User username
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519
+```
 
-    ```bash
-    git add secrets/ssh/config.age
-    git commit -m "Add new SSH host: new-server"
-    git push
-    ```
+After running the script, commit the changes:
 
-5. **Activate on all machines**:
+```bash
+git add secrets/ssh/config.age
+git commit -m "Add new SSH host: new-server"
+git push
+```
 
-    ```bash
-    ./activate.sh
-    ```
+Then activate on all machines:
+
+```bash
+./activate.sh
+```
 
 ### Setup on New Machine
 
