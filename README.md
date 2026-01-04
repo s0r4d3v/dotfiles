@@ -118,7 +118,7 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
 1. **Decrypt current config**:
 
    ```bash
-   nix run nixpkgs#age -- -d -i ~/.ssh/id_ed25519 secrets/ssh/config.age > temp_ssh_config
+   nix run nixpkgs#age -- -d -i ~/.ssh/id_ed25519 modules/core/secrets/ssh/config.age > temp_ssh_config
    ```
 
 2. **Edit the config**:
@@ -135,14 +135,14 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
 3. **Re-encrypt and update**:
 
    ```bash
-   nix run nixpkgs#age -- -e -i ~/.ssh/id_ed25519 -o secrets/ssh/config.age temp_ssh_config
+   nix run nixpkgs#age -- -e -i ~/.ssh/id_ed25519 -o modules/core/secrets/ssh/config.age temp_ssh_config
    rm temp_ssh_config
    ```
 
 4. **Commit changes**:
 
    ```bash
-   git add secrets/ssh/config.age
+   git add modules/core/secrets/ssh/config.age
    git commit -m "Add new SSH host: new-server"
    git push
    ```
@@ -178,37 +178,3 @@ SSH settings are securely encrypted using [agenix](https://github.com/ryantm/age
    ```
 
 **Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.
-
-### Troubleshooting
-
-#### SSH Config Decryption Errors
-
-If `./activate.sh` fails with SSH-related errors, check the following:
-
-##### Error: "age: error: no identity matched any of the recipients"
-
-- **Cause**: Private key (`~/.ssh/id_ed25519`) is missing or incorrect.
-- **Solution**: Copy the correct private key from an existing machine:
-
-  ```bash
-  scp ~/.ssh/id_ed25519 user@new-machine:~/.ssh/
-  scp ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
-  ```
-
-##### Error: "age: error: failed to decrypt" or similar decryption failure
-
-- **Cause**: Private key doesn't match the encrypted file, or key is corrupted.
-- **Solution**: Verify the key matches existing machines, or regenerate if necessary.
-
-##### Error: Permission denied or file not found
-
-- **Cause**: SSH directory permissions or key file permissions are incorrect.
-- **Solution**: Ensure correct permissions:
-
-  ```bash
-  chmod 700 ~/.ssh
-  chmod 600 ~/.ssh/id_ed25519
-  chmod 644 ~/.ssh/id_ed25519.pub
-  ```
-
-After fixing, re-run `./activate.sh`. If issues persist, verify the key is the same across all machines.

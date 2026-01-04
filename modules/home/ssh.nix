@@ -8,7 +8,7 @@
     # SSH設定ファイル
     secrets = {
       "ssh/config" = {
-        file = ../../secrets/ssh/config.age;
+        file = ../core/secrets/ssh/config.age;
         path = "${config.home.homeDirectory}/.ssh/config";
         mode = "600";
       };
