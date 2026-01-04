@@ -14,7 +14,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 # Clone & activate
 git clone https://github.com/m02uku/dotfiles.git ~/nix_env
-cd ~/nix_env && ./activate.sh
+cd ~/nix_env && ./scripts/activate.sh
 ```
 
 ---
@@ -152,8 +152,10 @@ git push
 Then activate on all machines:
 
 ```bash
-./activate.sh
+./scripts/activate.sh
 ```
+
+**Note**: The script updates the encrypted config in the repository. After pushing, run `./scripts/activate.sh` on each machine to apply the changes.
 
 ### Setup on New Machine
 
