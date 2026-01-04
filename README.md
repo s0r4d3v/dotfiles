@@ -17,6 +17,8 @@ git clone https://github.com/m02uku/dotfiles.git ~/nix_env
 cd ~/nix_env && ./scripts/activate.sh
 ```
 
+**Note**: This setup works on both Linux and macOS. The activation script automatically detects the OS and adjusts commands accordingly.
+
 ---
 
 ## What Each Directory Does

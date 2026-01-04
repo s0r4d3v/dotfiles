@@ -7,7 +7,11 @@ cd "$SCRIPT_DIR"
 USER_NAME="$(whoami)"
 
 # Update DOTFILES_PATH in base.nix
-sed -i "" "s|/placeholder/dotfiles/path|$SCRIPT_DIR|g" modules/home/base.nix
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  sed -i '' "s|/placeholder/dotfiles/path|$SCRIPT_DIR|g" ../modules/home/base.nix
+else
+  sed -i "s|/placeholder/dotfiles/path|$SCRIPT_DIR|g" ../modules/home/base.nix
+fi
 
 echo "==> Building home-manager configuration for $USER_NAME..."
 nix build ".#homeConfigurations.$USER_NAME.activationPackage" --no-link -o result
