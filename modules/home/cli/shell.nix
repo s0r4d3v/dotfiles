@@ -66,6 +66,10 @@
         df = "duf";
         help = "tldr";
 
+        # Zellij
+        ze = "zellij";
+        zel = "zellij --layout";
+
         # HTTP
         http = "xh";
         https = "xh --https";

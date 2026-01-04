@@ -202,3 +202,21 @@ Then activate on all machines:
 **Note**: The script updates the encrypted config in the repository. After pushing, run `./activate.sh` on each machine to apply the changes.
 
 **Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.
+## Zellij (Terminal Multiplexer)
+
+Zellij is configured as a modern terminal workspace with batteries included. It provides panes, tabs, and layouts for efficient terminal management.
+
+### Usage
+
+- **Start Zellij**: Use the alias `ze` to launch Zellij.
+- **Development Layout**: Run `zellij --layout dev` to start with a pre-configured layout featuring Neovim and a shell pane.
+- **Basic Controls**:
+  - `Ctrl + t` + `n`: New tab
+  - `Ctrl + t` + `[` / `]`: Switch tabs
+  - `Ctrl + p`: Toggle pane focus
+  - `Ctrl + n`: New pane (horizontal split)
+  - `Ctrl + v`: New pane (vertical split)
+  - `Ctrl + t` + `q`: Quit Zellij
+- **Layouts**: Custom layouts are defined in `~/.config/zellij/layouts/`. The `dev.kdl` layout splits the screen vertically with Neovim on one side and a shell on the other.
+
+For more details, see the [Zellij documentation](https://zellij.dev/documentation/).

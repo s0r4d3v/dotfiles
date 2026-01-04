@@ -20,9 +20,6 @@
 
         -- Keys
         config.keys = {
-          { key = "d", mods = "CTRL", action = wezterm.action.SplitHorizontal { domain = "CurrentPaneDomain" } },
-          { key = "d", mods = "CTRL|SHIFT", action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" } },
-          { key = "w", mods = "CTRL", action = wezterm.action.CloseCurrentPane { confirm = true } },
           { key = "f", mods = "CTRL|SHIFT", action = wezterm.action.ToggleFullScreen },
         }
 
