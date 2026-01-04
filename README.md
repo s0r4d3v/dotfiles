@@ -23,6 +23,18 @@ cd ~/nix_env && ./scripts/activate.sh
 
 **Note**: This setup works on both Linux and macOS. The activation script automatically detects the OS and adjusts commands accordingly.
 
+## Updating on Existing Machines
+
+If you've updated the dotfiles on another machine and want to apply the changes:
+
+```bash
+cd ~/nix_env
+git pull
+./scripts/activate.sh
+```
+
+This will pull the latest changes and reapply the Home Manager configuration.
+
 ---
 
 ## What Each Directory Does
