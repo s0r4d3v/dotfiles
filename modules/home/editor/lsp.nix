@@ -31,7 +31,10 @@
         servers = {
           pyright.enable = true;
           nil_ls.enable = true;
-          marksman.enable = true;
+          marksman = {
+            enable = true;
+            filetypes = ["markdown" "quarto"];
+          };
           tinymist.enable = true;
           vue_ls.enable = true;
           hls = {
@@ -101,11 +104,11 @@
         settings.auto_close = true;
       };
 
-      # Quarto support: treat .qmd files as markdown for LSP
+      # Quarto support: treat .qmd files as quarto for LSP
       extraConfigLua = ''
         vim.filetype.add({
           extension = {
-            qmd = "markdown",
+            qmd = "quarto",
           },
         })
       '';
