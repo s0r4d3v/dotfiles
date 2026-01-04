@@ -14,7 +14,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 # Open a new shell or source the Nix profile
 # (Nix commands won't be available until you do this)
-exec $SHELL  # or open a new terminal
+exec $SHELL
 
 # Clone & activate
 git clone https://github.com/m02uku/dotfiles.git ~/nix_env
