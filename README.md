@@ -21,21 +21,21 @@ cd ~/nix_env && ./activate.sh
 
 ## What Each Directory Does
 
-| Directory | Purpose |
-| :--------- | :------ |
-| `modules/devshells/` | Language support - See available devshells here |
-| `modules/home/base.nix` | Base home-manager configuration |
-| `modules/home/browser/` | Web browser settings |
-| `modules/home/cli/` | CLI tools and shell configuration |
-| `modules/home/communication/` | Communication apps (Slack, Discord, etc.) |
-| `modules/home/editor/` | Neovim LSP config - Language servers, linters, formatters |
-| `modules/home/productivity/` | Productivity tools (notes, calendar, etc.) |
-| `modules/home/terminal/` | Terminal emulator settings |
+| Directory                     | Purpose                                                   |
+| :---------------------------- | :-------------------------------------------------------- |
+| `modules/devshells/`          | Language support - See available devshells here           |
+| `modules/home/base.nix`       | Base home-manager configuration                           |
+| `modules/home/browser/`       | Web browser settings                                      |
+| `modules/home/cli/`           | CLI tools and shell configuration                         |
+| `modules/home/communication/` | Communication apps (Slack, Discord, etc.)                 |
+| `modules/home/editor/`        | Neovim LSP config - Language servers, linters, formatters |
+| `modules/home/productivity/`  | Productivity tools (notes, calendar, etc.)                |
+| `modules/home/terminal/`      | Terminal emulator settings                                |
 
 **Want to add a new language?**
 
-- Devshell: Check `modules/devshells/` for examples
-- LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
+-   Devshell: Check `modules/devshells/` for examples
+-   LSP config: Check `modules/home/editor/lsp.nix` (separate from devshells)
 
 ---
 
@@ -45,7 +45,7 @@ Enter language-specific development environments:
 
 ```bash
 # From dotfiles directory
-nix develop .#python
+nix develop "$DOTFILES_PATH#python"
 
 # From any project directory (after running ./activate.sh)
 nd python
