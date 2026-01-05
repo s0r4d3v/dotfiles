@@ -12,6 +12,8 @@
       };
 
       opts = {
+        # mouse
+        mouse = "";
         # Line numbers
         number = true;
         relativenumber = true;

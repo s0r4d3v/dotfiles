@@ -61,7 +61,7 @@ _A declarative, reproducible development environment using Nix and Home Manager.
 ### 🔄 Updating
 
 ```bash
-cd ~/ghq/github.com/m02uku/dotfiles && git pull && ./activate.sh
+cd ~/ghq/github.com/m02uku/dotfiles && git pull && ./activate.sh $$ cd -
 ```
 
 ### ⚠️ Troubleshooting
