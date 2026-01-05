@@ -23,7 +23,6 @@
       # Formatters
       ormolu
       prettierd
-      # prettier
       typstyle
       nixfmt-rfc-style
     ];
@@ -93,6 +92,12 @@
           format_on_save = {
             lsp_fallback = true;
             timeout_ms = 2000;
+            filter = ''
+              function(bufnr)
+                local filename = vim.api.nvim_buf_get_name(bufnr)
+                return not (filename:match("slides%.md$") or filename:match("slides.*%.md$"))
+              end
+            '';
           };
           formatters_by_ft = {
             python = [ "ruff_format" ];
