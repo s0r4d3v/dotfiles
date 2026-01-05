@@ -84,11 +84,6 @@
           vue = [ "eslint" ];
           haskell = [ "hlint" ];
         };
-        linters = {
-          markdownlint = {
-            args = [ "--disable" "MD033,MD013,MD025,MD022" ];
-          };
-        };
       };
 
       plugins.conform-nvim = {
