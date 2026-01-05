@@ -33,6 +33,8 @@
       # ─────────────────────────────────────────────────────────────────────
       { mode = "v"; key = "J"; action = ":m '>+1<cr>gv=gv"; options.desc = "Move Down"; }
       { mode = "v"; key = "K"; action = ":m '<-2<cr>gv=gv"; options.desc = "Move Up"; }
+      { mode = "n"; key = "x"; action = "\"_x"; options.desc = "Delete char (blackhole)"; }
+      { mode = "v"; key = "x"; action = "\"_x"; options.desc = "Delete selection (blackhole)"; }
 
       # ─────────────────────────────────────────────────────────────────────
       # LSP
