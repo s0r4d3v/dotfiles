@@ -92,6 +92,9 @@
           format_on_save = {
             lsp_fallback = true;
             timeout_ms = 2000;
+            # Disable auto-formatting for Slidev files
+            # Default slide file name is `slides.md`
+            # Custom separate files use `slides*.md` (e.g. slides_front.md)
             filter = ''
               function(bufnr)
                 local filename = vim.api.nvim_buf_get_name(bufnr)
