@@ -97,12 +97,12 @@
           formatters_by_ft = {
             python = [ "ruff_format" ];
             nix = [ "nixfmt" ];
-            markdown = [ "prettier" ];
-            quarto = [ "prettier" ];
+            markdown = [ "prettierd" ];
+            quarto = [ "prettierd" ];
             typst = [ "typstyle" ];
-            javascript = [ "prettier" ];
-            typescript = [ "prettier" ];
-            vue = [ "prettier" ];
+            javascript = [ "prettierd" ];
+            typescript = [ "prettierd" ];
+            vue = [ "prettierd" ];
             haskell = [ "ormolu" ];
           };
         };
