@@ -75,8 +75,6 @@
 
           # Zellij
           ze = "zellij";
-          zel = "zellij --layout";
-          zedev = "zellij --layout dev";
 
           # HTTP
           http = "xh";
