@@ -27,6 +27,13 @@
       nixfmt-rfc-style
     ];
 
+    home.file.".markdownlint.json".text = builtins.toJSON {
+      MD033 = false;  # inline HTML
+      MD013 = false;  # line length
+      MD025 = false;  # multiple top-level headers
+      MD022 = false;  # headers should be surrounded by blank lines
+    };
+
     programs.nixvim = {
       filetype = {
         extension = {
