@@ -8,6 +8,7 @@
       # ─────────────────────────────────────────────────────────────────────
       { mode = "i"; key = "jj"; action = "<Esc>"; options.desc = "Escape Insert Mode"; }
       { mode = "n"; key = "<leader>w"; action = "<cmd>w<cr>"; options.desc = "Save"; }
+      { mode = "n"; key = "W"; action = "<cmd>wa<cr>"; options.desc = "Save All"; }
       { mode = "n"; key = "<leader>q"; action = "<cmd>q<cr>"; options.desc = "Quit"; }
       { mode = "n"; key = "<leader>Q"; action = "<cmd>qa!<cr>"; options.desc = "Force Quit All"; }
       { mode = "n"; key = "<Esc>"; action = "<cmd>nohl<cr>"; options.desc = "Clear Highlight"; }
