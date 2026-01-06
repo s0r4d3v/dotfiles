@@ -18,7 +18,7 @@ _A declarative, reproducible development environment using Nix and Home Manager.
 -   Directory Structure
 -   Using Devshells
 -   SSH Configuration
--   Zellij (Terminal Multiplexer)
+-   Tmux (Terminal Multiplexer)
 -   Contributing
 
 ---
@@ -198,15 +198,19 @@ Then activate on all machines:
 
 **Note**: The repository is safe to make public - encrypted secrets require the private key for decryption.
 
-## Zellij (Terminal Multiplexer)
+## Tmux (Terminal Multiplexer)
 
-Zellij provides panes, tabs, and layouts for terminal management.
+Tmux provides panes, tabs, and windows for terminal management.
 
 ### Usage
 
--   **Start Zellij**: Use `ze`.
--   **Unlock Mode**: Zellij starts in locked mode. Press `Ctrl + g` to toggle between locked and normal modes.
--   **Development Layout**: Use `zedev` for Neovim (left), zsh (top-right), zsh (bottom-right).
--   **Layouts**: Defined in `~/.config/zellij/layouts/`.
+-   **Start Tmux**: Use `tm`.
+-   **Prefix Key**: `Ctrl-a` (like screen).
+-   **Common Commands**:
+-   `Ctrl-a c` - Create new window
+-   `Ctrl-a |` - Vertical split
+-   `Ctrl-a -` - Horizontal split
+-   `Ctrl-a h/j/k/l` - Navigate panes
+-   `Ctrl-a r` - Reload config
 
-See [Zellij documentation](https://zellij.dev/documentation/) for details.
+See [Tmux documentation](https://github.com/tmux/tmux/wiki) for details.

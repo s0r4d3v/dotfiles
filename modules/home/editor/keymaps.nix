@@ -10,7 +10,7 @@
       { mode = "n"; key = "<leader>w"; action = "<cmd>w<cr>"; options.desc = "Save"; }
       { mode = "n"; key = "<leader>q"; action = "<cmd>q<cr>"; options.desc = "Quit"; }
       { mode = "n"; key = "<leader>Q"; action = "<cmd>qa!<cr>"; options.desc = "Force Quit All"; }
-      { mode = "n"; key = "<Esc>"; action = "<cmd>noh<cr>"; options.desc = "Clear Highlight"; }
+      { mode = "n"; key = "<Esc>"; action = "<cmd>nohl<cr>"; options.desc = "Clear Highlight"; }
 
       # ─────────────────────────────────────────────────────────────────────
       # Windows

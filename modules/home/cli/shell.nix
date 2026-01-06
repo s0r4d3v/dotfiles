@@ -73,8 +73,8 @@
           df = "duf";
           help = "tldr";
 
-          # Zellij
-          ze = "zellij";
+          # Tmux
+          tm = "tmux";
 
           # HTTP
           http = "xh";
