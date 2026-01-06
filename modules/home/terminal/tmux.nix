@@ -39,6 +39,9 @@
         # Reload config
         bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
 
+        # Enter copy mode
+        bind v copy-mode
+
         # Smart split commands
         bind \\ split-window -h -c "#{pane_current_path}"
         bind - split-window -v -c "#{pane_current_path}"
