@@ -28,16 +28,6 @@
       ];
 
       extraConfig = ''
-        # Modern terminal support
-        set -g default-terminal "tmux-256color"
-        set -ga terminal-overrides ",*256col*:Tc"
-        set -ga terminal-overrides ",*256col*:RGB"
-        set -ga terminal-overrides ",xterm-256color:Tc"
-        set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
-        set-environment -g COLORTERM "truecolor"
-
-        # Focus events for better editor integration
-        set -g focus-events on
 
         # Vi mode for copy mode
         setw -g mode-keys vi
@@ -51,7 +41,7 @@
         bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
         # Smart split commands
-        bind | split-window -h -c "#{pane_current_path}"
+        bind \ split-window -h -c "#{pane_current_path}"
         bind - split-window -v -c "#{pane_current_path}"
         bind c new-window -c "#{pane_current_path}"
         unbind '"'
@@ -73,6 +63,13 @@
         bind -r K resize-pane -U 5
         bind -r L resize-pane -R 5
 
+        # Window status styling
+        setw -g window-status-current-format '#[bg=colour214,fg=colour237,nobold]#[bg=colour214,fg=colour239] #I #[bg=colour214,fg=colour239,bold]#[bg=colour214,fg=colour239] #W #[bg=colour237,fg=colour214,nobold]'
+        setw -g window-status-format '#[bg=colour239,fg=colour237,noitalics]#[bg=colour239,fg=colour223] #I #[bg=colour239,fg=colour223]#[bg=colour239,fg=colour223] #W #[bg=colour237,fg=colour239,noitalics]'
+        setw -g window-status-current-style 'bg=colour214,fg=colour237'
+        setw -g window-status-style 'bg=colour239,fg=colour223'
+        setw -g window-status-separator ""
+
         # Automatic window renumbering
         set -g renumber-windows on
 
@@ -85,27 +82,30 @@
         set -g status-bg colour237
         set -g status-fg colour223
         set -g status-left '#[bg=colour241,fg=colour248] #[bg=colour237,fg=colour241,nobold]#[bg=colour237,fg=colour248] #S #[bg=colour237,fg=colour241,nobold]'
-        set -g status-right '#[bg=colour237,fg=colour241]#[bg=colour241,fg=colour248] %H:%M %d-%b-%y #[bg=colour241,fg=colour237]#[bg=colour237,fg=colour248] #h '
-        set -g status-left-length 100
-        set -g status-right-length 100
+        # Simplified status bar
+        set -g status-bg colour237
+        set -g status-fg colour248
+        set -g status-left ' #S '
+        set -g status-right ' %H:%M %d-%b-%y #h '
+        set -g status-left-length 50
+        set -g status-right-length 50
 
-        # Window status styling
-        setw -g window-status-current-format '#[bg=colour214,fg=colour237,nobold]#[bg=colour214,fg=colour239] #I #[bg=colour214,fg=colour239,bold]#[bg=colour214,fg=colour239] #W #[bg=colour237,fg=colour214,nobold]'
-        setw -g window-status-format '#[bg=colour239,fg=colour237,noitalics]#[bg=colour239,fg=colour223] #I #[bg=colour239,fg=colour223]#[bg=colour239,fg=colour223] #W #[bg=colour237,fg=colour239,noitalics]'
-        setw -g window-status-current-style 'bg=colour214,fg=colour237'
-        setw -g window-status-style 'bg=colour239,fg=colour223'
-        setw -g window-status-separator ""
+        # Simple window status
+        setw -g window-status-current-format ' #I:#W#F '
+        setw -g window-status-format ' #I:#W#F '
+        setw -g window-status-current-style 'bg=colour214,fg=black'
+        setw -g window-status-style 'bg=colour239,fg=colour248'
 
-        # Pane borders
-        set -g pane-border-style 'fg=colour238,bg=colour237'
-        set -g pane-active-border-style 'fg=colour214,bg=colour237'
+        # Simple pane borders
+        set -g pane-border-style 'fg=colour238'
+        set -g pane-active-border-style 'fg=colour214'
 
-        # Message styling
+        # Simple message styling
         set -g message-style 'bg=colour239,fg=colour223'
         set -g message-command-style 'bg=colour239,fg=colour223'
 
-        # Mode styling
-        set -g mode-style 'bg=colour214,fg=colour239'
+        # Simple mode styling
+        set -g mode-style 'bg=colour214,fg=black'
       '';
     };
   };
