@@ -5,8 +5,8 @@
 _A declarative, reproducible development environment using Nix and Home Manager._
 
 [![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nix&logoColor=white)](https://nixos.org/)
-[![License](https://img.shields.io/github/license/m02uku/dotfiles?style=for-the-badge)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/m02uku/dotfiles?style=for-the-badge)](https://github.com/m02uku/dotfiles/stargazers)
+[![License](https://img.shields.io/github/license/s0r4d3v/dotfiles?style=for-the-badge)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/s0r4d3v/dotfiles?style=for-the-badge)](https://github.com/s0r4d3v/dotfiles/stargazers)
 
 </div>
 
@@ -42,12 +42,12 @@ _A declarative, reproducible development environment using Nix and Home Manager.
 3. 📥 **Clone & activate**
 
     ```bash
-    git clone https://github.com/m02uku/dotfiles.git
+    git clone https://github.com/s0r4d3v/dotfiles.git
     cd dotfiles && ./activate.sh
 
     # Move to ghq-managed location (ghq is now available)
     rm -rf ../dotfiles
-    ghq get https://github.com/m02uku/dotfiles.git
+    ghq get https://github.com/s0r4d3v/dotfiles.git
     ```
 
 4. ✅ **Verify**
@@ -61,7 +61,7 @@ _A declarative, reproducible development environment using Nix and Home Manager.
 ### 🔄 Updating
 
 ```bash
-cd ~/ghq/github.com/m02uku/dotfiles && git pull && ./activate.sh $$ cd -
+cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull && ./activate.sh $$ cd -
 ```
 
 ### ⚠️ Troubleshooting

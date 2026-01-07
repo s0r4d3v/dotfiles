@@ -11,8 +11,8 @@
       enable = true;
       settings = {
         user = {
-          name = "m02uku";
-          email = "m02ukuzrzr@gmail.com";
+          name = "s0r4d3v";
+          email = "s0r4d3v@gmail.com";
         };
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
