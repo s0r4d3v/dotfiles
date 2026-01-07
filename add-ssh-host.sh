@@ -4,6 +4,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+# Cleanup on exit
+trap 'rm -f temp_ssh_config' EXIT
+
 # Check if EDITOR is set
 if [[ -z "${EDITOR:-}" ]]; then
     echo "Error: EDITOR environment variable is not set."
@@ -33,12 +36,8 @@ $EDITOR temp_ssh_config
 echo "==> Re-encrypting SSH config..."
 if ! nix shell github:ryantm/agenix --command agenix -e secrets/ssh/config.age -i ~/.ssh/id_ed25519 < temp_ssh_config; then
     echo "Error: Failed to re-encrypt SSH config."
-    rm temp_ssh_config
     exit 1
 fi
-
-# Clean up
-rm temp_ssh_config
 
 echo "==> SSH config updated successfully!"
 echo "==> Don't forget to commit the changes:"
