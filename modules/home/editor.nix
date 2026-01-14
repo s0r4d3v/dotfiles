@@ -1,5 +1,77 @@
 { ... }:
 {
+  # Neovim Core: Enable, globals, opts, clipboard
+  flake.modules.homeManager.neovim-base =
+    { pkgs, ... }:
+    {
+      programs.nixvim = {
+        enable = true;
+        defaultEditor = true;
+
+        globals = {
+          mapleader = " ";
+          maplocalleader = " ";
+        };
+
+        opts = {
+          # mouse
+          mouse = "";
+          # Line numbers
+          number = true;
+          relativenumber = true;
+
+          # Indentation
+          expandtab = true;
+          shiftwidth = 2;
+          tabstop = 2;
+          softtabstop = -1;
+          autoindent = true;
+          smartindent = true;
+
+          # Undo
+          undofile = true;
+
+          # Search
+          ignorecase = true;
+          smartcase = true;
+
+          # UI
+          termguicolors = true;
+          signcolumn = "yes";
+          cursorline = true;
+          wrap = false;
+          scrolloff = 8;
+          sidescrolloff = 8;
+
+          # Splits
+          splitright = true;
+          splitbelow = true;
+
+          # Performance
+          updatetime = 250;
+          timeoutlen = 300;
+        };
+
+        # Clipboard (with SSH/OSC52 support)
+        clipboard.register = "unnamedplus";
+        extraConfigLua = ''
+          if vim.env.SSH_TTY then
+            vim.g.clipboard = {
+              name = 'OSC 52',
+              copy = {
+                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+              },
+              paste = {
+                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+              },
+            }
+          end
+        '';
+      };
+    };
+
   # Neovim keymaps (imported by neovim.nix)
   flake.modules.homeManager.neovim-keymaps = {
     programs.nixvim.keymaps = [
@@ -317,5 +389,307 @@
         options.desc = "Oil";
       }
     ];
+  };
+
+  # LSP, Completion, Lint, Format, Diagnostics
+  flake.modules.homeManager.neovim-lsp =
+    { pkgs, ... }:
+    {
+      home.packages = with pkgs; [
+        # Copilot dependencies
+        nodejs
+        # LSP servers
+        pyright
+        nil
+        marksman
+        tinymist
+        vue-language-server
+        haskell-language-server
+        # Haskell compiler for LSP
+        ghc
+        # Linters
+        ruff
+        statix
+        markdownlint-cli
+        eslint
+        hlint
+        # Formatters
+        ormolu
+        prettierd
+        typstyle
+        nixfmt-rfc-style
+      ];
+
+      programs.nixvim = {
+        filetype = {
+          extension = {
+            qmd = "quarto";
+          };
+        };
+
+        plugins.lsp = {
+          enable = true;
+          servers = {
+            pyright.enable = true;
+            nil_ls.enable = true;
+            marksman = {
+              enable = true;
+              filetypes = [
+                "markdown"
+                "quarto"
+              ];
+            };
+            tinymist.enable = true;
+            vue_ls.enable = true;
+            hls = {
+              enable = true;
+              installGhc = false;
+            };
+          };
+        };
+
+        diagnostic = {
+          settings = {
+            virtual_text = true;
+          };
+        };
+
+        plugins.blink-cmp = {
+          enable = true;
+          settings = {
+            keymap.preset = "default";
+            sources.default = [
+              "lsp"
+              "path"
+              "buffer"
+            ];
+            completion = {
+              accept.auto_brackets.enabled = true;
+              documentation.auto_show = true;
+              ghost_text.enabled = true;
+            };
+            signature.enabled = true;
+          };
+        };
+
+        plugins.lint = {
+          enable = true;
+          lintersByFt = {
+            python = [ "ruff" ];
+            nix = [ "statix" ];
+            markdown = [ "markdownlint" ];
+            quarto = [ "markdownlint" ];
+            javascript = [ "eslint" ];
+            typescript = [ "eslint" ];
+            vue = [ "eslint" ];
+            haskell = [ "hlint" ];
+          };
+          autoCmd = {
+            event = [
+              "BufWritePost"
+              "BufEnter"
+            ];
+          };
+        };
+
+        plugins.conform-nvim = {
+          enable = true;
+          settings = {
+            # format_on_save = {
+            #   lsp_fallback = true;
+            #   timeout_ms = 2000;
+            # };
+            formatters_by_ft = {
+              python = [ "ruff_format" ];
+              nix = [ "nixfmt" ];
+              markdown = [ "prettierd" ];
+              quarto = [ "prettierd" ];
+              typst = [ "typstyle" ];
+              javascript = [ "prettierd" ];
+              typescript = [ "prettierd" ];
+              vue = [ "prettierd" ];
+              haskell = [ "ormolu" ];
+            };
+          };
+        };
+
+        plugins.trouble = {
+          enable = true;
+          settings.auto_close = true;
+        };
+
+      };
+    };
+
+  # UI: Colorscheme, Statusline, Snacks
+  flake.modules.homeManager.neovim-plugins = {
+    programs.nixvim = {
+      colorschemes.dracula = {
+        enable = true;
+      };
+
+      plugins.web-devicons = {
+        enable = true;
+      };
+
+      plugins.bufferline = {
+        enable = true;
+        settings = {
+          options = {
+            mode = "buffers";
+            separator_style = "slant";
+            diagnostics = "nvim_lsp";
+            offsets = [
+              {
+                filetype = "neo-tree";
+                text = "Neo-tree";
+                highlight = "Directory";
+                text_align = "left";
+              }
+            ];
+          };
+        };
+      };
+
+      plugins.lualine = {
+        enable = true;
+        settings.options = {
+          theme = "auto";
+          globalstatus = true;
+          component_separators = {
+            left = "│";
+            right = "│";
+          };
+          section_separators = {
+            left = "";
+            right = "";
+          };
+        };
+      };
+
+      plugins.mini = {
+        enable = true;
+        mockDevIcons = true;
+        modules = {
+          icons = { };
+          starter = {
+            header = ''
+              ▄▄   ▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄   ▄▄ ▄▄▄   ▄ ▄▄   ▄▄
+              █  █▄█  █  ▄    █       █  █ █  █   █ █ █  █ █  █
+              █       █ █ █   █▄▄▄▄   █  █ █  █   █▄█ █  █ █  █
+              █       █ █ █   █▄▄▄▄█  █  █▄█  █      ▄█  █▄█  █
+              █       █ █▄█   █ ▄▄▄▄▄▄█       █     █▄█       █
+              █ ██▄██ █       █ █▄▄▄▄▄█       █    ▄  █       █
+              █▄█   █▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄█ █▄█▄▄▄▄▄▄▄█
+            '';
+            evaluate_single = true;
+          };
+          surround = { };
+          pairs = { };
+          comment = { };
+          bufremove = { };
+          splitjoin = { };
+          move = { };
+          ai = { };
+        };
+      };
+
+      plugins.snacks = {
+        enable = true;
+        settings = {
+          notifier.enabled = true;
+          statuscolumn.enabled = true;
+          indent.enabled = true;
+          scroll.enabled = true;
+          bigfile.enabled = true;
+          quickfile.enabled = true;
+          words.enabled = true;
+          picker.enabled = true;
+          lazygit.enabled = true;
+          terminal.enabled = true;
+          git.enabled = true;
+        };
+      };
+
+      plugins.treesitter = {
+        enable = true;
+        highlight.enable = true;
+        settings.ensure_installed = [
+          "python"
+          "nix"
+          "markdown"
+          "lua"
+          "vim"
+          "vimdoc"
+          "r"
+          "julia"
+          "bash"
+          "html"
+          "quarto"
+        ];
+      };
+
+      plugins.flash = {
+        enable = true;
+        settings.modes.search.enabled = true;
+      };
+
+      plugins.oil = {
+        enable = true;
+        settings = {
+          default_file_explorer = true;
+          columns = [
+            "icon"
+            "permissions"
+            "size"
+            "mtime"
+          ];
+          keymaps = {
+            "\\" = "actions.close";
+          };
+          skip_confirm_for_simple_edits = true;
+          view_options = {
+            show_hidden = true;
+          };
+        };
+      };
+
+      plugins.bullets = {
+        enable = true;
+        settings = {
+          bullets_enabled_file_types = [
+            "markdown"
+            "text"
+            "gitcommit"
+            "scratch"
+            "quarto"
+          ];
+        };
+      };
+
+      plugins.quarto-nvim = {
+        enable = true;
+      };
+
+      plugins.which-key = {
+        enable = true;
+        settings.delay = 200;
+      };
+
+      plugins.gitsigns = {
+        enable = true;
+        settings = {
+          signs = {
+            add.text = "│";
+            change.text = "│";
+            delete.text = "_";
+            topdelete.text = "‾";
+            changedelete.text = "~";
+          };
+          current_line_blame = true;
+          current_line_blame_opts.delay = 500;
+        };
+      };
+    };
   };
 }

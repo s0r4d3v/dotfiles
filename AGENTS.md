@@ -104,6 +104,17 @@ This document provides guidelines for coding agents working in this Nix-based do
 - **Dry runs**: Use `--dry-run` for build commands to check without building
 - **Parallel builds**: Nix builds in parallel by default
 
+### Error Loop Resolution
+- When encountering repeated build errors that cannot be resolved locally, research solutions on Nix documentation (https://nixos.org/manual/nix/unstable/) and community forums (https://discourse.nixos.org/)
+- Document findings and solutions in AGENTS.md for future reference
+- **You have to research solutions on documentation and forums when you stop with the error loop**
+
+#### nix-index Database Error
+- **Error**: `reading from the database at '/Users/.../.cache/nix-index/files' failed: I/O error: No such file or directory (os error 2)`. Followed by `eza: command not found`.
+- **Cause**: The nix-index database is missing or corrupt. nix-index is a tool that indexes Nix packages for fast lookup, used by command-not-found functionality to suggest packages when a command is not found.
+- **Solution**: Run `nix-index` to generate the database. Ensure nix-index is installed (e.g., via `nix-env -iA nixpkgs.nix-index` or include in home-manager packages). If error persists, check for symlink issues or rebuild the database.
+- **References**: [GitHub Issue #265](https://github.com/nix-community/nix-index/issues/265), [NixOS Discourse](https://discourse.nixos.org/t/command-not-found-unable-to-open-database/3807), [Stack Overflow](https://stackoverflow.com/questions/36153603/command-not-found-not-working-because-programs-sqlite-is-missing)
+
 ### No Cursor Rules
 No `.cursor/rules/` or `.cursorrules` file found in repository.
 
