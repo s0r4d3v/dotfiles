@@ -24,9 +24,8 @@ in
               inherit pkgs;
               extraSpecialArgs = {
                 user = userName;
-                inherit homeDir nurPkgs;
+                inherit homeDir nurPkgs pkgs;
                 agenix = inputs.agenix.packages.${system}.agenix;
-                age = inputs.agenix.packages.${system}.age;
               };
               modules = [
                 inputs.nixvim.homeModules.nixvim

@@ -5,7 +5,7 @@
       user,
       homeDir,
       agenix,
-      age,
+      pkgs,
       ...
     }:
     {
@@ -18,7 +18,7 @@
       };
       home.activation.decryptSSH = inputs.home-manager.lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         if [ -f ${homeDir}/.ssh/id_ed25519 ]; then
-          ${age}/bin/age -d -i ${homeDir}/.ssh/id_ed25519 ../../secrets/ssh/config.age > ${homeDir}/.ssh/config
+          ${pkgs.age}/bin/age -d -i ${homeDir}/.ssh/id_ed25519 ../../secrets/ssh/config.age > ${homeDir}/.ssh/config
           chmod 600 ${homeDir}/.ssh/config
         fi
       '';
