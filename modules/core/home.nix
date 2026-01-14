@@ -6,8 +6,8 @@ in
 {
   perSystem =
     { system, ... }:
-    {
-      legacyPackages.homeConfigurations = builtins.listToAttrs (
+    let
+      homeConfigs = builtins.listToAttrs (
         map (
           userName:
           let
@@ -25,11 +25,20 @@ in
               extraSpecialArgs = {
                 user = userName;
                 inherit homeDir nurPkgs;
+                agenix = inputs.agenix.packages.${system}.agenix;
               };
-              modules = [ inputs.nixvim.homeModules.nixvim ] ++ hmModules;
+              modules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.agenix.homeManagerModules.default
+              ]
+              ++ hmModules;
             };
           }
         ) users
       );
+    in
+    {
+      legacyPackages.homeConfigurations = homeConfigs;
+      packages = builtins.mapAttrs (_: config: config.activationPackage) homeConfigs;
     };
 }

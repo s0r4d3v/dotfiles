@@ -61,8 +61,22 @@ _A declarative, reproducible development environment using Nix and Home Manager.
 ### 🔄 Updating
 
 ```bash
-cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull && ./activate.sh $$ cd -
+cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull && ./activate.sh && cd -
 ```
+
+### Manual Activation (Alternative to ./activate.sh)
+
+If you prefer using standard Nix commands without the activation script:
+
+```bash
+# Build the home-manager configuration
+nix build ".#homeConfigurations.$(whoami).activationPackage"
+
+# Activate it
+./result/activate
+```
+
+SSH configuration will be decrypted automatically during activation if your private key is present at `~/.ssh/id_ed25519`.
 
 ### ⚠️ Troubleshooting
 

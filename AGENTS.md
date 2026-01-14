@@ -6,9 +6,11 @@ This document provides guidelines for coding agents working in this Nix-based do
 
 ### Build Commands
 - **Full flake build**: `nix flake check` (validates flake outputs)
-- **Home-manager config build**: `nix build ".#homeConfigurations.soranagano.activationPackage"` (builds home config for user)
+- **Home-manager config build**: `nix build ".#homeConfigurations.soranagano.activationPackage"` (builds activation package including secrets decryption)
+- **Activation**: Run `./result/activate` after build (handles SSH decryption and home-manager activation)
+- **Short home build**: `nix build ".#packages.soranagano"` (shortcut to activation package)
 - **Specific devshell**: `nix develop .#python` (enters Python devshell)
-- **Activation script**: `./activate.sh` (builds and activates home-manager config, decrypts SSH)
+- **Legacy activation script**: `./activate.sh` (deprecated, use direct build + activate for new setups)
 
 ### Lint Commands
 - **Nix formatting**: `nixfmt` (format Nix files - run manually or via LSP)
@@ -99,7 +101,7 @@ This document provides guidelines for coding agents working in this Nix-based do
 - **Adding hosts**: Use `./add-ssh-host.sh` (decrypts, edits, re-encrypts)
 - **Key location**: `~/.ssh/id_ed25519` (not in repo)
 - **Config**: Encrypted in `secrets/ssh/config.age`
-- **Activation**: Decrypted on `./activate.sh` run
+- **Activation**: Decrypted automatically during home-manager activation (via agenix)
 
 ### Common Pitfalls
 - **Unfree packages**: Not allowed globally, import nixpkgs without restrictions where needed
