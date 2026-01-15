@@ -1,9 +1,8 @@
 <div align="center">
 
-# 🖥️ Hack Your Setup Like a Boss 🕵️‍♂️
+# Dotfiles
 
-_This ain't your grandma's config. Nix + Home Manager = Reproducible Dev Chaos That Actually Works._  
-*(Because who wants to manually tweak configs on every machine? This bad boy deploys your dev fortress with one command. Boom! 💥)*
+A Nix-based dotfiles repository using Home Manager for reproducible development environments.
 
 [![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nix&logoColor=white)](https://nixos.org/)
 [![License](https://img.shields.io/github/license/s0r4d3v/dotfiles?style=for-the-badge)](LICENSE)
@@ -13,107 +12,99 @@ _This ain't your grandma's config. Nix + Home Manager = Reproducible Dev Chaos T
 
 ---
 
-## 🚀 Quick Setup (No Bullshit)
+## Quick Start
 
-- [Prerequisites](#-prerequisites)
-- [Install on New Machine](#-installation-new-machine)
-- [Update Your Hack](#-updating)
-- [Customize & Pwn](#-module-management)
-- [Devshells & Tools](#using-devshells)
-- [Troubleshoot Like a Pro](#-troubleshooting)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Updating](#updating)
+- [Customization](#customization)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
-## 🔑 Prerequisites
+## Prerequisites
 
-**Install Nix** (or your setup's DOA).  
-One-liner:  
+Install Nix. Recommended one-liner:
+
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; exec $SHELL
-```  
-*(Other ways? [Nix docs](https://nixos.org/download) – but this one's the hacker's choice.)*
+```
+
+For other installation methods, see [Nix documentation](https://nixos.org/download).
 
 ---
 
-## 🆕 Installation (New Machine)
+## Installation
 
-**Clone & Deploy (3 Steps to Glory):**  
+Clone the repository and activate the configuration:
+
 ```bash
 git clone https://github.com/s0r4d3v/dotfiles.git && cd dotfiles
 nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate
-# Optional: ghq get https://github.com/s0r4d3v/dotfiles.git  # For the organized hacker
-```  
-**Test Your Hack:** `nd python`, `tm`, `v` – If it works, you're a wizard. 🧙‍♂️
+```
+
+Test with commands like `nd python`, `tm`, or `v`.
 
 ---
 
-## 🔄 Updating
+## Updating
 
-**Stay Fresh (No Stale Configs Allowed):**  
+To update the configuration:
+
 ```bash
 cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull
 nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate
-```  
-*(Pulls updates, rebuilds, deploys. Like updating your memes – keep 'em current!)*
+```
 
 ---
 
-## 🛠️ Module Management
+## Customization
 
-**Add/Modify Modules (Hack Your Config):**  
-- New module? Drop `.nix` in `modules/home/` (e.g., `cli/my-tool.nix`), define in flake.  
-- Edit existing: Tweak files in `modules/home/`, rebuild: `nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate`.  
+- Add new modules in `modules/home/` (e.g., `cli/my-tool.nix`).
+- Edit existing files and rebuild with: `nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate`.
 
-**Troubleshoot Like a Boss:**  
-- Warnings? Ignore 'em (they're just complaining).  
-- SSH fail? Check `~/.ssh/id_ed25519`.  
-- Zsh errors? `setopt no_extended_glob`.  
-- Build bust? `nix flake update`.  
-*(Because even hackers hit walls – but we debug 'em.)*
+## Troubleshooting
 
----
-
-## 📁 Directory Structure
-
-| Dir | What It Does |
-|----|--------------|
-| `modules/devshells/` | 🐍 Dev envs for langs |
-| `modules/home/` | All your configs (editor, cli, browser, etc.) |
-
-*(Add langs? Copy devshell examples, tweak LSP in editor/, add tools to cli/.)*
+- Ignore warnings if builds succeed.
+- SSH issues: Check `~/.ssh/id_ed25519`.
+- Zsh errors: Run `setopt no_extended_glob`.
+- Build failures: Try `nix flake update`.
 
 ---
 
-## 💻 Devshells & Tools
+## Directory Structure
 
-**Enter Dev Mode:**  
-`nix develop .#python` or `nd python` (after activate).  
-*(Available: python, haskell, quarto, slidev, typst. LSP auto-activates – magic! ✨)*
+| Directory | Purpose |
+|-----------|---------|
+| `modules/home/` | Home Manager configurations (editor, CLI, browser, etc.) |
 
 ---
 
-## 🏗️ Project Envs (Direnv Style)
 
-**Auto-Activate Per Project:**  
+
+---
+
+## Project Environments
+
+To set up direnv in an existing project:
+
 ```bash
-cp -r modules/templates/python-ml ~/project && cd ~/project
-echo "use flake" > .envrc && direnv allow
-```  
-*(Edit flake.nix, cd in – boom, env loads. Templates ready to fork!)*
+initdirenv
+```
+
+This initializes a basic flake with direnv support. Edit `flake.nix` to add packages, and the environment will load automatically.
 
 ---
 
-## 🔐 SSH & 🖥️ Tmux
+## SSH and Tmux
 
-**SSH:** Manual setup at `~/.ssh/`. (No Nix crypto – keep your keys safe, hacker!)  
+- SSH: Configure manually in `~/.ssh/`.
+- Tmux: Start with `tm`. Keybindings: `Ctrl-a` prefix, `c` for new window, `|`/`-` for splits, `h/j/k/l` for navigation, `r` to reload.
 
-**Tmux:** `tm` to start. Prefix: `Ctrl-a`.  
-- `c` new window, `|`/`-` split, `h/j/k/l` nav, `r` reload.  
-*(Multitask like a boss. [Docs](https://github.com/tmux/tmux/wiki) for more.)*
+See [Tmux documentation](https://github.com/tmux/tmux/wiki) for more details.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Fork, hack, PR. Ideas? [Issues](https://github.com/s0r4d3v/dotfiles/issues).  
-*(Let's build the ultimate dev fortress together! 🏰)*
+Fork the repository, make changes, and submit a pull request. Report issues or suggest features in [GitHub Issues](https://github.com/s0r4d3v/dotfiles/issues).

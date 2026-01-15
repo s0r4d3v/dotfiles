@@ -3,7 +3,6 @@
   flake.modules.homeManager.shell =
     { pkgs, ... }:
     {
-      home.packages = with pkgs; [ nix-your-shell ];
 
       # Zsh
       programs.zsh = {
@@ -17,12 +16,8 @@
             FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
           fi
 
-          nd() {
-            nix develop "$DOTFILES_PATH#$1"
-          }
-          if command -v nix-your-shell > /dev/null; then
-            nix-your-shell zsh | source /dev/stdin
-          fi
+
+
         '';
 
         history = {
@@ -90,6 +85,9 @@
 
           # Opencode
           oc = "opencode";
+
+          # Direnv setup
+          initdirenv = "nix flake init -t $DOTFILES_PATH#direnv && direnv allow";
         };
       };
 
