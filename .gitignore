@@ -1,10 +1,31 @@
+# Build outputs
 result
-.direnv
-local.nix
 
-# Temporary files for SSH config editing
+# Environment
+.direnv
+.env
+.envrc
+
+# Temporary files
 temp_ssh_config
 temp_*
+local.nix
 
-# Python virtual environment
+# Virtual environments
 venv/
+
+# IDE/Editor
+.vscode/
+.idea/
+
+# Secrets
+secrets/
+
+# Nix
+*.drv
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
