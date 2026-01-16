@@ -5,6 +5,7 @@
     {
       programs.firefox = {
         enable = true;
+        # package = if pkgs.stdenv.isDarwin then pkgs.brewCasks.firefox else pkgs.firefox;
         languagePacks = [
           "ja"
           "en-GB"

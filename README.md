@@ -1,106 +1,50 @@
-<div align="center">
-
 # Dotfiles
 
-A Nix-based dotfiles repository using Home Manager for reproducible development environments.
-
 [![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nix&logoColor=white)](https://nixos.org/)
-[![License](https://img.shields.io/github/license/s0r4d3v/dotfiles?style=for-the-badge)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/s0r4d3v/dotfiles?style=for-the-badge)](https://github.com/s0r4d3v/dotfiles/stargazers)
-
-</div>
-
----
-
-## Quick Start
-
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Updating](#updating)
-- [Customization](#customization)
-- [Troubleshooting](#troubleshooting)
-
----
 
 ## Prerequisites
 
-Install Nix. Recommended one-liner:
-
+Install Nix:
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; exec $SHELL
 ```
 
-For other installation methods, see [Nix documentation](https://nixos.org/download).
-
----
-
 ## Installation
 
-Clone the repository and activate the configuration:
-
 ```bash
-git clone https://github.com/s0r4d3v/dotfiles.git && cd dotfiles
-nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate
+git clone https://github.com/s0r4d3v/dotfiles.git && cd dotfiles && nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate && source ~/.zshrc
 ```
-
-Test with commands like `nd python`, `tm`, or `v`.
-
----
 
 ## Updating
 
-To update the configuration:
-
 ```bash
-cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull
-nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate
+cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull && nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate && source ~/.zshrc
 ```
-
----
 
 ## Customization
 
-- Add new modules in `modules/home/` (e.g., `cli/my-tool.nix`).
-- Edit existing files and rebuild with: `nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate`.
+Add modules in `modules/home/`, edit files, rebuild:
+```bash
+nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate && source ~/.zshrc
+```
 
 ## Troubleshooting
 
-- Ignore warnings if builds succeed.
-- SSH issues: Check `~/.ssh/id_ed25519`.
-- Zsh errors: Run `setopt no_extended_glob`.
-- Build failures: Try `nix flake update`.
-- "nix-your-shell is currently not installed" error: Clear shell cache with `rm -f ~/.zcompdump* ~/.zshrc.zwc` and restart shell with `exec zsh`.
-
----
-
-## Directory Structure
-
-| Directory | Purpose |
-|-----------|---------|
-| `modules/home/` | Home Manager configurations (editor, CLI, browser, etc.) |
-
----
-
-
-
----
+- Ignore warnings if builds succeed
+- SSH: Check `~/.ssh/id_ed25519`
+- Zsh: `setopt no_extended_glob`
+- Failures: `nix flake update`
+- nix-your-shell: `rm -f ~/.zcompdump* ~/.zshrc.zwc && exec zsh`
 
 ## Project Environments
-
-To set up direnv in an existing project:
 
 ```bash
 initdirenv
 ```
+in project root for direnv setup.
 
-This initializes a basic flake with direnv support. Edit `flake.nix` to add packages, and the environment will load automatically.
+## Tmux
 
----
+Start: `tm`
 
-## SSH and Tmux
-
-- SSH: Configure manually in `~/.ssh/`.
-- Tmux: Start with `tm`. Keybindings: `Ctrl-a` prefix, `c` for new window, `|`/`-` for splits, `h/j/k/l` for navigation, `r` to reload.
-
-See [Tmux documentation](https://github.com/tmux/tmux/wiki) for more details.
-
+Keybindings: `Ctrl-a` prefix, `c` new window, `|`/`-` splits, `h/j/k/l` navigate, `r` reload.
