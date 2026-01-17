@@ -18,6 +18,9 @@
             packages = with pkgs; [
               # Add your development packages here
             ];
+            shellHook = ''
+              echo "Hello, world!"
+            '';
           };
         };
     };
