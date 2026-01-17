@@ -10,15 +10,6 @@
         autosuggestion.enable = true;
         syntaxHighlighting.enable = true;
 
-        initContent = ''
-          # Fix Homebrew completions
-          if command -v brew >/dev/null 2>&1; then
-            FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
-          fi
-
-
-        '';
-
         history = {
           size = 10000;
           save = 10000;

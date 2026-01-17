@@ -37,7 +37,10 @@
           bind-key -T copy-mode-vi 'v' send -X begin-selection
           bind-key -T copy-mode-vi 'y' send -X copy-selection
           bind-key -T copy-mode-vi 'r' send -X rectangle-toggle
-
+ 
+          # Pane numbers display time
+          set -g display-panes-time 3000
+ 
           # Reload config
           bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
 

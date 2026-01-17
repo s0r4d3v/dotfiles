@@ -18,6 +18,7 @@
         ghc
         # Linters
         ruff
+        ty
         statix
         markdownlint-cli
         eslint
@@ -102,7 +103,10 @@
         plugins.lint = {
           enable = true;
           lintersByFt = {
-            python = [ "ruff" ];
+            python = [
+              "ruff"
+              "ty"
+            ];
             nix = [ "statix" ];
             markdown = [ "markdownlint" ];
             quarto = [ "markdownlint" ];
