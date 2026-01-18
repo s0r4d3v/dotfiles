@@ -24,7 +24,7 @@
           expandtab = true;
           shiftwidth = 4;
           tabstop = 4;
-          softtabstop = -1;
+          softtabstop = 4;
           autoindent = true;
           smartindent = true;
 
@@ -51,6 +51,14 @@
           updatetime = 250;
           timeoutlen = 300;
         };
+
+        autoCmd = [
+          {
+            event = "FileType";
+            pattern = "nix,lua,javascript,typescript,vue,markdown,quarto,html,css,yaml,json";
+            command = "setlocal shiftwidth=2 tabstop=2 softtabstop=2";
+          }
+        ];
 
         # Clipboard (with SSH/OSC52 support)
         clipboard.register = "unnamedplus";

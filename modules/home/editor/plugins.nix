@@ -156,8 +156,6 @@
               "quarto"
             ];
             outline_levels = [ "std-" ];
-            set_mappings = true;
-            pad_right = true;
           };
         };
       };
