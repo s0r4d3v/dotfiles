@@ -4,7 +4,14 @@
 
   inputs = {
     # Core Nix ecosystem
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # Home-manager ecosystem
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.11";
+      # url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -14,12 +21,6 @@
     import-tree.url = "github:vic/import-tree";
 
     systems.url = "github:nix-systems/default";
-
-    # Home-manager ecosystem
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     nur.url = "github:nix-community/NUR";
 
@@ -34,7 +35,8 @@
     };
 
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "github:nix-community/nixvim/nixos-25.11";
+      # url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

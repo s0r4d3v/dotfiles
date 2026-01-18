@@ -10,9 +10,13 @@
           slack
           zoom-us
           obsidian
-          bitwarden-desktop
         ]
-        ++ lib.optionals pkgs.stdenv.isDarwin [ raycast ];
+        # Install bitwarden per platform
+        ++ lib.optionals (!pkgs.stdenv.isDarwin) [ bitwarden-desktop ]
+        ++ lib.optionals pkgs.stdenv.isDarwin [
+          raycast
+          brewCasks.bitwarden
+        ];
 
       # Discord settings notes:
       # - Discord stores settings in ~/Library/Application Support/discord/ (macOS)
