@@ -52,7 +52,7 @@
               "julia"
               "bash"
               "html"
-              "quarto"
+              # "quarto"
             ];
           };
         };
