@@ -96,7 +96,7 @@
                 "lsp"
                 "path"
                 "snippets"
-                "buffer"
+                # "buffer"
               ];
             };
             snippets.preset = "luasnip";
