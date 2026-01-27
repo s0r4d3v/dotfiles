@@ -306,8 +306,8 @@
       {
         mode = "n";
         key = "\\";
-        action = "<cmd>Oil<CR>";
-        options.desc = "Oil";
+        action = "<cmd>Yazi<CR>";
+        options.desc = "Yazi";
       }
     ];
   };

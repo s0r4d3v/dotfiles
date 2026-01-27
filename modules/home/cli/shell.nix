@@ -68,6 +68,7 @@
 
           # Tmux
           tm = "tmux";
+          dev = "tmux new-session \\; split-window -h -p 70 \\; split-window -h -p 43 \\; select-pane -t 1 \\; split-window -v -p 25 \\; select-pane -t 3 \\; split-window -v -p 40 \\; select-pane -t 0 \\; send-keys 'yazi' C-m \\; select-pane -t 1 \\; send-keys 'nvim' C-m \\; select-pane -t 3 \\; send-keys 'lazygit' C-m \\; select-pane -t 4 \\; send-keys 'jj log' C-m \\; select-pane -t 1";
 
           # HTTP
           http = "xh";

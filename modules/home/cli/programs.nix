@@ -7,6 +7,7 @@
         # Modern ls/cat
         eza
         bat
+        yazi
 
         # JSON/HTTP
         jq
@@ -60,6 +61,10 @@
           settings = {
             theme = "dracula";
           };
+        };
+
+        codex = {
+          enable = true;
         };
       };
     };
