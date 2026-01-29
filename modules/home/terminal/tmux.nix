@@ -11,7 +11,7 @@
 
         plugins = with pkgs.tmuxPlugins; [
           sensible
-          yank
+          # yankプラグインは削除 - tmux組み込み機能を使用
           prefix-highlight
           {
             plugin = resurrect;
@@ -31,39 +31,32 @@
 
         extraConfig = ''
           # ============================================================================
-          # クリップボード連携設定（ネストtmux対応）
+          # クリップボード連携設定（tmux組み込み機能）
           # ============================================================================
           
           # Vi mode for copy mode
           setw -g mode-keys vi
 
-          # クリップボード設定
-          set -g set-clipboard on
+          # クリップボード設定（重要）
+          # external: tmuxのみがクリップボードを設定（カスタムコードとの競合を回避）
+          set -g set-clipboard external
           set -g allow-passthrough on
           
-          # tmux 3.3以降の場合の追加設定
-          set -s set-clipboard on
-          set -as terminal-features ',*:clipboard'
-          set -as terminal-overrides ',*:Ms=\\E]52;c;%p2%s\\7'
+          # tmux 3.3以降の追加設定
+          set -s set-clipboard external
+          set -as terminal-features ',xterm-256color:clipboard'
 
           # ============================================================================
-          # コピーモードのキーバインディング
+          # コピーモードのキーバインディング（シンプル版）
           # ============================================================================
           
           # 選択開始
           bind-key -T copy-mode-vi 'v' send -X begin-selection
           bind-key -T copy-mode-vi 'r' send -X rectangle-toggle
           
-          # ネスト対応のコピーバインディング（DCSラッピング方式）
-          # inner tmuxの場合は自動的にDCSでラップされる
-          bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "\
-            if [ -n \"\$TMUX\" ]; then \
-              tmux save-buffer - | base64 | tr -d '\\n' | \
-              awk '{printf \"\\033Ptmux;\\033\\033]52;c;%s\\007\\033\\\\\\n\",\$0}' >&2; \
-            else \
-              tmux save-buffer - | base64 | tr -d '\\n' | \
-              awk '{printf \"\\033]52;c;%s\\007\\n\",\$0}' >&2; \
-            fi"
+          # コピー（tmux組み込み機能を使用）
+          # copy-selection-and-cancel は自動的に set-clipboard と連携する
+          bind-key -T copy-mode-vi 'y' send -X copy-selection-and-cancel
 
           # ============================================================================
           # 一般設定
@@ -79,7 +72,7 @@
           bind v copy-mode
 
           # Smart split commands
-          bind \\\\ split-window -h -c "#{pane_current_path}"
+          bind '\' split-window -h -c "#{pane_current_path}"
           bind - split-window -v -c "#{pane_current_path}"
           unbind '"'
           unbind %

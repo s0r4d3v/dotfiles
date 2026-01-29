@@ -38,8 +38,8 @@
           # ターミナル機能設定（tmuxとの互換性向上）
           term = "xterm-256color";
           
-          # Shell integration（tmux使用時の互換性）
-          shell-integration = "detect";
+          # Shell integration を明示的に無効化（tmuxとの競合を回避）
+          shell-integration = "none";
           
           keybind = [
             "ctrl+shift+f=toggle_maximize"
