@@ -12,11 +12,8 @@
           obsidian
           bitwarden-desktop
         ]
-        # Install bitwarden per platform
-        # ++ lib.optionals (!pkgs.stdenv.isDarwin) [ bitwarden-desktop ]
         ++ lib.optionals pkgs.stdenv.isDarwin [
           raycast
-          # brewCasks.bitwarden
         ];
 
       # Discord settings notes:
