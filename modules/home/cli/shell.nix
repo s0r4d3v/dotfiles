@@ -45,6 +45,9 @@
           # Ghq
           repo = "cd $(ghq list --full-path | fzf)";
 
+          # Mount
+          mnt = "cd ~/mnt/$(ls ~/mnt | fzf)";
+
           # Editor
           v = "nvim";
           vi = "nvim";
