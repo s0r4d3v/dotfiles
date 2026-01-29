@@ -37,6 +37,9 @@
           # TMUX が非空 -> inner tmux（tmux の中の tmux）
           # --------------------------------------------------------------------------
 
+          # Vi mode for copy mode
+          setw -g mode-keys vi
+
           # OSC 52 を透過させる（tmux 3.2+）
           set -g allow-passthrough on
 
