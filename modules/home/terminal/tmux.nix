@@ -34,6 +34,7 @@
           setw -g mode-keys vi
 
           # set -g set-clipboard on
+          set -g allow-passthrough on
 
           # Vi mode copy settings
           bind-key -T copy-mode-vi 'v' send -X begin-selection
