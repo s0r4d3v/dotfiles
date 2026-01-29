@@ -30,21 +30,35 @@
         ];
 
         extraConfig = ''
-          # ============================================================================
-          # クリップボード連携設定（tmux組み込み機能）
-          # ============================================================================
-          
-          # Vi mode for copy mode
-          setw -g mode-keys vi
+          # --------------------------------------------------------------------------
+          # クリップボード設定（inner / outer 共通・条件分岐）
+          #
+          # TMUX が空   -> outer tmux（最外）
+          # TMUX が非空 -> inner tmux（tmux の中の tmux）
+          # --------------------------------------------------------------------------
 
-          # クリップボード設定（重要）
-          # external: tmuxのみがクリップボードを設定（カスタムコードとの競合を回避）
-          set -g set-clipboard external
+          # OSC 52 を透過させる（tmux 3.2+）
           set -g allow-passthrough on
-          
-          # tmux 3.3以降の追加設定
-          set -s set-clipboard external
-          set -as terminal-features ',xterm-256color:clipboard'
+
+          if-shell '[ -z "$TMUX" ]' {
+            # --------------------
+            # outer tmux
+            # --------------------
+            # システムクリップボードへ直接連携
+            set -g set-clipboard on
+
+            # outer tmux が使っている実端末向け
+            set -as terminal-features ',xterm-256color:clipboard'
+          } {
+            # --------------------
+            # inner tmux
+            # --------------------
+            # 外側 tmux に OSC 52 を流す役割
+            set -g set-clipboard external
+
+            # tmux → tmux 向けに Ms capability を明示
+            set -as terminal-overrides ',tmux*:Ms=\E]52;%p1%s;%p2%s\a'
+          }
 
           # ============================================================================
           # コピーモードのキーバインディング（シンプル版）
