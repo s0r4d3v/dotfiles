@@ -88,7 +88,7 @@
           updateenv = "nix build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && source ~/.zshrc";
         };
 
-        initExtra = ''
+        initContent = ''
           # Dev function with optional session name
           dev() {
             local session_name
