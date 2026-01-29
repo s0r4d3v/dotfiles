@@ -30,22 +30,48 @@
         ];
 
         extraConfig = ''
+          # ============================================================================
+          # クリップボード連携設定（ネストtmux対応）
+          # ============================================================================
+          
           # Vi mode for copy mode
           setw -g mode-keys vi
 
-          # set -g set-clipboard on
+          # クリップボード設定
+          set -g set-clipboard on
           set -g allow-passthrough on
+          
+          # tmux 3.3以降の場合の追加設定
+          set -s set-clipboard on
+          set -as terminal-features ',*:clipboard'
+          set -as terminal-overrides ',*:Ms=\\E]52;c;%p2%s\\7'
 
-          # Vi mode copy settings
+          # ============================================================================
+          # コピーモードのキーバインディング
+          # ============================================================================
+          
+          # 選択開始
           bind-key -T copy-mode-vi 'v' send -X begin-selection
-          # bind-key -T copy-mode-vi 'y' send -X copy-selection
-          bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel \
-            "tmux save-buffer - | base64 | tr -d '\n' | printf '\033]52;c;%s\a' \"$(cat)\""
           bind-key -T copy-mode-vi 'r' send -X rectangle-toggle
- 
+          
+          # ネスト対応のコピーバインディング（DCSラッピング方式）
+          # inner tmuxの場合は自動的にDCSでラップされる
+          bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "\
+            if [ -n \"\$TMUX\" ]; then \
+              tmux save-buffer - | base64 | tr -d '\\n' | \
+              awk '{printf \"\\033Ptmux;\\033\\033]52;c;%s\\007\\033\\\\\\n\",\$0}' >&2; \
+            else \
+              tmux save-buffer - | base64 | tr -d '\\n' | \
+              awk '{printf \"\\033]52;c;%s\\007\\n\",\$0}' >&2; \
+            fi"
+
+          # ============================================================================
+          # 一般設定
+          # ============================================================================
+          
           # Pane numbers display time
           set -g display-panes-time 3000
- 
+
           # Reload config
           bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
 
@@ -53,7 +79,7 @@
           bind v copy-mode
 
           # Smart split commands
-          bind \\ split-window -h -c "#{pane_current_path}"
+          bind \\\\ split-window -h -c "#{pane_current_path}"
           bind - split-window -v -c "#{pane_current_path}"
           unbind '"'
           unbind %
@@ -70,13 +96,6 @@
           bind -r K resize-pane -U 5
           bind -r L resize-pane -R 5
 
-          # Window status styling
-          setw -g window-status-current-format '#[bg=colour214,fg=colour237,nobold]#[bg=colour214,fg=colour239] #I #[bg=colour214,fg=colour239,bold]#[bg=colour214,fg=colour239] #W #[bg=colour237,fg=colour214,nobold]'
-          setw -g window-status-format '#[bg=colour239,fg=colour237,noitalics]#[bg=colour239,fg=colour223] #I #[bg=colour239,fg=colour223]#[bg=colour239,fg=colour223] #W #[bg=colour237,fg=colour239,noitalics]'
-          setw -g window-status-current-style 'bg=colour214,fg=colour237'
-          setw -g window-status-style 'bg=colour239,fg=colour223'
-          setw -g window-status-separator ""
-
           # Automatic window renumbering
           set -g renumber-windows on
 
@@ -84,18 +103,22 @@
           setw -g monitor-activity on
           set -g visual-activity on
 
+          # ============================================================================
+          # ステータスバー・テーマ設定
+          # ============================================================================
+          
           # Purple-themed status bar
           set -g status-position bottom
           set -g status-bg colour235
           set -g status-fg colour248
-          set -g status-left '#[bg=colour237,fg=colour248] #[bg=colour235,fg=colour237,nobold]#[bg=colour235,fg=colour248] #S #[bg=colour235,fg=colour237,nobold]'
-          set -g status-right '#[bg=colour235,fg=colour237]#[bg=colour237,fg=colour248] %H:%M %d-%b-%y #[bg=colour237,fg=colour235]#[bg=colour235,fg=colour248] #h '
+          set -g status-left '#[bg=colour237,fg=colour248] #[bg=colour235,fg=colour237,nobold]#[bg=colour235,fg=colour248] #S #[bg=colour235,fg=colour237,nobold]'
+          set -g status-right '#[bg=colour235,fg=colour237]#[bg=colour237,fg=colour248] %H:%M %d-%b-%y #[bg=colour237,fg=colour235]#[bg=colour235,fg=colour248] #h '
           set -g status-left-length 100
           set -g status-right-length 100
 
           # Window status styling with purple accents
-          setw -g window-status-current-format '#[bg=colour141,fg=colour235,nobold]#[bg=colour141,fg=colour235] #I #[bg=colour141,fg=colour235,bold]#[bg=colour141,fg=colour235] #W #[bg=colour235,fg=colour141,nobold]'
-          setw -g window-status-format '#[bg=colour239,fg=colour235,noitalics]#[bg=colour239,fg=colour248] #I #[bg=colour239,fg=colour248]#[bg=colour239,fg=colour248] #W #[bg=colour235,fg=colour239,noitalics]'
+          setw -g window-status-current-format '#[bg=colour141,fg=colour235,nobold]#[bg=colour141,fg=colour235] #I #[bg=colour141,fg=colour235,bold]#[bg=colour141,fg=colour235] #W #[bg=colour235,fg=colour141,nobold]'
+          setw -g window-status-format '#[bg=colour239,fg=colour235,noitalics]#[bg=colour239,fg=colour248] #I #[bg=colour239,fg=colour248]#[bg=colour239,fg=colour248] #W #[bg=colour235,fg=colour239,noitalics]'
           setw -g window-status-current-style 'bg=colour141,fg=colour235'
           setw -g window-status-style 'bg=colour239,fg=colour248'
           setw -g window-status-separator ""

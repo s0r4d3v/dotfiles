@@ -30,6 +30,17 @@
           focus-follows-mouse = false;
           quick-terminal-position = "right";
           quick-terminal-screen = "main";
+          
+          # ============================================================================
+          # OSC 52 クリップボード連携設定（ネストtmux対応）
+          # ============================================================================
+          
+          # ターミナル機能設定（tmuxとの互換性向上）
+          term = "xterm-256color";
+          
+          # Shell integration（tmux使用時の互換性）
+          shell-integration = "detect";
+          
           keybind = [
             "ctrl+shift+f=toggle_maximize"
             "global:ctrl+shift+h=toggle_visibility"
