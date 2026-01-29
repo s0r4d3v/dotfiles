@@ -33,9 +33,10 @@
           # Vi mode for copy mode
           setw -g mode-keys vi
 
+          set -g set-clipboard on
+
           # Vi mode copy settings
           bind-key -T copy-mode-vi 'v' send -X begin-selection
-          bind-key -T copy-mode-vi 'y' send -X copy-selection
           bind-key -T copy-mode-vi 'r' send -X rectangle-toggle
  
           # Pane numbers display time
