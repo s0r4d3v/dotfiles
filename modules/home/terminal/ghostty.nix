@@ -14,6 +14,8 @@
         settings = {
           font-family = "Maple Mono NF CN";
           font-size = 10;
+          clipboard-read = "allow";
+          clipboard-write = "allow";
           cursor-style = "block";
           cursor-style-blink = false;
           mouse-hide-while-typing = true;
