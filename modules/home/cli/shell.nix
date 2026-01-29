@@ -79,6 +79,9 @@
 
           # Direnv setup
           initdirenv = "nix flake init -t $DOTFILES_PATH#direnv && echo \"use flake\" > .envrc && git add flake.nix .envrc && direnv allow";
+
+          # Nix update
+          updateenv = "nix build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && source ~/.zshrc";
         };
       };
 

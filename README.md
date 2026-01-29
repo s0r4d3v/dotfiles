@@ -18,7 +18,7 @@ git clone https://github.com/s0r4d3v/dotfiles.git && cd dotfiles && nix build ".
 ## Updating
 
 ```bash
-cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull && nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate && source ~/.zshrc
+cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull && updateenv
 ```
 
 ## Customization
