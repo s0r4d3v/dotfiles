@@ -69,7 +69,6 @@
               evaluate_single = true;
             };
             surround = { };
-            # pairs = { };
             comment = { };
             bufremove = { };
             splitjoin = { };
@@ -84,6 +83,7 @@
             notifier.enabled = true;
             statuscolumn.enabled = true;
             indent.enabled = true;
+            input.enabled = true;
             scroll.enabled = true;
             bigfile.enabled = true;
             quickfile.enabled = true;
@@ -97,7 +97,7 @@
 
         plugins.flash = {
           enable = true;
-          settings.modes.search.enabled = true;
+          # settings.modes.search.enabled = true;
         };
 
         plugins.yazi = {
