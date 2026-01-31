@@ -58,6 +58,11 @@
             pattern = "nix,lua,javascript,typescript,vue,markdown,quarto,html,css,yaml,json";
             command = "setlocal shiftwidth=2 tabstop=2 softtabstop=2";
           }
+          {
+            event = "TextYankPost";
+            pattern = "*";
+            command = "silent! lua vim.highlight.on_yank()";
+          }
         ];
 
         # Clipboard (with SSH/OSC52 support)

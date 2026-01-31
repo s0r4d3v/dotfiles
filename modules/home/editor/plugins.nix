@@ -11,21 +11,6 @@
 
         plugins.bufferline = {
           enable = true;
-          settings = {
-            options = {
-              mode = "buffers";
-              separator_style = "slant";
-              diagnostics = "nvim_lsp";
-              offsets = [
-                {
-                  filetype = "neo-tree";
-                  text = "Neo-tree";
-                  highlight = "Directory";
-                  text_align = "left";
-                }
-              ];
-            };
-          };
         };
 
         plugins.lualine = {
@@ -90,7 +75,6 @@
             words.enabled = true;
             picker.enabled = true;
             lazygit.enabled = true;
-            terminal.enabled = true;
             git.enabled = true;
           };
         };
@@ -157,6 +141,41 @@
           };
         };
 
+        plugins.undotree = {
+          enable = true;
+        };
+
+        plugins.treesj = {
+          enable = true;
+        };
+
+        plugins.fidget = {
+          enable = true;
+        };
+
+        plugins.todo-comments = {
+          enable = true;
+        };
+
+        plugins.treesitter-context = {
+          enable = true;
+        };
+
+        plugins.tiny-inline-diagnostic = {
+          enable = true;
+        };
+
+        plugins.markview = {
+          enable = true;
+        };
+
+        # plugins.nvim-hlslens = {
+        #   enable = true;
+        # };
+
+        # plugins.nvim-ufo = {
+        #   enable = true;
+        # };
       };
     };
 }

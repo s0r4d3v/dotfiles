@@ -68,6 +68,8 @@
           du = "dust";
           df = "duf";
           help = "tldr";
+          cd = "z";
+          cdi = "zi";
 
           # Tmux
           tm = "tmux";
