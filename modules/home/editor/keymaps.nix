@@ -37,7 +37,7 @@
         options.desc = "Exit Insert and Clear Highlight";
       }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<Esc>";
         action = ":nohl<CR>";
         options = {
@@ -107,6 +107,12 @@
         action = "<cmd>lua MiniBufremove.delete()<CR>";
         options.desc = "Delete Buffer";
       }
+      {
+        mode = "n";
+        key = "<leader>bo";
+        action = "<cmd>lua MiniBufremove.wipeout()<CR>";
+        options.desc = "Wipeout Buffer";
+      }
 
       # ─────────────────────────────────────────────────────────────────────
       # Editing
@@ -134,6 +140,87 @@
         key = "x";
         action = "\"_x";
         options.desc = "Delete selection (blackhole)";
+      }
+      {
+        mode = [
+          "n"
+          "x"
+        ];
+        key = "sa";
+        action = "<cmd>lua require('mini.surround').add()<CR>";
+        options.desc = "Surround Add";
+      }
+      {
+        mode = "n";
+        key = "sd";
+        action = "<cmd>lua require('mini.surround').delete()<CR>";
+        options.desc = "Surround Delete";
+      }
+      {
+        mode = "n";
+        key = "sr";
+        action = "<cmd>lua require('mini.surround').replace()<CR>";
+        options.desc = "Surround Replace";
+      }
+      {
+        mode = "n";
+        key = "gS";
+        action = "<cmd>lua require('mini.splitjoin').split()<CR>";
+        options.desc = "Split";
+      }
+      {
+        mode = "n";
+        key = "gJ";
+        action = "<cmd>lua require('mini.splitjoin').join()<CR>";
+        options.desc = "Join";
+      }
+      {
+        mode = "n";
+        key = "[H";
+        action = "<cmd>lua require('mini.move').move_line('left')<CR>";
+        options.desc = "Move Line Left";
+      }
+      {
+        mode = "n";
+        key = "]H";
+        action = "<cmd>lua require('mini.move').move_line('right')<CR>";
+        options.desc = "Move Line Right";
+      }
+      {
+        mode = "n";
+        key = "[J";
+        action = "<cmd>lua require('mini.move').move_line('down')<CR>";
+        options.desc = "Move Line Down";
+      }
+      {
+        mode = "n";
+        key = "]J";
+        action = "<cmd>lua require('mini.move').move_line('up')<CR>";
+        options.desc = "Move Line Up";
+      }
+      {
+        mode = "x";
+        key = "[H";
+        action = "<cmd>lua require('mini.move').move_selection('left')<CR>";
+        options.desc = "Move Selection Left";
+      }
+      {
+        mode = "x";
+        key = "]H";
+        action = "<cmd>lua require('mini.move').move_selection('right')<CR>";
+        options.desc = "Move Selection Right";
+      }
+      {
+        mode = "x";
+        key = "[J";
+        action = "<cmd>lua require('mini.move').move_selection('down')<CR>";
+        options.desc = "Move Selection Down";
+      }
+      {
+        mode = "x";
+        key = "]J";
+        action = "<cmd>lua require('mini.move').move_selection('up')<CR>";
+        options.desc = "Move Selection Up";
       }
 
       # ─────────────────────────────────────────────────────────────────────
@@ -237,6 +324,12 @@
         action = "<cmd>lua Snacks.picker.lines()<CR>";
         options.desc = "Search Buffer";
       }
+      {
+        mode = "n";
+        key = "<leader>?";
+        action = "<cmd>WhichKey<CR>";
+        options.desc = "Which Key";
+      }
 
       # ─────────────────────────────────────────────────────────────────────
       # Git (g = git)
@@ -258,6 +351,36 @@
         key = "<leader>gB";
         action = "<cmd>lua Snacks.gitbrowse()<CR>";
         options.desc = "Browse";
+      }
+      {
+        mode = "n";
+        key = "]c";
+        action = "<cmd>lua require('gitsigns').next_hunk()<CR>";
+        options.desc = "Next Hunk";
+      }
+      {
+        mode = "n";
+        key = "[c";
+        action = "<cmd>lua require('gitsigns').prev_hunk()<CR>";
+        options.desc = "Prev Hunk";
+      }
+      {
+        mode = "n";
+        key = "<leader>hs";
+        action = "<cmd>lua require('gitsigns').stage_hunk()<CR>";
+        options.desc = "Stage Hunk";
+      }
+      {
+        mode = "n";
+        key = "<leader>hr";
+        action = "<cmd>lua require('gitsigns').reset_hunk()<CR>";
+        options.desc = "Reset Hunk";
+      }
+      {
+        mode = "n";
+        key = "<leader>hp";
+        action = "<cmd>lua require('gitsigns').preview_hunk()<CR>";
+        options.desc = "Preview Hunk";
       }
 
       # ─────────────────────────────────────────────────────────────────────
@@ -302,6 +425,22 @@
         key = "<leader>m";
         action = "<cmd>TSJToggle<CR>";
         options.desc = "Treesj Split/Join";
+      }
+
+      # ─────────────────────────────────────────────────────────────────────
+      # Comments
+      # ─────────────────────────────────────────────────────────────────────
+      {
+        mode = "n";
+        key = "]t";
+        action = "<cmd>lua require('todo-comments').jump_next()<CR>";
+        options.desc = "Next Todo";
+      }
+      {
+        mode = "n";
+        key = "[t";
+        action = "<cmd>lua require('todo-comments').jump_prev()<CR>";
+        options.desc = "Prev Todo";
       }
 
       # ─────────────────────────────────────────────────────────────────────
