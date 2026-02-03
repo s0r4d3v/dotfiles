@@ -73,7 +73,6 @@
 
           # Tmux
           tm = "tmux";
-          memo = "cd $(ghq root)/github.com/s0r4d3v/memo && tmux new-session \\; split-window -h -p 70 \\; split-window -h -p 43 \\; select-pane -t 0 \\; split-window -v -p 50 \\; select-pane -t 2 \\; split-window -v -p 25 \\; select-pane -t 4 \\; split-window -v -p 50 \\; select-pane -t 0 \\; send-keys 'yazi' C-m \\; select-pane -t 1 \\; send-keys 'opencode' C-m \\; select-pane -t 2 \\; send-keys 'nvim' C-m \\; select-pane -t 4 \\; send-keys 'lazygit' C-m \\; select-pane -t 5 \\; send-keys 'jj log' C-m \\; select-pane -t 2";
 
           # HTTP
           http = "xh";
@@ -99,8 +98,16 @@
             else
               session_name="$1"
             fi
-            
             tmux new-session -s "$session_name" \; split-window -h -p 70 \; split-window -h -p 43 \; select-pane -t 0 \; split-window -v -p 50 \; select-pane -t 2 \; split-window -v -p 25 \; select-pane -t 4 \; split-window -v -p 50 \; select-pane -t 0 \; send-keys 'yazi' C-m \; select-pane -t 1 \; send-keys 'opencode' C-m \; select-pane -t 2 \; send-keys 'nvim' C-m \; select-pane -t 4 \; send-keys 'lazygit' C-m \; select-pane -t 5 \; send-keys 'jj log' C-m \; select-pane -t 2
+          }
+
+          # Memo function - attach if exists, create if not
+          memo() {
+            if tmux has-session -t memo 2>/dev/null; then
+              tmux attach-session -t memo
+            else
+              cd $(ghq root)/github.com/s0r4d3v/memo && tmux new-session -s memo \; split-window -h -p 70 \; split-window -h -p 43 \; select-pane -t 0 \; split-window -v -p 50 \; select-pane -t 2 \; split-window -v -p 25 \; select-pane -t 4 \; split-window -v -p 50 \; select-pane -t 0 \; send-keys 'yazi' C-m \; select-pane -t 1 \; send-keys 'opencode' C-m \; select-pane -t 2 \; send-keys 'nvim' C-m \; select-pane -t 4 \; send-keys 'lazygit' C-m \; select-pane -t 5 \; send-keys 'jj log' C-m \; select-pane -t 2
+            fi
           }
         '';
       };
