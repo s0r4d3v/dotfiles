@@ -168,6 +168,10 @@
           enable = true;
         };
 
+        plugins.markdown-preview = {
+          enable = true;
+        };
+
         # plugins.nvim-hlslens = {
         #   enable = true;
         # };

@@ -422,7 +422,7 @@
       # ─────────────────────────────────────────────────────────────────────
       {
         mode = "n";
-        key = "<leader>m";
+        key = "<leader>mj";
         action = "<cmd>TSJToggle<CR>";
         options.desc = "Treesj Split/Join";
       }
@@ -441,6 +441,16 @@
         key = "[t";
         action = "<cmd>lua require('todo-comments').jump_prev()<CR>";
         options.desc = "Prev Todo";
+      }
+
+      # ─────────────────────────────────────────────────────────────────────
+      # Markdown
+      # ─────────────────────────────────────────────────────────────────────
+      {
+        mode = "n";
+        key = "<leader>mp";
+        action = "<cmd>MarkdownPreview<CR>";
+        options.desc = "Markdown Preview";
       }
 
       # ─────────────────────────────────────────────────────────────────────

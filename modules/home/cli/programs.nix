@@ -25,6 +25,7 @@
         entr # Run command on file change
         sshfs # Mount remote directories over SSH
         autossh
+        yarn # Package manager for Node.js
 
         # Git
         gh
