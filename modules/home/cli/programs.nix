@@ -40,12 +40,16 @@
         ripgrep
         fd
 
-        # PDF Viewer
-        zathura
-
         # Nix tools
         comma # Run uninstalled commands: , cowsay hello
-      ];
+      ] ++ (if pkgs.stdenv.isDarwin then [
+        zathura
+        skimpdf
+      ] else [
+        # Linuxの場合はZathura + xdotool
+        zathura
+        # xdotool
+      ]);
 
       programs = {
 

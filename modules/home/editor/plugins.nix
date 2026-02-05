@@ -175,8 +175,23 @@
 
           vimtex = {
             enable = true;
+            texlivePackage = null;
             settings = {
-              view_method = "zathura";
+              view_method = "general";
+              view_general_viewer = "zathura";
+              compiler_method = "latexmk";
+              compiler_latexmk_engines = { "_" = "-lualatex"; };
+              compiler_latexmk = {
+                aux_dir = "build";
+                out_dir = "out";
+                options = [
+                  "-verbose"
+                  "-file-line-error"
+                  "-synctex=1"
+                  "-interaction=nonstopmode"
+                ];
+                # build_dir を使う場合は動作確認を強く推奨
+              };
             };
           };
 
