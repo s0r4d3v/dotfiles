@@ -18,4 +18,4 @@ Note: `updateenv` rebuilds and activates the configuration.
 
 Start: `tm`
 
-Keybindings: `Ctrl-a` prefix, `c` new window, `|`/`-` splits, `h/j/k/l` navigate, `r` reload.
+Keybindings: `Ctrl-a` prefix
