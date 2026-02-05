@@ -40,6 +40,9 @@
         ripgrep
         fd
 
+        # PDF Viewer
+        zathura
+
         # Nix tools
         comma # Run uninstalled commands: , cowsay hello
       ];

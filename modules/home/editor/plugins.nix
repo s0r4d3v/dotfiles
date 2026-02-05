@@ -173,6 +173,13 @@
             enable = true;
           };
 
+          vimtex = {
+            enable = true;
+            settings = {
+              view_method = "zathura";
+            };
+          };
+
           # nvim-hlslens = {
           #   enable = true;
           # };

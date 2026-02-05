@@ -14,6 +14,7 @@
         tinymist
         vue-language-server
         haskell-language-server
+        texlab
         # Haskell compiler for LSP
         ghc
         # Linters
@@ -23,11 +24,14 @@
         markdownlint-cli
         eslint
         hlint
+        texlivePackages.chktex
         # Formatters
         ormolu
         prettierd
         typstyle
         nixfmt-rfc-style
+        texlivePackages.latexindent
+        bibtex-tidy
       ];
 
       programs.nixvim = {
@@ -41,7 +45,10 @@
           treesitter = {
             enable = true;
             settings = {
-              highlight.enable = true;
+              highlight = {
+                enable = true;
+                disable = ["latex"];
+              };
               ensure_installed = [
                 "python"
                 "nix"
@@ -79,6 +86,18 @@
               };
               html.enable = true;
               cssls.enable = true;
+              texlab = {
+                enable = true;
+                settings = {
+                  texlab = {
+                    chktex = {
+                      onOpenAndSave = true;
+                    };
+                    bibtexFormatter = "texlab";
+                    latexFormatter = "latexindent";
+                  };
+                };
+              };
             };
           };
 
@@ -146,6 +165,8 @@
                 haskell = [ "ormolu" ];
                 html = [ "prettierd" ];
                 css = [ "prettierd" ];
+                tex = [ "latexindent" ];
+                bib = [ "bibtex-tidy" ];
               };
             };
           };

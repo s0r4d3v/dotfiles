@@ -9,11 +9,14 @@
           discord
           slack
           zoom-us
-          obsidian
           bitwarden-desktop
         ]
         ++ lib.optionals pkgs.stdenv.isDarwin [
           raycast
+          brewCasks.notion
+        ]
+        ++ lib.optionals pkgs.stdenv.isLinux [
+          notion-app
         ];
 
       # Discord settings notes:
