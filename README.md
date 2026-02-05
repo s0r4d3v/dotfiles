@@ -1,13 +1,4 @@
-# Dotfiles
-
 [![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nix&logoColor=white)](https://nixos.org/)
-
-## Prerequisites
-
-Install Nix:
-```bash
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; exec $SHELL
-```
 
 ## Installation
 
@@ -17,40 +8,14 @@ git clone https://github.com/s0r4d3v/dotfiles.git && cd dotfiles && nix build ".
 
 ## Updating
 
-```bash
-cd ~/ghq/github.com/s0r4d3v/dotfiles && git pull && updateenv
-```
+To update with pull: `pullenv && updateenv`
 
-## Customization
+If only local Nix code changes: `updateenv`
 
-Add modules in `modules/home/`, edit files, rebuild:
-```bash
-nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate && source ~/.zshrc && cd .. && rm -rf dotfiles && ghq get s0r4d3v/dotfiles
-```
-
-## Troubleshooting
-
-- Ignore warnings if builds succeed
-- SSH: Check `~/.ssh/id_ed25519`
-- Zsh: `setopt no_extended_glob`
-- Failures: `nix flake update`
-- nix-your-shell: `rm -f ~/.zcompdump* ~/.zshrc.zwc && exec zsh`
-
-## Project Environments
-
-```bash
-initdirenv
-```
-in project root for direnv setup.
+Note: `updateenv` rebuilds and activates the configuration.
 
 ## Tmux
 
 Start: `tm`
 
 Keybindings: `Ctrl-a` prefix, `c` new window, `|`/`-` splits, `h/j/k/l` navigate, `r` reload.
-
-## Additional Configurations
-
-- **Browser**: Firefox (configured via Firefox account sync, login required)
-- **Mailer**: None (use browser-based Gmail)
-- **Calendar**: None (use browser-based Google Calendar)
