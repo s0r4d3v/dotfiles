@@ -1,4 +1,4 @@
-[![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nix&logoColor=white)](https://nixos.org/)
+# dotfiles
 
 ## Installation
 

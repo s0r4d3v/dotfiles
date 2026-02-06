@@ -5,8 +5,6 @@
     { pkgs, ... }:
     {
       home.packages = with pkgs; [
-        # Copilot dependencies
-        nodejs
         # LSP servers
         pyright
         nil
