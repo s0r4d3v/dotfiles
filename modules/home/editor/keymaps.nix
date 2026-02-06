@@ -141,87 +141,6 @@
         action = "\"_x";
         options.desc = "Delete selection (blackhole)";
       }
-      {
-        mode = [
-          "n"
-          "x"
-        ];
-        key = "sa";
-        action = "<cmd>lua require('mini.surround').add()<CR>";
-        options.desc = "Surround Add";
-      }
-      {
-        mode = "n";
-        key = "sd";
-        action = "<cmd>lua require('mini.surround').delete()<CR>";
-        options.desc = "Surround Delete";
-      }
-      {
-        mode = "n";
-        key = "sr";
-        action = "<cmd>lua require('mini.surround').replace()<CR>";
-        options.desc = "Surround Replace";
-      }
-      {
-        mode = "n";
-        key = "gS";
-        action = "<cmd>lua require('mini.splitjoin').split()<CR>";
-        options.desc = "Split";
-      }
-      {
-        mode = "n";
-        key = "gJ";
-        action = "<cmd>lua require('mini.splitjoin').join()<CR>";
-        options.desc = "Join";
-      }
-      {
-        mode = "n";
-        key = "[H";
-        action = "<cmd>lua require('mini.move').move_line('left')<CR>";
-        options.desc = "Move Line Left";
-      }
-      {
-        mode = "n";
-        key = "]H";
-        action = "<cmd>lua require('mini.move').move_line('right')<CR>";
-        options.desc = "Move Line Right";
-      }
-      {
-        mode = "n";
-        key = "[J";
-        action = "<cmd>lua require('mini.move').move_line('down')<CR>";
-        options.desc = "Move Line Down";
-      }
-      {
-        mode = "n";
-        key = "]J";
-        action = "<cmd>lua require('mini.move').move_line('up')<CR>";
-        options.desc = "Move Line Up";
-      }
-      {
-        mode = "x";
-        key = "[H";
-        action = "<cmd>lua require('mini.move').move_selection('left')<CR>";
-        options.desc = "Move Selection Left";
-      }
-      {
-        mode = "x";
-        key = "]H";
-        action = "<cmd>lua require('mini.move').move_selection('right')<CR>";
-        options.desc = "Move Selection Right";
-      }
-      {
-        mode = "x";
-        key = "[J";
-        action = "<cmd>lua require('mini.move').move_selection('down')<CR>";
-        options.desc = "Move Selection Down";
-      }
-      {
-        mode = "x";
-        key = "]J";
-        action = "<cmd>lua require('mini.move').move_selection('up')<CR>";
-        options.desc = "Move Selection Up";
-      }
 
       # ─────────────────────────────────────────────────────────────────────
       # LSP
@@ -409,16 +328,6 @@
         key = "<leader>u";
         action = "<cmd>UndotreeToggle<CR>";
         options.desc = "Undo Tree";
-      }
-
-      # ─────────────────────────────────────────────────────────────────────
-      # Treesj
-      # ─────────────────────────────────────────────────────────────────────
-      {
-        mode = "n";
-        key = "<leader>mj";
-        action = "<cmd>TSJToggle<CR>";
-        options.desc = "Treesj Split/Join";
       }
 
       # ─────────────────────────────────────────────────────────────────────
