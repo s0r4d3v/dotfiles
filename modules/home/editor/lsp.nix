@@ -1,52 +1,31 @@
 { ... }:
 {
-  # LSP, Completion, Lint, Format, Diagnostics
   flake.modules.homeManager.neovim-lsp =
     { pkgs, ... }:
     {
+      # =========================================
+      # Packages
+      # =========================================
       home.packages = with pkgs; [
-        # LSP servers
-        pyright
-        nil
-        marksman
-        tinymist
-        vue-language-server
-        haskell-language-server
-        texlab
-        # Haskell compiler for LSP
-        ghc
-        # Linters
-        ruff
-        ty
-        statix
+        # CLI tools required by LSP / lint
         markdownlint-cli
-        eslint
-        hlint
+        eslint_d
         texlivePackages.chktex
-        # Formatters
-        ormolu
-        prettierd
-        typstyle
-        nixfmt-rfc-style
-        texlivePackages.latexindent
-        bibtex-tidy
       ];
 
       programs.nixvim = {
-        filetype = {
-          extension = {
-            qmd = "quarto";
-          };
+        filetype.extension = {
+          qmd = "quarto";
         };
 
         plugins = {
+          # -----------------------------
+          # Treesitter
+          # -----------------------------
           treesitter = {
             enable = true;
             settings = {
-              highlight = {
-                enable = true;
-                disable = ["latex"];
-              };
+              highlight.enable = true;
               ensure_installed = [
                 "python"
                 "nix"
@@ -59,16 +38,23 @@
                 "bash"
                 "html"
                 "css"
-                # "quarto"
+                "javascript"
+                "typescript"
+                "vue"
               ];
             };
           };
 
+          # -----------------------------
+          # LSP (diagnostics integrated)
+          # -----------------------------
           lsp = {
             enable = true;
             servers = {
               pyright.enable = true;
+              ruff.enable = true;
               nil_ls.enable = true;
+
               marksman = {
                 enable = true;
                 filetypes = [
@@ -76,105 +62,74 @@
                   "quarto"
                 ];
               };
+
               tinymist.enable = true;
               vue_ls.enable = true;
-              hls = {
-                enable = true;
-                installGhc = false;
-              };
               html.enable = true;
               cssls.enable = true;
+
               texlab = {
                 enable = true;
-                settings = {
-                  texlab = {
-                    chktex = {
-                      onOpenAndSave = true;
-                    };
-                    bibtexFormatter = "texlab";
-                    latexFormatter = "latexindent";
-                  };
-                };
+                settings.texlab.chktex.onOpenAndSave = true;
+              };
+
+              spyglassmc_language_server = {
+                enable = true;
+                package = null;
               };
             };
           };
 
-          blink-cmp = {
-            enable = true;
-            settings = {
-              keymap.preset = "default";
-              sources = {
-                default = [
-                  "lsp"
-                  "path"
-                  "snippets"
-                  # "buffer"
-                ];
-              };
-              snippets.preset = "luasnip";
-              completion = {
-                accept.auto_brackets.enabled = true;
-                documentation.auto_show = true;
-                ghost_text.enabled = true;
-              };
-              signature.enabled = true;
-            };
-          };
+          lsp-signature.enable = true;
 
+          # Diagnostics
+          trouble.enable = true;
+
+          # -----------------------------
+          # Lint (For only langs that LSP doesn't have lint function)
+          # -----------------------------
           lint = {
             enable = true;
             lintersByFt = {
-              python = [
-                "ruff"
-                "ty"
-              ];
-              nix = [ "statix" ];
               markdown = [ "markdownlint" ];
               quarto = [ "markdownlint" ];
-              javascript = [ "eslint" ];
-              typescript = [ "eslint" ];
-              vue = [ "eslint" ];
-              haskell = [ "hlint" ];
+              javascript = [ "eslint_d" ];
+              typescript = [ "eslint_d" ];
+              vue = [ "eslint_d" ];
             };
-            autoCmd = {
-              event = [
-                "BufWritePost"
-                "BufEnter"
+            autoCmd.event = [
+              "BufWritePost"
+              "BufEnter"
+            ];
+          };
+
+          # -----------------------------
+          # Completion
+          # -----------------------------
+          cmp = {
+            enable = true;
+            autoEnableSources = true;
+            settings = {
+              snippet.expand = "function(args) require('luasnip').lsp_expand(args.body) end";
+              sources = [
+                { name = "nvim_lsp"; }
+                { name = "path"; }
+                { name = "luasnip"; }
+                { name = "nvim_lsp_signature_help"; }
               ];
             };
           };
 
-          conform-nvim = {
-            enable = true;
-            settings = {
-              # format_on_save = {
-              #   lsp_fallback = true;
-              #   timeout_ms = 2000;
-              # };
-              formatters_by_ft = {
-                python = [ "ruff_format" ];
-                nix = [ "nixfmt" ];
-                markdown = [ "prettierd" ];
-                quarto = [ "prettierd" ];
-                typst = [ "typstyle" ];
-                javascript = [ "prettierd" ];
-                typescript = [ "prettierd" ];
-                vue = [ "prettierd" ];
-                haskell = [ "ormolu" ];
-                html = [ "prettierd" ];
-                css = [ "prettierd" ];
-                tex = [ "latexindent" ];
-                bib = [ "bibtex-tidy" ];
-              };
-            };
-          };
+          luasnip.enable = true;
+          friendly-snippets.enable = true;
+          cmp-nvim-lsp-signature-help.enable = true;
+          lspkind.enable = true;
 
-          trouble = {
-            enable = true;
-            settings.auto_close = true;
-          };
+          # -----------------------------
+          # UI / Formatting
+          # -----------------------------
+          lsp-format.enable = true;
         };
-
       };
     };
 }

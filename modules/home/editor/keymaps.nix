@@ -256,12 +256,6 @@
         action = "<cmd>lua vim.lsp.buf.rename()<CR>";
         options.desc = "Rename";
       }
-      {
-        mode = "n";
-        key = "<leader>lf";
-        action = "<cmd>lua require('conform').format()<CR>";
-        options.desc = "Format";
-      }
 
       # ─────────────────────────────────────────────────────────────────────
       # Trouble (x = diagnostics)
