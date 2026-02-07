@@ -39,9 +39,10 @@
                 "html"
                 "css"
                 "javascript"
-                "typescript"
-                "vue"
-              ];
+                 "typescript"
+                 "vue"
+                 "dockerfile"
+               ];
             };
           };
 
@@ -67,6 +68,7 @@
               vue_ls.enable = true;
               html.enable = true;
               cssls.enable = true;
+              dockerls.enable = true;
 
               texlab = {
                 enable = true;
