@@ -3,16 +3,35 @@
 ## Installation
 
 ```bash
-git clone https://github.com/s0r4d3v/dotfiles.git && cd dotfiles && nix build ".#homeConfigurations.$(whoami).activationPackage" && ./result/activate && source ~/.zshrc
+git clone https://github.com/s0r4d3v/dotfiles.git
+cd dotfiles
+nix build ".#homeConfigurations.$(whoami).activationPackage"
+./result/activate
+source ~/.zshrc
+ghq get s0r4d3v/dotfiles
+cd ..
+rm dotfiles
 ```
 
-## Updating
+## updating
 
-To update with pull: `pullenv && updateenv`
+> Once installed, you can use the following aliases.
 
-If only local Nix code changes: `updateenv`
+To update with pull: 
 
-Note: `updateenv` rebuilds and activates the configuration.
+```bash
+pullenv && updateenv
+```
+
+If only local nix code changes:
+
+```bash
+updateenv
+```
+
+<br>
+
+> Note: `updateenv` rebuilds and activates the configuration.
 
 ## Tmux
 
