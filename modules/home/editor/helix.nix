@@ -1,9 +1,9 @@
 { ... }:
 {
-  flake.modules.homeManager.vscode =
+  flake.modules.homeManager.helix =
     { pkgs, ... }:
     {
-      programs.vscode = {
+      programs.helix = {
         enable = true;
       };
     };
