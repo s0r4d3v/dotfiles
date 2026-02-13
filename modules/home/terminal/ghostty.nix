@@ -6,6 +6,7 @@
       fonts.fontconfig.enable = true;
       home.packages = with pkgs; [
         maple-mono.NF-CN
+        nerd-fonts.fira-code
       ];
 
       programs.ghostty = {
@@ -30,17 +31,17 @@
           focus-follows-mouse = false;
           quick-terminal-position = "right";
           quick-terminal-screen = "main";
-          
+
           # ============================================================================
-          # OSC 52 クリップボード連携設定（ネストtmux対応）
+          # OSC 52 clipboard integration (nested tmux support)
           # ============================================================================
-          
-          # ターミナル機能設定（tmuxとの互換性向上）
+
+          # Terminal capability settings (improved tmux compatibility)
           term = "xterm-256color";
-          
-          # Shell integration を明示的に無効化（tmuxとの競合を回避）
+
+          # Explicitly disable shell integration (avoid conflict with tmux)
           shell-integration = "none";
-          
+
           keybind = [
             "ctrl+shift+f=toggle_maximize"
             "global:ctrl+shift+h=toggle_visibility"

@@ -9,9 +9,13 @@
         enableZshIntegration = true;
         settings = {
           format = ''
-            [🍰](bold #50fa7b)$directory$git_branch$git_commit$git_state$git_status$git_metrics$nix_shell$python$nodejs$rust$golang$cmd_duration$time$memory$battery
+            $os$directory$git_branch$git_commit$git_state$git_status$git_metrics$nix_shell$python$nodejs$rust$golang$cmd_duration$time$memory$battery
             $character
           '';
+          os = {
+            disabled = false;
+            style = "bold #f8f8f2";
+          };
           character = {
             success_symbol = "[❯](bold #50fa7b)"; # Dracula green
             error_symbol = "[❯](bold #ff5555)"; # Dracula red

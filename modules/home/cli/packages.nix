@@ -1,6 +1,6 @@
 { ... }:
 {
-  flake.modules.homeManager.programs =
+  flake.modules.homeManager.packages =
     { pkgs, ... }:
     {
       home.packages =
@@ -38,6 +38,9 @@
           ripgrep
           fd
 
+          # image
+          imagemagick
+
           # Nix tools
           comma # Run uninstalled commands: , cowsay hello
         ]
@@ -49,7 +52,7 @@
             ]
           else
             [
-              # Linuxの場合はZathura + xdotool
+              # Linux: Zathura + xdotool
               zathura
               # xdotool
             ]

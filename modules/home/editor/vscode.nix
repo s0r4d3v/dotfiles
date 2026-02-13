@@ -5,6 +5,7 @@
     {
       programs.vscode = {
         enable = true;
+        # Config is synced using GitHub account
       };
     };
 }

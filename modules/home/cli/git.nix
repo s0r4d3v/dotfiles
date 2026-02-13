@@ -32,11 +32,6 @@
           enable = true;
           enableGitIntegration = true;
         };
-
-        direnv = {
-          enable = true;
-          nix-direnv.enable = true;
-        };
       };
     };
 }
