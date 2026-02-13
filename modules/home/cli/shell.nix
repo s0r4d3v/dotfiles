@@ -71,9 +71,6 @@
           cd = "z";
           cdi = "zi";
 
-          # Tmux
-          tm = "tmux";
-
           # HTTP
           http = "xh";
           https = "xh --https";
@@ -88,24 +85,6 @@
           pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
           updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nix build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && source ~/.zshrc && cd -";
         };
-
-        initContent = ''
-          # Dev function with optional session name
-          dev() {
-            local session_name
-            if [ $# -eq 0 ]; then
-              session_name="$(basename "$PWD")"
-            else
-              session_name="$1"
-            fi
-
-            if tmux has-session -t "$session_name" 2>/dev/null; then
-              tmux attach-session -t "$session_name"
-            else
-              tmux new-session -s "$session_name" \; split-window -h -p 70 \; split-window -h -p 43 \; select-pane -t 0 \; split-window -v -p 50 \; select-pane -t 2 \; split-window -v -p 25 \; select-pane -t 4 \; split-window -v -p 50 \; select-pane -t 0 \; send-keys 'yazi' C-m \; select-pane -t 1 \; send-keys 'opencode' C-m \; select-pane -t 2 \; send-keys 'nvim' C-m \; select-pane -t 4 \; send-keys 'lazygit' C-m \; select-pane -t 5 \; send-keys 'jj log' C-m \; select-pane -t 2
-            fi
-          }
-        '';
       };
 
       # Zoxide (smart cd)

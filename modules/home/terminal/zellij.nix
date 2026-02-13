@@ -23,7 +23,7 @@
           copy_command = "pbcopy";
           copy_on_select = true;
 
-          # Session persistence (equivalent to tmux resurrect)
+          # Session persistence
           session_serialization = true;
           pane_viewport_serialization = true;
           scrollback_lines_to_serialize = 1000;

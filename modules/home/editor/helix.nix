@@ -6,7 +6,7 @@
       programs.helix = {
         enable = true;
         settings = {
-          theme = "onedark";
+          theme = "catppuccin_macchiato";
           editor.cursor-shape = {
             insert = "bar";
           };
