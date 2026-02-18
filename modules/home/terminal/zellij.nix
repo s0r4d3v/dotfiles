@@ -10,23 +10,25 @@
           theme = "catppuccin-macchiato";
 
           # Pane frames with rounded corners
-          pane_frames = true;
-          ui.pane_frames.rounded_corners = true;
+          pane_frames = false;
 
           # Default layout ("default" shows key hints in status bar)
           default_layout = "default";
+
+          default_mode = "locked";
 
           # Mouse mode
           mouse_mode = false;
 
           # Use pbcopy on macOS
           copy_command = "pbcopy";
-          copy_on_select = true;
 
           # Session persistence
           session_serialization = true;
           pane_viewport_serialization = true;
-          scrollback_lines_to_serialize = 1000;
+          scrollback_lines_to_serialize = 10000;
+
+          scroll_buffer_size = 10000;
 
           # Hide startup tips and release notes
           show_startup_tips = false;

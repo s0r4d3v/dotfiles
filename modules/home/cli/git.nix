@@ -1,10 +1,16 @@
 { ... }:
 {
   flake.modules.homeManager.git =
-    { ... }:
+    { pkgs, ... }:
     {
-      programs = {
+      home.packages =
+        with pkgs;
+        [
+          ghq
+          lazygit
+        ];
 
+      programs = {
         git = {
           enable = true;
           settings = {
@@ -16,6 +22,13 @@
             push.autoSetupRemote = true;
             pull.rebase = true;
           };
+        };
+
+        gh = {
+          enable = true;
+          extensions = [
+            pkgs.gh-notify
+          ];
         };
 
         jujutsu = {

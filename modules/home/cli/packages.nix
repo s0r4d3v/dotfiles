@@ -29,20 +29,21 @@
           autossh
           yarn # Package manager for Node.js
 
-          # Git
-          gh
-          ghq
-          lazygit
-
           # Search
           ripgrep
           fd
+
+          # Process
+          pik
 
           # image
           imagemagick
 
           # Nix tools
           comma # Run uninstalled commands: , cowsay hello
+
+          # Misc
+          pokemon-colorscripts
         ]
         ++ (
           if pkgs.stdenv.isDarwin then
@@ -58,38 +59,37 @@
             ]
         );
 
-      programs = {
-
-        fzf = {
-          enable = true;
-          enableZshIntegration = true;
-        };
-
-        # nix-index: provides nix-locate command
-        nix-index = {
-          enable = true;
-          enableZshIntegration = true;
-        };
-
-        opencode = {
-          enable = true;
-          settings = {
-            theme = "dracula";
+        programs = {
+          fzf = {
+            enable = true;
+            enableZshIntegration = true;
           };
-        };
 
-        codex = {
-          enable = true;
-        };
+          # nix-index: provides nix-locate command
+          nix-index = {
+            enable = true;
+            enableZshIntegration = true;
+          };
 
-        yazi = {
-          enable = true;
-          settings = {
-            manager = {
-              show_hidden = false;
+          opencode = {
+            enable = true;
+            settings = {
+              theme = "dracula";
+            };
+          };
+
+          codex = {
+            enable = true;
+          };
+
+          yazi = {
+            enable = true;
+            settings = {
+              manager = {
+                show_hidden = false;
+              };
             };
           };
         };
-      };
     };
 }
