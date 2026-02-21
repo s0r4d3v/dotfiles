@@ -7,6 +7,16 @@
         enable = true;
         defaultEditor = true;
 
+        colorschemes = {
+          catppuccin = {
+            enable = true;
+            settings = {
+              flavour = "macchiato";
+              term_colors = true;
+            };
+          };
+        };
+
         globals = {
           mapleader = " ";
           maplocalleader = " ";
@@ -58,6 +68,15 @@
             pattern = "*";
             command = "silent! lua vim.highlight.on_yank()";
           }
+          {
+            event = [
+              "BufWritePost"
+              "BufReadPost"
+              "InsertLeave"
+            ];
+            pattern = "*";
+            command = "lua require('lint').try_lint()";
+          }
         ];
 
         # Clipboard (with SSH/OSC52 support)
@@ -83,25 +102,25 @@
           {
             key = "<leader>w";
             action = ":w<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Write file";
           }
           {
             key = "<leader>W";
             action = ":wa<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Write all files";
           }
           {
             key = "<leader>q";
             action = ":q<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Quit";
           }
           {
             key = "<leader>Q";
             action = ":qa<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Quit all";
           }
 
@@ -109,13 +128,13 @@
           {
             key = "<leader>v";
             action = ":vsplit<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Split window right";
           }
           {
             key = "<leader>s";
             action = ":split<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Split window down";
           }
 
@@ -123,49 +142,49 @@
           {
             key = "<C-h>";
             action = "<C-w>h";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Move to left window";
           }
           {
             key = "<C-j>";
             action = "<C-w>j";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Move to bottom window";
           }
           {
             key = "<C-k>";
             action = "<C-w>k";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Move to top window";
           }
           {
             key = "<C-l>";
             action = "<C-w>l";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Move to right window";
           }
           {
             key = "<C-h>";
             action = "<C-\\><C-n><C-w>h";
-            mode = ["t"];
+            mode = [ "t" ];
             options.desc = "Move to left window";
           }
           {
             key = "<C-j>";
             action = "<C-\\><C-n><C-w>j";
-            mode = ["t"];
+            mode = [ "t" ];
             options.desc = "Move to bottom window";
           }
           {
             key = "<C-k>";
             action = "<C-\\><C-n><C-w>k";
-            mode = ["t"];
+            mode = [ "t" ];
             options.desc = "Move to top window";
           }
           {
             key = "<C-l>";
             action = "<C-\\><C-n><C-w>l";
-            mode = ["t"];
+            mode = [ "t" ];
             options.desc = "Move to right window";
           }
 
@@ -173,133 +192,151 @@
           {
             key = "<leader>e";
             action = "<cmd>lua Snacks.explorer()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Explorer";
           }
           {
             key = "<leader>ff";
             action = "<cmd>lua Snacks.picker.files()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Find Files";
           }
           {
             key = "<leader>fg";
             action = "<cmd>lua Snacks.picker.grep()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Grep";
           }
           {
             key = "<leader>fb";
             action = "<cmd>lua Snacks.picker.buffers()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Buffers";
           }
           {
             key = "<leader>fh";
             action = "<cmd>lua Snacks.picker.help()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Help";
           }
           {
             key = "<leader>bd";
             action = "<cmd>lua Snacks.bufdelete()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Delete Buffer";
           }
           {
             key = "<leader>bD";
             action = "<cmd>lua Snacks.bufdelete.all()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Delete All Buffers";
           }
           {
             key = "<leader>bo";
             action = "<cmd>lua Snacks.bufdelete.other()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Delete Other Buffers";
           }
           {
             key = "<leader>gg";
             action = "<cmd>lua Snacks.lazygit()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Lazygit";
           }
           {
             key = "<leader>gl";
             action = "<cmd>lua Snacks.lazygit.log()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Lazygit Log";
           }
           {
             key = "<leader>gf";
             action = "<cmd>lua Snacks.lazygit.log_file()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Lazygit File History";
           }
           {
             key = "<leader>gi";
             action = "<cmd>lua Snacks.picker.gh_issue()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "GitHub Issues";
           }
           {
             key = "<leader>gI";
             action = "<cmd>lua Snacks.picker.gh_issue({ state = 'all' })<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "GitHub Issues (all)";
           }
           {
             key = "<leader>gp";
             action = "<cmd>lua Snacks.picker.gh_pr()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "GitHub PRs";
           }
           {
             key = "<leader>gP";
             action = "<cmd>lua Snacks.picker.gh_pr({ state = 'all' })<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "GitHub PRs (all)";
           }
           {
             key = "<leader>gb";
             action = "<cmd>lua Snacks.git.blame_line()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Git Blame Line";
           }
           {
             key = "<leader>gB";
             action = "<cmd>lua Snacks.gitbrowse()<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Git Browse";
           }
           {
             key = "<leader>gB";
             action = "<cmd>lua Snacks.gitbrowse({ what = 'permalink' })<CR>";
-            mode = ["v"];
+            mode = [ "v" ];
             options.desc = "Git Browse (permalink)";
+          }
+          {
+            key = "<leader>xx";
+            action = "<cmd>Trouble diagnostics toggle<CR>";
+            mode = [ "n" ];
+            options.desc = "Diagnostics";
+          }
+          {
+            key = "<leader>xb";
+            action = "<cmd>Trouble diagnostics toggle filter.buf=0<CR>";
+            mode = [ "n" ];
+            options.desc = "Buffer Diagnostics";
           }
           {
             key = "]]";
             action = "<cmd>lua Snacks.words.jump(1)<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Next Reference";
           }
           {
             key = "[[";
             action = "<cmd>lua Snacks.words.jump(-1)<CR>";
-            mode = ["n"];
+            mode = [ "n" ];
             options.desc = "Prev Reference";
           }
           {
             key = "<C-/>";
             action = "<cmd>lua Snacks.terminal.toggle(nil, { count = 1, win = { position = 'float' } })<CR>";
-            mode = ["n" "t"];
+            mode = [
+              "n"
+              "t"
+            ];
             options.desc = "Toggle Float Terminal";
           }
           {
             key = "<C-\\>";
             action = "<cmd>lua Snacks.terminal.toggle(nil, { count = 2, win = { position = 'right' } })<CR>";
-            mode = ["n" "t"];
+            mode = [
+              "n"
+              "t"
+            ];
             options.desc = "Toggle Right Terminal";
           }
         ];
@@ -320,6 +357,10 @@
               markdown
               markdown_inline
             ];
+          };
+
+          treesitter-context = {
+            enable = true;
           };
 
           lsp = {
@@ -350,21 +391,100 @@
             };
           };
 
-          cmp = {
+          # cmp = {
+          #   enable = true;
+          #   autoEnableSources = true;
+          # };
+
+          blink-cmp = {
             enable = true;
-            autoEnableSources = true;
+            settings = {
+              keymap.preset = "default";
+              completion = {
+                documentation.auto_show = true;
+                documentation.auto_show_delay_ms = 200;
+              };
+              signature.enabled = true;
+              sources = {
+                default = [
+                  "lsp"
+                  "path"
+                  "snippets"
+                  "buffer"
+                ];
+                providers.snippets.opts.friendly_snippets = true;
+              };
+            };
           };
 
-          lsp-format = {
+          # friendly_snippets = {
+          #   enable = true;
+          # };
+
+          # lsp-format = {
+          #   enable = true;
+          # };
+
+          conform-nvim = {
+            enable = true;
+            autoInstall.enable = true;
+            settings = {
+              format_on_save = {
+                timeout_ms = 500;
+                lsp_format = "fallback";
+              };
+              formatters_by_ft = {
+                nix = [ "nixfmt" ];
+                python = [
+                  "ruff_format"
+                  "ruff_fix"
+                ];
+                lua = [ "stylua" ];
+                javascript = [ "prettier" ];
+                typescript = [ "prettier" ];
+                html = [ "prettier" ];
+                css = [ "prettier" ];
+                json = [ "prettier" ];
+                yaml = [ "prettier" ];
+                markdown = [ "prettier" ];
+                bash = [ "shfmt" ];
+              };
+            };
+          };
+
+          lint = {
+            enable = true;
+            lintersByFt = {
+              python = [ "ruff" ];
+              bash = [ "shellcheck" ];
+              nix = [ "nix" ];
+            };
+          };
+
+          trouble = {
             enable = true;
           };
 
           which-key = {
             enable = true;
             settings.spec = [
-              { __unkeyed-1 = "<leader>f"; group = "Find"; }
-              { __unkeyed-1 = "<leader>g"; group = "Git"; icon = " "; }
-              { __unkeyed-1 = "<leader>b"; group = "Buffer"; }
+              {
+                __unkeyed-1 = "<leader>f";
+                group = "Find";
+              }
+              {
+                __unkeyed-1 = "<leader>g";
+                group = "Git";
+                icon = " ";
+              }
+              {
+                __unkeyed-1 = "<leader>b";
+                group = "Buffer";
+              }
+              {
+                __unkeyed-1 = "<leader>x";
+                group = "Diagnostics";
+              }
             ];
           };
 
@@ -372,7 +492,18 @@
             enable = true;
           };
 
+          lualine = {
+            enable = true;
+            settings.options = {
+              theme = "tomorrow_night";
+            };
+          };
+
           nvim-autopairs = {
+            enable = true;
+          };
+
+          gitsigns = {
             enable = true;
           };
 
@@ -380,7 +511,7 @@
             enable = true;
             mockDevIcons = true;
             modules = {
-              icons = {};
+              icons = { };
             };
           };
 
@@ -398,7 +529,11 @@
                     indent = 4;
                     height = 20;
                   }
-                  { section = "keys"; gap = 1; padding = 1; }
+                  {
+                    section = "keys";
+                    gap = 1;
+                    padding = 1;
+                  }
                   {
                     pane = 2;
                     icon = " ";
