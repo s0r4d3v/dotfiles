@@ -47,6 +47,37 @@
           splitbelow = true;
         };
 
+        autoCmd = [
+          {
+            event = "FileType";
+            pattern = "nix,lua,javascript,typescript,vue,markdown,quarto,html,css,yaml,json";
+            command = "setlocal shiftwidth=2 tabstop=2 softtabstop=2";
+          }
+          {
+            event = "TextYankPost";
+            pattern = "*";
+            command = "silent! lua vim.highlight.on_yank()";
+          }
+        ];
+
+        # Clipboard (with SSH/OSC52 support)
+        clipboard.register = "unnamedplus";
+        extraConfigLua = ''
+          if vim.env.SSH_TTY then
+            vim.g.clipboard = {
+              name = 'OSC 52',
+              copy = {
+                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+              },
+              paste = {
+                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+              },
+            }
+          end
+        '';
+
         keymaps = [
           # File & Buffer commands
           {
@@ -224,43 +255,24 @@
             options.desc = "Git Browse (permalink)";
           }
           {
+            key = "]]";
+            action = "<cmd>lua Snacks.words.jump(1)<CR>";
+            mode = ["n"];
+            options.desc = "Next Reference";
+          }
+          {
+            key = "[[";
+            action = "<cmd>lua Snacks.words.jump(-1)<CR>";
+            mode = ["n"];
+            options.desc = "Prev Reference";
+          }
+          {
             key = "<C-/>";
             action = "<cmd>lua Snacks.terminal.toggle()<CR>";
             mode = ["n" "t"];
             options.desc = "Toggle Float Terminal";
           }
         ];
-
-        autoCmd = [
-          {
-            event = "FileType";
-            pattern = "nix,lua,javascript,typescript,vue,markdown,quarto,html,css,yaml,json";
-            command = "setlocal shiftwidth=2 tabstop=2 softtabstop=2";
-          }
-          {
-            event = "TextYankPost";
-            pattern = "*";
-            command = "silent! lua vim.highlight.on_yank()";
-          }
-        ];
-
-        # Clipboard (with SSH/OSC52 support)
-        clipboard.register = "unnamedplus";
-        extraConfigLua = ''
-          if vim.env.SSH_TTY then
-            vim.g.clipboard = {
-              name = 'OSC 52',
-              copy = {
-                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-              },
-              paste = {
-                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-              },
-            }
-          end
-        '';
 
         plugins = {
           treesitter = {
@@ -324,6 +336,14 @@
               { __unkeyed-1 = "<leader>g"; group = "Git"; icon = " "; }
               { __unkeyed-1 = "<leader>b"; group = "Buffer"; }
             ];
+          };
+
+          bufferline = {
+            enable = true;
+          };
+
+          nvim-autopairs = {
+            enable = true;
           };
 
           snacks = {
