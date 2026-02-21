@@ -144,6 +144,30 @@
             mode = ["n"];
             options.desc = "Move to right window";
           }
+          {
+            key = "<C-h>";
+            action = "<C-\\><C-n><C-w>h";
+            mode = ["t"];
+            options.desc = "Move to left window";
+          }
+          {
+            key = "<C-j>";
+            action = "<C-\\><C-n><C-w>j";
+            mode = ["t"];
+            options.desc = "Move to bottom window";
+          }
+          {
+            key = "<C-k>";
+            action = "<C-\\><C-n><C-w>k";
+            mode = ["t"];
+            options.desc = "Move to top window";
+          }
+          {
+            key = "<C-l>";
+            action = "<C-\\><C-n><C-w>l";
+            mode = ["t"];
+            options.desc = "Move to right window";
+          }
 
           # Snacks keybindings
           {
@@ -268,9 +292,15 @@
           }
           {
             key = "<C-/>";
-            action = "<cmd>lua Snacks.terminal.toggle()<CR>";
+            action = "<cmd>lua Snacks.terminal.toggle(nil, { count = 1, win = { position = 'float' } })<CR>";
             mode = ["n" "t"];
             options.desc = "Toggle Float Terminal";
+          }
+          {
+            key = "<C-\\>";
+            action = "<cmd>lua Snacks.terminal.toggle(nil, { count = 2, win = { position = 'right' } })<CR>";
+            mode = ["n" "t"];
+            options.desc = "Toggle Right Terminal";
           }
         ];
 
@@ -344,6 +374,14 @@
 
           nvim-autopairs = {
             enable = true;
+          };
+
+          mini = {
+            enable = true;
+            mockDevIcons = true;
+            modules = {
+              icons = {};
+            };
           };
 
           snacks = {
@@ -453,12 +491,7 @@
               scope.enabled = true;
               scroll.enabled = true;
               statuscolumn.enabled = true;
-              terminal = {
-                enabled = true;
-                win = {
-                  style = "float";
-                };
-              };
+              terminal.enabled = true;
               words.enabled = true;
             };
           };
