@@ -55,6 +55,15 @@
           # Splits
           splitright = true;
           splitbelow = true;
+
+          list = true;
+          listchars = {
+            tab = "→ ";
+            trail = "·";
+            nbsp = "␣";
+          };
+
+          colorcolumn = "80,120";
         };
 
         autoCmd = [
@@ -186,6 +195,13 @@
             action = "<C-\\><C-n><C-w>l";
             mode = [ "t" ];
             options.desc = "Move to right window";
+          }
+
+          {
+            key = "<Esc>";
+            action = "<cmd>nohlsearch<CR>";
+            mode = [ "n" ];
+            options.desc = "Clear search highlight";
           }
 
           # Snacks keybindings
@@ -356,11 +372,42 @@
               toml
               markdown
               markdown_inline
+              javascript
+              typescript
+              css
+              html
+              regex
+              comment
             ];
           };
 
           treesitter-context = {
             enable = true;
+          };
+
+          treesitter-textobjects = {
+            enable = true;
+            settings = {
+              select = {
+                enable = true;
+                lookahead = true;
+                keymaps = {
+                  "af" = "@function.outer";
+                  "if" = "@function.inner";
+                  "ac" = "@class.outer";
+                  "ic" = "@class.inner";
+                };
+              };
+              move = {
+                enable = true;
+                goto_next_start = {
+                  "]f" = "@function.outer";
+                };
+                goto_previous_start = {
+                  "[f" = "@function.outer";
+                };
+              };
+            };
           };
 
           lsp = {
@@ -391,11 +438,6 @@
             };
           };
 
-          # cmp = {
-          #   enable = true;
-          #   autoEnableSources = true;
-          # };
-
           blink-cmp = {
             enable = true;
             settings = {
@@ -411,19 +453,23 @@
                   "path"
                   "snippets"
                   "buffer"
+                  "lazydev"
                 ];
-                providers.snippets.opts.friendly_snippets = true;
+                providers = {
+                  snippets.opts.friendly_snippets = true;
+                  lazydev = {
+                    name = "LazyDev";
+                    module = "lazydev.integrations.blink";
+                    score_offset = 100;
+                  };
+                };
               };
             };
           };
 
-          # friendly_snippets = {
-          #   enable = true;
-          # };
-
-          # lsp-format = {
-          #   enable = true;
-          # };
+          friendly-snippets = {
+            enable = true;
+          };
 
           conform-nvim = {
             enable = true;
@@ -495,7 +541,7 @@
           lualine = {
             enable = true;
             settings.options = {
-              theme = "tomorrow_night";
+              theme = "catppuccin";
             };
           };
 
@@ -507,11 +553,32 @@
             enable = true;
           };
 
+          todo-comments = {
+            enable = true;
+          };
+
+          lazydev = {
+            enable = true;
+          };
+
+          render-markdown = {
+            enable = true;
+          };
+
+          flash = {
+            enable = true;
+          };
+
+          neotest = {
+            enable = true;
+          };
+
           mini = {
             enable = true;
             mockDevIcons = true;
             modules = {
               icons = { };
+              surround = { };
             };
           };
 
