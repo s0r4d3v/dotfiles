@@ -198,7 +198,7 @@
           }
 
           {
-            key = "<Esc>";
+            key = "<leader>h";
             action = "<cmd>nohlsearch<CR>";
             mode = [ "n" ];
             options.desc = "Clear search highlight";

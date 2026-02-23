@@ -59,37 +59,37 @@
             ]
         );
 
-        programs = {
-          fzf = {
-            enable = true;
-            enableZshIntegration = true;
-          };
+      programs = {
+        fzf = {
+          enable = true;
+          enableZshIntegration = true;
+        };
 
-          # nix-index: provides nix-locate command
-          nix-index = {
-            enable = true;
-            enableZshIntegration = true;
-          };
+        # nix-index: provides nix-locate command
+        nix-index = {
+          enable = true;
+          enableZshIntegration = true;
+        };
 
-          opencode = {
-            enable = true;
-            settings = {
-              theme = "dracula";
-            };
+        opencode = {
+          enable = true;
+          settings = {
+            theme = "dracula";
           };
+        };
 
-          codex = {
-            enable = true;
-          };
+        codex = {
+          enable = true;
+        };
 
-          yazi = {
-            enable = true;
-            settings = {
-              manager = {
-                show_hidden = false;
-              };
+        yazi = {
+          enable = true;
+          settings = {
+            manager = {
+              show_hidden = false;
             };
           };
         };
+      };
     };
 }

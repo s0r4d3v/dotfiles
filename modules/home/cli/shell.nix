@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.modules.homeManager.shell =
-    { pkgs, ... }:
+    { ... }:
     {
 
       # Zsh
@@ -70,6 +70,9 @@
           help = "tldr";
           cd = "z";
           cdi = "zi";
+
+          # Zellij
+          zj = "zellij";
 
           # HTTP
           http = "xh";
