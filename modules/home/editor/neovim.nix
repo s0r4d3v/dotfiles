@@ -135,13 +135,13 @@
 
           # Window split (horizontal/vertical)
           {
-            key = "<leader>v";
+            key = "<leader>\\";
             action = ":vsplit<CR>";
             mode = [ "n" ];
             options.desc = "Split window right";
           }
           {
-            key = "<leader>s";
+            key = "<leader>-";
             action = ":split<CR>";
             mode = [ "n" ];
             options.desc = "Split window down";
@@ -150,51 +150,51 @@
           # Ctrl - window navigation
           {
             key = "<C-h>";
-            action = "<C-w>h";
+            action.__raw = "require('smart-splits').move_cursor_left";
             mode = [ "n" ];
             options.desc = "Move to left window";
           }
           {
             key = "<C-j>";
-            action = "<C-w>j";
+            action.__raw = "require('smart-splits').move_cursor_down";
             mode = [ "n" ];
             options.desc = "Move to bottom window";
           }
           {
             key = "<C-k>";
-            action = "<C-w>k";
+            action.__raw = "require('smart-splits').move_cursor_up";
             mode = [ "n" ];
             options.desc = "Move to top window";
           }
           {
             key = "<C-l>";
-            action = "<C-w>l";
+            action.__raw = "require('smart-splits').move_cursor_right";
             mode = [ "n" ];
             options.desc = "Move to right window";
           }
           {
-            key = "<C-h>";
-            action = "<C-\\><C-n><C-w>h";
-            mode = [ "t" ];
-            options.desc = "Move to left window";
+            key = "<M-h>";
+            action.__raw = "require('smart-splits').resize_left";
+            mode = [ "n" ];
+            options.desc = "Resize left";
           }
           {
-            key = "<C-j>";
-            action = "<C-\\><C-n><C-w>j";
-            mode = [ "t" ];
-            options.desc = "Move to bottom window";
+            key = "<M-j>";
+            action.__raw = "require('smart-splits').resize_down";
+            mode = [ "n" ];
+            options.desc = "Resize down";
           }
           {
-            key = "<C-k>";
-            action = "<C-\\><C-n><C-w>k";
-            mode = [ "t" ];
-            options.desc = "Move to top window";
+            key = "<M-k>";
+            action.__raw = "require('smart-splits').resize_up";
+            mode = [ "n" ];
+            options.desc = "Resize up";
           }
           {
-            key = "<C-l>";
-            action = "<C-\\><C-n><C-w>l";
-            mode = [ "t" ];
-            options.desc = "Move to right window";
+            key = "<M-l>";
+            action.__raw = "require('smart-splits').resize_right";
+            mode = [ "n" ];
+            options.desc = "Resize right";
           }
 
           {
@@ -207,9 +207,9 @@
           # Snacks keybindings
           {
             key = "<leader>e";
-            action = "<cmd>lua Snacks.explorer()<CR>";
+            action = "<cmd>Yazi<CR>";
             mode = [ "n" ];
-            options.desc = "Explorer";
+            options.desc = "Yazi Explorer";
           }
           {
             key = "<leader>ff";
@@ -337,24 +337,6 @@
             mode = [ "n" ];
             options.desc = "Prev Reference";
           }
-          {
-            key = "<C-/>";
-            action = "<cmd>lua Snacks.terminal.toggle(nil, { count = 1, win = { position = 'float' } })<CR>";
-            mode = [
-              "n"
-              "t"
-            ];
-            options.desc = "Toggle Float Terminal";
-          }
-          {
-            key = "<C-\\>";
-            action = "<cmd>lua Snacks.terminal.toggle(nil, { count = 2, win = { position = 'right' } })<CR>";
-            mode = [
-              "n"
-              "t"
-            ];
-            options.desc = "Toggle Right Terminal";
-          }
         ];
 
         plugins = {
@@ -476,7 +458,7 @@
             autoInstall.enable = true;
             settings = {
               format_on_save = {
-                timeout_ms = 500;
+                timeout_ms = 3000;
                 lsp_format = "fallback";
               };
               formatters_by_ft = {
@@ -573,6 +555,17 @@
             enable = true;
           };
 
+          smart-splits = {
+            enable = true;
+          };
+
+          yazi = {
+            enable = true;
+            settings = {
+              enable_mouse_support = false;
+            };
+          };
+
           mini = {
             enable = true;
             mockDevIcons = true;
@@ -619,6 +612,7 @@
                     __raw = ''
                       function()
                         local in_git = Snacks.git.get_root() ~= nil
+                        local has_remote = in_git and vim.fn.system("git remote") ~= ""  -- 追加
                         local cmds = {
                           {
                             title = "Notifications",
@@ -662,7 +656,7 @@
                           return vim.tbl_extend("force", {
                             pane = 2,
                             section = "terminal",
-                            enabled = in_git,
+                            enabled = has_remote,
                             padding = 1,
                             ttl = 5 * 60,
                             indent = 3,
@@ -673,7 +667,6 @@
                   }
                 ];
               };
-              explorer.enabled = true;
               gh.enabled = true;
               git.enabled = true;
               gitbrowse.enabled = true;
@@ -693,7 +686,6 @@
               scope.enabled = true;
               scroll.enabled = true;
               statuscolumn.enabled = true;
-              terminal.enabled = true;
               words.enabled = true;
             };
           };

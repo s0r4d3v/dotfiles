@@ -36,6 +36,9 @@
           # Process
           pik
 
+          # Pdf
+          ghostscript
+
           # image
           imagemagick
 

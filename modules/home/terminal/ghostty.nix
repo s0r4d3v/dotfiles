@@ -31,6 +31,7 @@
           focus-follows-mouse = false;
           quick-terminal-position = "right";
           quick-terminal-screen = "main";
+          macos-option-as-alt = "left";
 
           # ============================================================================
           # OSC 52 clipboard integration (nested tmux support)

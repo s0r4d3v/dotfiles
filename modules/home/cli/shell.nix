@@ -31,15 +31,6 @@
           less = "bat --paging=always";
 
           # Git
-          g = "git";
-          gs = "git status";
-          gd = "git diff";
-          gl = "git log --oneline -20";
-          gp = "git push";
-          ga = "git add";
-          gc = "git commit";
-          gco = "git checkout";
-          gb = "git branch";
           lg = "lazygit";
 
           # Ghq
@@ -71,6 +62,9 @@
           cd = "z";
           cdi = "zi";
 
+          # Tmux
+          tm = "tmux";
+
           # Zellij
           zj = "zellij";
 
@@ -88,6 +82,23 @@
           pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
           updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nix build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && source ~/.zshrc && cd -";
         };
+        initContent = ''
+          # Dev function with optional session name
+          dev() {
+            local session_name
+            if [ $# -eq 0 ]; then
+              session_name="$(basename "$PWD")"
+            else
+              session_name="$1"
+            fi
+
+            if tmux has-session -t "$session_name" 2>/dev/null; then
+              tmux attach-session -t "$session_name"
+            else
+              tmux new-session -s "$session_name" nvim
+            fi
+          }
+        '';
       };
 
       # Zoxide (smart cd)
