@@ -90,21 +90,6 @@
 
         # Clipboard (with SSH/OSC52 support)
         clipboard.register = "unnamedplus";
-        extraConfigLua = ''
-          if vim.env.SSH_TTY then
-            vim.g.clipboard = {
-              name = 'OSC 52',
-              copy = {
-                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-              },
-              paste = {
-                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-              },
-            }
-          end
-        '';
 
         keymaps = [
           # File & Buffer commands
@@ -566,6 +551,10 @@
             };
           };
 
+          # jupytext = {
+          #   enable = true;
+          # };
+
           mini = {
             enable = true;
             mockDevIcons = true;
@@ -690,6 +679,41 @@
             };
           };
         };
+
+        jupytext = {
+          enable = true;
+        };
+
+        extraPlugins = [
+          (pkgs.vimUtils.buildVimPlugin {
+            name = "callisto-nvim";
+            src = pkgs.fetchFromGitHub {
+              owner = "sunbluesome";
+              repo = "callisto.nvim";
+              rev = "main";
+              hash = "sha256-GbNpxgPSliun5CLVsOpI4l51Q6gbl5qOPrUOhTBxbC4=";
+            };
+          })
+        ];
+
+        extraConfigLua = ''
+          if vim.env.SSH_TTY then
+            vim.g.clipboard = {
+              name = 'OSC 52',
+              copy = {
+                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+              },
+              paste = {
+                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+              },
+            }
+          end
+
+          -- Plugins
+          require('callisto').setup()
+        '';
       };
     };
 }
