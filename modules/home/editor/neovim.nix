@@ -680,10 +680,6 @@
           };
         };
 
-        jupytext = {
-          enable = true;
-        };
-
         extraPlugins = [
           (pkgs.vimUtils.buildVimPlugin {
             name = "callisto-nvim";
