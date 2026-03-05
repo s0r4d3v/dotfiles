@@ -551,9 +551,9 @@
             };
           };
 
-          # jupytext = {
-          #   enable = true;
-          # };
+          jupytext = {
+            enable = true;
+          };
 
           mini = {
             enable = true;
@@ -679,6 +679,10 @@
             };
           };
         };
+
+        # extraPackages = with pkgs; [
+        #   python313Packages.jupytext
+        # ];
 
         extraPlugins = [
           (pkgs.vimUtils.buildVimPlugin {
