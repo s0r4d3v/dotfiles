@@ -103,6 +103,9 @@
 
           set -g mode-style 'bg=colour141,fg=colour235'
 
+          set -gq allow-passthrough on
+          set -g visual-activity off
+
           # ============================================================================
           # smart-splits.nvim（vim-tmux-navigatorの設定と置き換え）
           # ============================================================================

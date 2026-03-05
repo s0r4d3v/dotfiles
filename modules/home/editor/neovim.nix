@@ -3,6 +3,10 @@
   flake.modules.homeManager.nixvim =
     { pkgs, ... }:
     {
+      # home.packages = with pkgs; [
+      #   python313Packages.jupytext
+      # ];
+
       programs.nixvim = {
         enable = true;
         defaultEditor = true;
@@ -327,6 +331,9 @@
         plugins = {
           treesitter = {
             enable = true;
+            settings = {
+              highlight.enable = true;
+            };
             grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
               lua
               nix
@@ -551,7 +558,27 @@
             };
           };
 
+          molten = {
+            enable = true;
+          };
+
+          image = {
+            enable = true;
+          };
+
+          quarto = {
+            enable = true;
+          };
+
+          otter = {
+            enable = true;
+          };
+
           jupytext = {
+            enable = true;
+          };
+
+          hydra = {
             enable = true;
           };
 
@@ -680,21 +707,17 @@
           };
         };
 
-        # extraPackages = with pkgs; [
-        #   python313Packages.jupytext
+        # extraPlugins = [
+        #   (pkgs.vimUtils.buildVimPlugin {
+        #     name = "callisto-nvim";
+        #     src = pkgs.fetchFromGitHub {
+        #       owner = "sunbluesome";
+        #       repo = "callisto.nvim";
+        #       rev = "main";
+        #       hash = "sha256-GbNpxgPSliun5CLVsOpI4l51Q6gbl5qOPrUOhTBxbC4=";
+        #     };
+        #   })
         # ];
-
-        extraPlugins = [
-          (pkgs.vimUtils.buildVimPlugin {
-            name = "callisto-nvim";
-            src = pkgs.fetchFromGitHub {
-              owner = "sunbluesome";
-              repo = "callisto.nvim";
-              rev = "main";
-              hash = "sha256-GbNpxgPSliun5CLVsOpI4l51Q6gbl5qOPrUOhTBxbC4=";
-            };
-          })
-        ];
 
         extraConfigLua = ''
           if vim.env.SSH_TTY then
@@ -711,8 +734,8 @@
             }
           end
 
-          -- Plugins
-          require('callisto').setup()
+          -- -- Plugins
+          -- require('callisto').setup()
         '';
       };
     };
