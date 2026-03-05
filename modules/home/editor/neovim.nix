@@ -1,11 +1,23 @@
 { ... }:
 {
   flake.modules.homeManager.nixvim =
-    { pkgs, ... }:
+
+    { pkgs, lib, ... }:
     {
-      # home.packages = with pkgs; [
-      #   python313Packages.jupytext
-      # ];
+      home.packages = with pkgs; [
+        quarto
+        nodejs
+      ];
+
+      home.sessionPath = [ "$HOME/.npm-global/bin" ];
+
+      home.activation.installSpyglassmc = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if ! [ -f "$HOME/.npm-global/bin/spyglassmc-language-server" ]; then
+          echo "Installing @spyglassmc/language-server..."
+          export npm_config_prefix="$HOME/.npm-global"
+          $HOME/.nix-profile/bin/npm install -g @spyglassmc/language-server
+        fi
+      '';
 
       programs.nixvim = {
         enable = true;
@@ -24,6 +36,12 @@
         globals = {
           mapleader = " ";
           maplocalleader = " ";
+
+          molten_auto_open_output = false;
+          molten_image_provider = "image.nvim";
+          molten_wrap_output = true;
+          molten_virt_text_output = true;
+          molten_virt_lines_off_by_1 = true;
         };
 
         opts = {
@@ -326,19 +344,138 @@
             mode = [ "n" ];
             options.desc = "Prev Reference";
           }
+
+          # Molten
+          {
+            key = "<leader>me";
+            action = ":MoltenEvaluateOperator<CR>";
+            mode = [ "n" ];
+            options.desc = "Evaluate operator";
+          }
+          {
+            key = "<leader>mos";
+            action = ":noautocmd MoltenEnterOutput<CR>";
+            mode = [ "n" ];
+            options.desc = "Show output window";
+          }
+          {
+            key = "<leader>mrr";
+            action = ":MoltenReevaluateCell<CR>";
+            mode = [ "n" ];
+            options.desc = "Re-eval cell";
+          }
+          {
+            key = "<leader>mr";
+            action = ":<C-u>MoltenEvaluateVisual<CR>gv";
+            mode = [ "v" ];
+            options.desc = "Execute visual selection";
+          }
+          {
+            key = "<leader>moh";
+            action = ":MoltenHideOutput<CR>";
+            mode = [ "n" ];
+            options.desc = "Hide output window";
+          }
+          {
+            key = "<leader>md";
+            action = ":MoltenDelete<CR>";
+            mode = [ "n" ];
+            options.desc = "Delete Molten cell";
+          }
+          {
+            key = "<leader>mx";
+            action = ":MoltenOpenInBrowser<CR>";
+            mode = [ "n" ];
+            options.desc = "Open output in browser";
+          }
+          {
+            key = "<leader>mc";
+            action.__raw = ''
+              function()
+                local row = vim.api.nvim_win_get_cursor(0)[1]
+                vim.api.nvim_buf_set_lines(0, row, row, false, {
+                  "",
+                  "```{python}",
+                  "",
+                  "```",
+                  "",
+                })
+                vim.api.nvim_win_set_cursor(0, { row + 3, 0 })
+                vim.cmd("startinsert")
+              end
+            '';
+            mode = [ "n" ];
+            options.desc = "New code cell below";
+          }
+
+          # Quarto runner for notebook cells
+          {
+            key = "<localleader>rc";
+            action.__raw = "require('quarto.runner').run_cell";
+            mode = [ "n" ];
+            options.desc = "Run Quarto/Jupyter cell";
+          }
+          {
+            key = "<localleader>ra";
+            action.__raw = "require('quarto.runner').run_above";
+            mode = [ "n" ];
+            options.desc = "Run cell and above";
+          }
+          {
+            key = "<localleader>rA";
+            action.__raw = "require('quarto.runner').run_all";
+            mode = [ "n" ];
+            options.desc = "Run all notebook cells";
+          }
+          {
+            key = "<localleader>rl";
+            action.__raw = "require('quarto.runner').run_line";
+            mode = [ "n" ];
+            options.desc = "Run Jupyter cell line";
+          }
+          {
+            key = "<localleader>r";
+            action.__raw = "require('quarto.runner').run_range";
+            mode = [ "v" ];
+            options.desc = "Run visual notebook cell selection";
+          }
+          {
+            key = "<localleader>RA";
+            action.__raw = "function() require('quarto.runner').run_all(true) end";
+            mode = [ "n" ];
+            options.desc = "Run all notebook cells (all languages)";
+          }
         ];
+
+        filetype = {
+          extension = {
+            mcfunction = "mcfunction";
+          };
+        };
 
         plugins = {
           treesitter = {
             enable = true;
             settings = {
-              highlight.enable = true;
+              highlight = {
+                enable = true;
+              };
             };
             grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
               lua
               nix
               python
-              vim
+              # vim
+              (pkgs.tree-sitter.buildGrammar {
+                language = "vim";
+                version = "main";
+                src = pkgs.fetchFromGitHub {
+                  owner = "tree-sitter-grammars";
+                  repo = "tree-sitter-vim";
+                  rev = "main";
+                  hash = "sha256-MnLBFuJCJbetcS07fG5fkCwHtf/EcNP+Syf0Gn0K39c=";
+                };
+              })
               vimdoc
               bash
               json
@@ -370,15 +507,41 @@
                   "if" = "@function.inner";
                   "ac" = "@class.outer";
                   "ic" = "@class.inner";
+                  "ib" = {
+                    query = "@code_cell.inner";
+                    desc = "in block";
+                  };
+                  "ab" = {
+                    query = "@code_cell.outer";
+                    desc = "around block";
+                  };
                 };
               };
               move = {
                 enable = true;
+                set_jumps = false;
                 goto_next_start = {
                   "]f" = "@function.outer";
+                  "]b" = {
+                    query = "@code_cell.inner";
+                    desc = "next code block";
+                  };
                 };
                 goto_previous_start = {
                   "[f" = "@function.outer";
+                  "[b" = {
+                    query = "@code_cell.inner";
+                    desc = "previous code block";
+                  };
+                };
+              };
+              swap = {
+                enable = true;
+                swap_next = {
+                  "<leader>sbl" = "@code_cell.outer";
+                };
+                swap_previous = {
+                  "<leader>sbh" = "@code_cell.outer";
                 };
               };
             };
@@ -453,6 +616,14 @@
                 timeout_ms = 3000;
                 lsp_format = "fallback";
               };
+              format_after_save.__raw = ''
+                function(bufnr)
+                  local ft = vim.bo[bufnr].filetype
+                  if ft == "quarto" or ft == "markdown" then
+                    return { lsp_format = "fallback" }
+                  end
+                end
+              '';
               formatters_by_ft = {
                 nix = [ "nixfmt" ];
                 python = [
@@ -466,8 +637,24 @@
                 css = [ "prettier" ];
                 json = [ "prettier" ];
                 yaml = [ "prettier" ];
-                markdown = [ "prettier" ];
+                markdown = [
+                  "prettier"
+                  "injected"
+                ];
+                quarto = [
+                  "prettier"
+                  "injected"
+                ];
                 bash = [ "shfmt" ];
+              };
+              formatters = {
+                prettier = {
+                  options = {
+                    ext_parsers = {
+                      ipynb = "markdown";
+                    };
+                  };
+                };
               };
             };
           };
@@ -504,6 +691,30 @@
               {
                 __unkeyed-1 = "<leader>x";
                 group = "Diagnostics";
+              }
+              {
+                __unkeyed-1 = "<leader>m";
+                group = "Molten";
+              }
+              {
+                __unkeyed-1 = "<leader>mo";
+                group = "Output";
+              }
+              {
+                __unkeyed-1 = "<leader>mr";
+                group = "Run";
+              }
+              {
+                __unkeyed-1 = "<leader>sb";
+                group = "Swap Block";
+              }
+              {
+                __unkeyed-1 = "<localleader>r";
+                group = "Run Cell";
+              }
+              {
+                __unkeyed-1 = "<localleader>R";
+                group = "Run All";
               }
             ];
           };
@@ -564,10 +775,25 @@
 
           image = {
             enable = true;
+            settings = {
+              backend = "kitty";
+              processor = "magick_cli";
+              kitty_method = "normal";
+            };
           };
 
           quarto = {
             enable = true;
+            settings = {
+              codeRunner = {
+                enabled = true;
+                default_method = "molten";
+                ft_runners = {
+                  python = "molten";
+                };
+                never_run = [ "yaml" ];
+              };
+            };
           };
 
           otter = {
@@ -576,6 +802,15 @@
 
           jupytext = {
             enable = true;
+            settings = {
+              custom_language_formatting = {
+                python = {
+                  extension = "qmd";
+                  style = "quarto";
+                  force_ft = "quarto";
+                };
+              };
+            };
           };
 
           hydra = {
@@ -707,19 +942,20 @@
           };
         };
 
-        # extraPlugins = [
-        #   (pkgs.vimUtils.buildVimPlugin {
-        #     name = "callisto-nvim";
-        #     src = pkgs.fetchFromGitHub {
-        #       owner = "sunbluesome";
-        #       repo = "callisto.nvim";
-        #       rev = "main";
-        #       hash = "sha256-GbNpxgPSliun5CLVsOpI4l51Q6gbl5qOPrUOhTBxbC4=";
-        #     };
-        #   })
-        # ];
+        extraFiles = {
+          "after/queries/markdown/textobjects.scm".text = ''
+            ;; extends
+            (fenced_code_block (code_fence_content) @code_cell.inner) @code_cell.outer
+          '';
+        };
 
         extraConfigLua = ''
+          local orig_notify = vim.notify
+          vim.notify = function(msg, level, opts)
+            if msg and msg:match("No explicit query provided") then return end
+            orig_notify(msg, level, opts)
+          end
+
           if vim.env.SSH_TTY then
             vim.g.clipboard = {
               name = 'OSC 52',
@@ -734,8 +970,129 @@
             }
           end
 
-          -- -- Plugins
-          -- require('callisto').setup()
+          -- Activate Quarto for markdown
+          vim.api.nvim_create_autocmd('FileType', {
+            pattern = 'markdown',
+            callback = function()
+              require('quarto').activate()
+            end,
+          })
+
+          -- Ensure proper code cell textobjects (requires manual capture in after/queries/markdown/textobjects.scm):
+          -- ;; extends\n(fenced_code_block (code_fence_content) @code_cell.inner) @code_cell.outer
+          -- This enables ib, ab, ]b, [b etc. for code cell movement/selection/swap.
+
+          -- Automatically import/export output chunks and switch molten output mode (see notebook setup instructions)
+          local imb = function(e)
+              vim.schedule(function()
+                  local kernels = vim.fn.MoltenAvailableKernels()
+                  local try_kernel_name = function()
+                      local metadata = vim.json.decode(io.open(e.file, "r"):read("a"))["metadata"]
+                      return metadata.kernelspec.name
+                  end
+                  local ok, kernel_name = pcall(try_kernel_name)
+                  if not ok or not vim.tbl_contains(kernels, kernel_name) then
+                      kernel_name = nil
+                      local venv = os.getenv("VIRTUAL_ENV") or os.getenv("CONDA_PREFIX")
+                      if venv ~= nil then
+                          kernel_name = string.match(venv, "/.+/(.+)")
+                      end
+                  end
+                  if kernel_name ~= nil and vim.tbl_contains(kernels, kernel_name) then
+                      vim.cmd(("MoltenInit %s"):format(kernel_name))
+                  end
+                  vim.cmd("MoltenImportOutput")
+              end)
+          end
+          vim.api.nvim_create_autocmd("BufAdd", { pattern = { "*.ipynb" }, callback = imb })
+          vim.api.nvim_create_autocmd("BufEnter", {
+            pattern = { "*.ipynb" },
+            callback = function(e)
+              if vim.api.nvim_get_vvar("vim_did_enter") ~= 1 then imb(e) end
+            end,
+          })
+          vim.api.nvim_create_autocmd("BufWritePost", {
+            pattern = { "*.ipynb" },
+            callback = function()
+              if require("molten.status").initialized() == "Molten" then
+                vim.cmd("MoltenExportOutput!")
+              end
+            end,
+          })
+
+          vim.api.nvim_create_autocmd("BufEnter", {
+            pattern = "*.py",
+            callback = function(e)
+              if string.match(e.file, ".otter.") then return end
+              if require("molten.status").initialized() == "Molten" then
+                vim.fn.MoltenUpdateOption("virt_lines_off_by_1", false)
+                vim.fn.MoltenUpdateOption("virt_text_output", false)
+              else
+                vim.g.molten_virt_lines_off_by_1 = false
+                vim.g.molten_virt_text_output = false
+              end
+            end,
+          })
+          vim.api.nvim_create_autocmd("BufEnter", {
+            pattern = { "*.qmd", "*.md", "*.ipynb" },
+            callback = function(e)
+              if string.match(e.file, ".otter.") then return end
+              if require("molten.status").initialized() == "Molten" then
+                vim.fn.MoltenUpdateOption("virt_lines_off_by_1", true)
+                vim.fn.MoltenUpdateOption("virt_text_output", true)
+              else
+                vim.g.molten_virt_lines_off_by_1 = true
+                vim.g.molten_virt_text_output = true
+              end
+            end,
+          })
+
+          -- New notebook creation user command
+          local default_notebook = [[
+            {
+              "cells": [
+               {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [ "" ]
+               }
+              ],
+              "metadata": {
+               "kernelspec": {
+                "display_name": "Python 3",
+                "language": "python",
+                "name": "python3"
+               },
+               "language_info": {
+                "codemirror_mode": { "name": "ipython" },
+                "file_extension": ".py",
+                "mimetype": "text/x-python",
+                "name": "python",
+                "nbconvert_exporter": "python",
+                "pygments_lexer": "ipython3"
+               }
+              },
+              "nbformat": 4,
+              "nbformat_minor": 5
+            }
+          ]]
+          local function new_notebook(filename)
+            local path = filename .. ".ipynb"
+            local file = io.open(path, "w")
+            if file then
+              file:write(default_notebook)
+              file:close()
+              vim.cmd("edit " .. path)
+            else
+              print("Error: Could not open new notebook file for writing.")
+            end
+          end
+          vim.api.nvim_create_user_command('NewNotebook', function(opts)
+            new_notebook(opts.args)
+          end, {
+            nargs = 1,
+            complete = 'file'
+          })
         '';
       };
     };
