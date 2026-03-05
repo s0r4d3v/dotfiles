@@ -951,9 +951,9 @@
 
         extraConfigLua = ''
           local orig_notify = vim.notify
-          vim.notify = function(msg, level, opts)
+          vim.notify = function(msg, ...)
             if msg and msg:match("No explicit query provided") then return end
-            orig_notify(msg, level, opts)
+            orig_notify(msg, ...)
           end
 
           if vim.env.SSH_TTY then
