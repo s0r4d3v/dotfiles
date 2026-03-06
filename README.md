@@ -4,9 +4,8 @@
 
 - Install [Determinate Nix](https://docs.determinate.systems/) to use `nix` command
 
-In container:
-
 ```bash
+# In container
 curl -fsSL https://install.determinate.systems/nix | sh -s -- install linux --init none
 echo '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' >> ~/.bashrc && source ~/.bashrc
 ```
