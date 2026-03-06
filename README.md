@@ -6,18 +6,18 @@
 git clone https://github.com/s0r4d3v/dotfiles.git
 cd dotfiles
 nix build ".#homeConfigurations.$(whoami).activationPackage"
+export USER="$(whoami)"
 ./result/activate
-source ~/.zshrc
-ghq get s0r4d3v/dotfiles
+ghq && ghq get s0r4d3v/dotfiles
 cd ..
-rm dotfiles
+rm -rf dotfiles
 ```
 
 ## updating
 
 > Once installed, you can use the following aliases.
 
-To update with pull: 
+To update with pull:
 
 ```bash
 pullenv && updateenv
