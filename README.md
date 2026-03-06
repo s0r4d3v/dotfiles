@@ -2,13 +2,16 @@
 
 ## Installation
 
+- [Determinate Nix](https://docs.determinate.systems/)
+
 ```bash
 git clone https://github.com/s0r4d3v/dotfiles.git
 cd dotfiles
 nix build ".#homeConfigurations.$(whoami).activationPackage"
 export USER="$(whoami)"
 ./result/activate
-ghq && ghq get s0r4d3v/dotfiles
+exec zsh
+ghq get s0r4d3v/dotfiles
 cd ..
 rm -rf dotfiles
 ```
