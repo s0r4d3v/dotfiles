@@ -957,22 +957,24 @@
 
           -- ============================================================
           -- SSH環境のクリップボード設定
-          -- $TMUXはSSH越しに転送されることがあり判定に使えないため、
-          -- SSH環境では常にOSC52を使う。
-          -- allow-passthroughがローカル・リモート双方のtmuxで有効なので
-          -- Local(tmux) → SSH → Remote(tmux) → Nvim のネスト構成でも透過する。
+          -- SSH環境ではlemonade経由でローカルMacのクリップボードを読み書きする。
+          -- $TMUXはSSH越しに転送されることがあり判定に使えないため、分岐しない。
+          -- lemonadeサーバーはローカルMacのlaunchd agentで常時起動し、
+          -- SSH RemoteForward 2489でリモートから透過的にアクセスできる。
+          -- (ローカルtmux → SSH → リモートtmux → Neovim のネスト構成でも動作する)
           -- ============================================================
           if os.getenv("SSH_TTY") ~= nil or os.getenv("SSH_CLIENT") ~= nil then
             vim.g.clipboard = {
-              name  = "OSC 52",
+              name  = "lemonade",
               copy  = {
-                ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-                ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+                ["+"] = { "lemonade", "--port", "2489", "--no-fallback-messages", "copy" },
+                ["*"] = { "lemonade", "--port", "2489", "--no-fallback-messages", "copy" },
               },
               paste = {
-                ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-                ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+                ["+"] = { "lemonade", "--port", "2489", "--no-fallback-messages", "paste" },
+                ["*"] = { "lemonade", "--port", "2489", "--no-fallback-messages", "paste" },
               },
+              cache_enabled = 0,
             }
           end
 

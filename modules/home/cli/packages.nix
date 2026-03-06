@@ -45,6 +45,9 @@
           # Nix tools
           comma # Run uninstalled commands: , cowsay hello
 
+          # Clipboard
+          lemonade # Remote clipboard over SSH
+
           # Misc
           pokemon-colorscripts
         ]
