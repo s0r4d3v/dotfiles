@@ -20,7 +20,7 @@
           cursor-style = "block";
           cursor-style-blink = false;
           mouse-hide-while-typing = true;
-          theme = "dracula";
+          theme = "Catppuccin Macchiato";
           background-opacity = 0.8;
           background-opacity-cells = true;
           background-blur = 10;

@@ -77,7 +77,7 @@
         opencode = {
           enable = true;
           settings = {
-            theme = "dracula";
+            theme = "catppuccin-macchiato";
           };
         };
 
