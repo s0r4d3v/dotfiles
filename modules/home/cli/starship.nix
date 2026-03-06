@@ -135,13 +135,17 @@
              format = "[$ram](sapphire) ";
              style = "sapphire";
            };
-           battery = {
-             full_symbol = "🔋";
-             charging_symbol = "⚡";
-             discharging_symbol = "💀";
-             format = "[$symbol$percentage](green) ";
-             style = "green";
-           };
+            battery = {
+              full_symbol = "🔋";
+              charging_symbol = "⚡";
+              discharging_symbol = "💀";
+              format = "[$symbol$percentage](green) ";
+              display = [
+                { threshold = 10; style = "bold red"; }
+                { threshold = 30; style = "bold yellow"; }
+                { threshold = 100; style = "green"; }
+              ];
+            };
 
         };
       };

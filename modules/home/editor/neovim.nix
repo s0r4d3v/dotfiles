@@ -1,7 +1,6 @@
 { ... }:
 {
   flake.modules.homeManager.nixvim =
-
     { pkgs, lib, ... }:
     {
       home.packages = with pkgs; [
@@ -111,7 +110,7 @@
         ];
 
         # Clipboard (with SSH/OSC52 support)
-        # clipboard.register = "unnamedplus";
+        clipboard.register = "unnamedplus";
 
         keymaps = [
           # File & Buffer commands
@@ -956,17 +955,20 @@
             orig_notify(msg, ...)
           end
 
-          vim.g.clipboard = {
-            name = 'OSC 52',
-            copy = {
-              ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-              ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-            },
-            paste = {
-              ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-              ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-            },
-          }
+          -- vim.g.clipboard = {
+          --   name = 'OSC 52',
+          --   copy = {
+          --     ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+          --     ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+          --   },
+          --   paste = {
+          --     ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+          --     ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+          --   },
+          -- }
+
+          -- smart-splits を起動時にロードして tmux の @pane-is-vim をセット
+          require('smart-splits')
 
           -- Activate Quarto for markdown
           vim.api.nvim_create_autocmd('FileType', {

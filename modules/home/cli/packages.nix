@@ -81,6 +81,10 @@
           };
         };
 
+        claude-code = {
+          enable = true;
+        };
+
         codex = {
           enable = true;
         };
