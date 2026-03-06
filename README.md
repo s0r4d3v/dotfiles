@@ -4,6 +4,13 @@
 
 - Install [Determinate Nix](https://docs.determinate.systems/) to use `nix` command
 
+In container:
+
+```bash
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install linux --init none
+echo '. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' >> ~/.bashrc && source ~/.bashrc
+```
+
 ```bash
 git clone https://github.com/s0r4d3v/dotfiles.git
 cd dotfiles
