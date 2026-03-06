@@ -111,7 +111,7 @@
         ];
 
         # Clipboard (with SSH/OSC52 support)
-        clipboard.register = "unnamedplus";
+        # clipboard.register = "unnamedplus";
 
         keymaps = [
           # File & Buffer commands
@@ -956,19 +956,17 @@
             orig_notify(msg, ...)
           end
 
-          if vim.env.SSH_TTY then
-            vim.g.clipboard = {
-              name = 'OSC 52',
-              copy = {
-                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-              },
-              paste = {
-                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-              },
-            }
-          end
+          vim.g.clipboard = {
+            name = 'OSC 52',
+            copy = {
+              ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+              ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+            },
+            paste = {
+              ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+              ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+            },
+          }
 
           -- Activate Quarto for markdown
           vim.api.nvim_create_autocmd('FileType', {
