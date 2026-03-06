@@ -28,6 +28,8 @@ in
               homeDir =
                 if (import inputs.nixpkgs { inherit system; }).stdenv.isDarwin then
                   "/Users/${userName}"
+                else if userName == "root" then
+                  "/root"
                 else
                   "/home/${userName}";
             };
