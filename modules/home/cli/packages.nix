@@ -83,6 +83,24 @@
 
         claude-code = {
           enable = true;
+          settings = {
+            permissions = {
+              allow = [
+                "Bash(mkdir:*)"
+                "Bash(touch:*)"
+                "Bash(ls:*)"
+                "Bash(cat:*)"
+                "Bash(nix:*)"
+              ];
+              ask = [
+                "Bash(sudo:*)"
+                "Bash(rm -rf:*)"
+                "Read(.env:*)"
+                "Read(**/*token*)"
+                "Read(**/*key*)"
+              ];
+            };
+          };
         };
 
         codex = {
