@@ -5,6 +5,7 @@ let
     "soranagano"
     "s0r4d3v"
     "m"
+    "root"
   ]; # Add more users here for multi-machine support
 in
 {
@@ -15,11 +16,11 @@ in
         map (userName: {
           name = userName;
           value = inputs.home-manager.lib.homeManagerConfiguration {
-            pkgs = import inputs.nixpkgs { 
-              inherit system; 
-              overlays = [ 
-                inputs.nur.overlays.default 
-                inputs.brew-nix.overlays.default 
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [
+                inputs.nur.overlays.default
+                inputs.brew-nix.overlays.default
               ];
             };
             extraSpecialArgs = {
