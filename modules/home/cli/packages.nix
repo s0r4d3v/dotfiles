@@ -111,6 +111,8 @@
             };
             theme = "dark";
           };
+          skills = {
+          };
         };
 
         codex = {
