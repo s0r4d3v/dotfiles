@@ -2,7 +2,7 @@
 
 ## Installation
 
-- [Determinate Nix](https://docs.determinate.systems/)
+- Install [Determinate Nix](https://docs.determinate.systems/) to use `nix` command
 
 ```bash
 git clone https://github.com/s0r4d3v/dotfiles.git
