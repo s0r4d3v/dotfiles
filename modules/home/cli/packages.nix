@@ -91,6 +91,7 @@
                 "Bash(ls:*)"
                 "Bash(cat:*)"
                 "Bash(nix:*)"
+                "Edit"
               ];
               ask = [
                 "Bash(sudo:*)"
@@ -100,6 +101,12 @@
                 "Read(**/*key*)"
               ];
             };
+            statusLine = {
+              command = "input=$(cat); echo \"[$(echo \"$input\" | jq -r '.model.display_name')] 📁 $(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\")\"";
+              padding = 0;
+              type = "command";
+            };
+            theme = "dark";
           };
         };
 
