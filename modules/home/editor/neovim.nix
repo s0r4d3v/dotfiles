@@ -955,7 +955,10 @@
             orig_notify(msg, ...)
           end
 
-          -- SSH環境ではOSC 52、ローカルではデフォルトのpbcopy/pbpasteを使う
+          -- SSH環境ではOSC52を使う
+          -- ($TMUXはSSH越しに転送されるため判定に使わない。
+          --  allow-passthroughがローカル/リモート双方のtmuxで有効なら
+          --  tmuxのネスト構成でもOSC52がそのまま透過する)
           if os.getenv("SSH_TTY") ~= nil or os.getenv("SSH_CLIENT") ~= nil then
             vim.g.clipboard = {
               name = 'OSC 52',
