@@ -16,10 +16,10 @@ cd dotfiles
 nix build ".#homeConfigurations.$(whoami).activationPackage"
 export USER="$(whoami)"
 ./result/activate
-exec zsh
-ghq get s0r4d3v/dotfiles
 cd ..
 rm -rf dotfiles
+exec zsh
+ghq get s0r4d3v/dotfiles
 ```
 
 ## updating
