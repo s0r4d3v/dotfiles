@@ -955,20 +955,23 @@
             orig_notify(msg, ...)
           end
 
-          -- SSH環境ではOSC52を使う
-          -- ($TMUXはSSH越しに転送されるため判定に使わない。
-          --  allow-passthroughがローカル/リモート双方のtmuxで有効なら
-          --  tmuxのネスト構成でもOSC52がそのまま透過する)
+          -- ============================================================
+          -- SSH環境のクリップボード設定
+          -- $TMUXはSSH越しに転送されることがあり判定に使えないため、
+          -- SSH環境では常にOSC52を使う。
+          -- allow-passthroughがローカル・リモート双方のtmuxで有効なので
+          -- Local(tmux) → SSH → Remote(tmux) → Nvim のネスト構成でも透過する。
+          -- ============================================================
           if os.getenv("SSH_TTY") ~= nil or os.getenv("SSH_CLIENT") ~= nil then
             vim.g.clipboard = {
-              name = 'OSC 52',
-              copy = {
-                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+              name  = "OSC 52",
+              copy  = {
+                ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+                ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
               },
               paste = {
-                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+                ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+                ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
               },
             }
           end
