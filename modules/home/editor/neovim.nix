@@ -955,20 +955,20 @@
             orig_notify(msg, ...)
           end
 
-          -- vim.g.clipboard = {
-          --   name = 'OSC 52',
-          --   copy = {
-          --     ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-          --     ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-          --   },
-          --   paste = {
-          --     ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-          --     ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-          --   },
-          -- }
-
-          -- smart-splits を起動時にロードして tmux の @pane-is-vim をセット
-          require('smart-splits')
+          -- SSH環境ではOSC 52、ローカルではデフォルトのpbcopy/pbpasteを使う
+          if os.getenv("SSH_TTY") ~= nil or os.getenv("SSH_CLIENT") ~= nil then
+            vim.g.clipboard = {
+              name = 'OSC 52',
+              copy = {
+                ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+              },
+              paste = {
+                ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+                ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+              },
+            }
+          end
 
           -- Activate Quarto for markdown
           vim.api.nvim_create_autocmd('FileType', {

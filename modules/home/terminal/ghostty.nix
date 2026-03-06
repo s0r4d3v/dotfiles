@@ -38,7 +38,7 @@
           # ============================================================================
 
           # Terminal capability settings (improved tmux compatibility)
-          term = "xterm-256color";
+          # term = "xterm-256color";
 
           # Explicitly disable shell integration (avoid conflict with tmux)
           shell-integration = "none";
