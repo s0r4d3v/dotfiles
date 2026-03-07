@@ -139,20 +139,7 @@
             options.desc = "Quit all";
           }
 
-          # Window split (horizontal/vertical)
-          {
-            key = "<leader>\\";
-            action = ":vsplit<CR>";
-            mode = [ "n" ];
-            options.desc = "Split window right";
-          }
-          {
-            key = "<leader>-";
-            action = ":split<CR>";
-            mode = [ "n" ];
-            options.desc = "Split window down";
-          }
-
+          # Clear search highlight
           {
             key = "<leader>h";
             action = "<cmd>nohlsearch<CR>";
