@@ -59,9 +59,8 @@
             ]
           else
             [
-              # Linux: Zathura + xdotool
+              # Linux: Zathura
               zathura
-              # xdotool
             ]
         );
 

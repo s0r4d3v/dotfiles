@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.modules.homeManager.ssh =
-    { ... }:
+    { homeDir, ... }:
     {
       programs.ssh = {
         enable = true;
@@ -10,7 +10,7 @@
         enableDefaultConfig = false;
 
         # Include Colima SSH config
-        includes = [ "/Users/soranagano/.colima/ssh_config" ];
+        includes = [ "${homeDir}/.colima/ssh_config" ];
 
         # Host-specific configurations
         matchBlocks = {
