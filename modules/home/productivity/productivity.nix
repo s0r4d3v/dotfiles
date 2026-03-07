@@ -14,7 +14,7 @@
         ++ lib.optionals pkgs.stdenv.isDarwin [
           raycast
           brewCasks.notion
-        ]
+        ];
 
       # Notes and app-specific guidance left in original module
     };
