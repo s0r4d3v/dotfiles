@@ -240,57 +240,6 @@
             renamepane {
                 bind "esc" { UndoRenamePane; SwitchToMode "pane"; }
             }
-
-            shared_except "locked" {
-              bind "Ctrl h" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "move_focus";
-                      payload "left";
-                  };
-              }
-              bind "Ctrl j" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "move_focus";
-                      payload "down";
-                  };
-              }
-              bind "Ctrl k" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "move_focus";
-                      payload "up";
-                  };
-              }
-              bind "Ctrl l" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "move_focus";
-                      payload "right";
-                  };
-              }
-              bind "Alt h" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "resize";
-                      payload "left";
-                  };
-              }
-              bind "Alt j" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "resize";
-                      payload "down";
-                  };
-              }
-              bind "Alt k" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "resize";
-                      payload "up";
-                  };
-              }
-              bind "Alt l" {
-                  MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                      name "resize";
-                      payload "right";
-                  };
-              }
-            }
           }
           // Plugin aliases - can be used to change the implementation of Zellij
           // changing these requires a restart to take effect

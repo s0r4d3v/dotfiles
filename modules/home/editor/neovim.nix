@@ -153,56 +153,6 @@
             options.desc = "Split window down";
           }
 
-          # Ctrl - window navigation
-          {
-            key = "<C-h>";
-            action.__raw = "require('smart-splits').move_cursor_left";
-            mode = [ "n" ];
-            options.desc = "Move to left window";
-          }
-          {
-            key = "<C-j>";
-            action.__raw = "require('smart-splits').move_cursor_down";
-            mode = [ "n" ];
-            options.desc = "Move to bottom window";
-          }
-          {
-            key = "<C-k>";
-            action.__raw = "require('smart-splits').move_cursor_up";
-            mode = [ "n" ];
-            options.desc = "Move to top window";
-          }
-          {
-            key = "<C-l>";
-            action.__raw = "require('smart-splits').move_cursor_right";
-            mode = [ "n" ];
-            options.desc = "Move to right window";
-          }
-          {
-            key = "<M-h>";
-            action.__raw = "require('smart-splits').resize_left";
-            mode = [ "n" ];
-            options.desc = "Resize left";
-          }
-          {
-            key = "<M-j>";
-            action.__raw = "require('smart-splits').resize_down";
-            mode = [ "n" ];
-            options.desc = "Resize down";
-          }
-          {
-            key = "<M-k>";
-            action.__raw = "require('smart-splits').resize_up";
-            mode = [ "n" ];
-            options.desc = "Resize up";
-          }
-          {
-            key = "<M-l>";
-            action.__raw = "require('smart-splits').resize_right";
-            mode = [ "n" ];
-            options.desc = "Resize right";
-          }
-
           {
             key = "<leader>h";
             action = "<cmd>nohlsearch<CR>";
@@ -758,10 +708,6 @@
           };
 
           neotest = {
-            enable = true;
-          };
-
-          smart-splits = {
             enable = true;
           };
 
