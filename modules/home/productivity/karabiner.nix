@@ -1,6 +1,6 @@
 { ... }:
 {
-  flake.modules.homeManager.productivity =
+  flake.modules.homeManager.karabiner =
     { pkgs, ... }:
     {
       home.packages = with pkgs; [ karabiner-elements ];

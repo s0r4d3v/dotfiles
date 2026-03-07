@@ -47,3 +47,5 @@ updateenv
 Start: `tm`
 
 Keybindings: `Ctrl-a` prefix
+
+**Note**: For SSH remote work, don't start tmux locally. Start tmux only on the remote host to avoid nested tmux issues.
