@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.modules.homeManager.packages =
-    { pkgs, ... }:
+    { pkgs, lib, ... }:
     {
       home.packages =
         with pkgs;
@@ -50,19 +50,11 @@
 
           # Misc
           pokemon-colorscripts
+
+          # PDF viewer
+          zathura
         ]
-        ++ (
-          if pkgs.stdenv.isDarwin then
-            [
-              zathura
-              skimpdf
-            ]
-          else
-            [
-              # Linux: Zathura
-              zathura
-            ]
-        );
+        ++ lib.optionals pkgs.stdenv.isDarwin [ skimpdf ];
 
       programs = {
         fzf = {
@@ -110,11 +102,14 @@
             };
             theme = "dark";
           };
-          mcpServers = {
+          # MCP (Model Context Protocol) servers configuration
+          # Add MCP servers here when needed
+          # Example: myserver = { enable = true; };
+          mcpServers = { };
 
-          };
-          skills = {
-          };
+          # Custom skills configuration
+          # Add skills here when needed
+          skills = { };
         };
 
         codex = {

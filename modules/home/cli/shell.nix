@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.modules.homeManager.shell =
-    { ... }:
+    { lib, ... }:
     {
 
       # Zsh
@@ -82,30 +82,41 @@
           pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
           updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nix build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && source ~/.zshrc && cd -";
         };
-        initContent = ''
-          # Override TERM_PROGRAM when inside tmux to enable Ghostty detection
-          # tmux hardcodes TERM_PROGRAM=tmux in its source code (environ.c)
-          # This override is required for image.nvim to detect Ghostty's Kitty graphics protocol support
-          if [[ -n "$TMUX" ]] && [[ "$TERM_PROGRAM" == "tmux" ]]; then
-            export TERM_PROGRAM=ghostty
-          fi
 
-          # Dev function with optional session name
-          dev() {
-            local session_name
-            if [ $# -eq 0 ]; then
-              session_name="$(basename "$PWD")"
-            else
-              session_name="$1"
+        initContent = lib.mkMerge [
+          # Pre-compinit: Clean up fpath before completion initialization
+          # This removes non-existent paths from fpath using zsh glob qualifiers
+          # (N) = NULL_GLOB, returns empty if no match instead of error
+          (lib.mkOrder 550 ''
+            fpath=(''${^fpath}(N-/))
+          '')
+
+          # Post-compinit: General configuration
+          ''
+            # Override TERM_PROGRAM when inside tmux to enable Ghostty detection
+            # tmux hardcodes TERM_PROGRAM=tmux in its source code (environ.c)
+            # This override is required for image.nvim to detect Ghostty's Kitty graphics protocol support
+            if [[ -n "$TMUX" ]] && [[ "$TERM_PROGRAM" == "tmux" ]]; then
+              export TERM_PROGRAM=ghostty
             fi
 
-            if tmux has-session -t "$session_name" 2>/dev/null; then
-              tmux attach-session -t "$session_name"
-            else
-              tmux new-session -s "$session_name" nvim
-            fi
-          }
-        '';
+            # Dev function with optional session name
+            dev() {
+              local session_name
+              if [ $# -eq 0 ]; then
+                session_name="$(basename "$PWD")"
+              else
+                session_name="$1"
+              fi
+
+              if tmux has-session -t "$session_name" 2>/dev/null; then
+                tmux attach-session -t "$session_name"
+              else
+                tmux new-session -s "$session_name" nvim
+              fi
+            }
+          ''
+        ];
       };
 
       # Zoxide (smart cd)

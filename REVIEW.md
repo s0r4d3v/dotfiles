@@ -1,272 +1,422 @@
-# Dotfiles レビューと改善提案
+# Dotfiles Review - Home Manager Configuration
 
-このドキュメントは、Nix Home Managerで管理されているdotfilesの包括的なレビュー結果と改善提案をまとめたものです。
+このドキュメントは、NixのHome Managerで管理されているdotfilesの包括的なレビュー結果です。コミュニティのベストプラクティスと公式ドキュメントに基づいて分析し、改善点を特定しました。
 
-## 実施概要
+## 目次
 
-- **レビュー日**: 2026-03-07
-- **対象**: Nix Home Manager dotfiles (flake-parts構成)
-- **目的**: 冗長な設定の削減、ベストプラクティスの適用、simplification
+1. [全体構造の評価](#全体構造の評価)
+2. [確実に削除できる冗長・不要な設定](#確実に削除できる冗長不要な設定)
+3. [改善推奨事項](#改善推奨事項)
+4. [ベストプラクティスとの比較](#ベストプラクティスとの比較)
+5. [参考資料](#参考資料)
 
-## 参考リソース
+---
 
-以下のリソースを参考にベストプラクティスを調査しました：
+## 全体構造の評価
+
+### 優れている点
+
+✅ **flake-partsの活用**: `import-tree`と`flake-parts`を使ったモジュール構造は、保守性と拡張性が高い設計です。
+
+✅ **明確な分離**: `modules/core`（システム設定）と`modules/home`（ユーザー設定）の分離が適切です。
+
+✅ **nixpkgsのfollows**: Home ManagerとNixpkgsのバージョンを一致させる`follows`設定により、バージョン不整合を回避しています。
+
+✅ **Catppuccinテーマの統一**: 複数のツール間でCatppuccin Macchiatoテーマが統一されており、一貫性があります。
+
+### 構造図
+
+```
+dotfiles/
+├── flake.nix                 # エントリーポイント（最小限の記述）
+├── modules/
+│   ├── core/                 # Flake設定
+│   │   ├── home.nix         # Home Manager設定のコア
+│   │   ├── systems.nix      # サポート対象システム
+│   │   ├── templates.nix    # Flakeテンプレート
+│   │   └── flake-modules.nix
+│   └── home/                # ユーザー設定モジュール
+│       ├── base.nix         # 基本設定
+│       ├── cli/             # CLI関連
+│       ├── editor/          # エディタ設定
+│       ├── terminal/        # ターミナル設定
+│       ├── browser/         # ブラウザ設定
+│       └── productivity/    # 生産性ツール
+└── templates/               # プロジェクトテンプレート
+```
+
+---
+
+## 確実に削除できる冗長・不要な設定
+
+以下は、削除してもエラーが発生しない、確実に不要な設定です。
+
+### 1. Zellijモジュール全体（高優先度）
+
+**ファイル**: `modules/home/terminal/zellij.nix`
+
+**理由**:
+- `enable = false` に設定されているため、設定内容はすべて無効
+- 322行の設定コードが完全に未使用
+
+**推奨アクション**:
+```bash
+# ファイル全体を削除可能
+rm modules/home/terminal/zellij.nix
+```
+
+**影響**: なし（既に無効化されているため）
+
+---
+
+### 2. Karabinerの無効化されたルール（中優先度）
+
+**ファイル**: `modules/home/productivity/karabiner.nix`
+
+**理由**:
+- 10個のルール中9個が`"enabled": false`に設定されている
+- 有効なルールは以下の2つのみ：
+  - "Caps Lockを、英数・かなのトグルに変更する"（line 257-288）
+  - "escキーを押したときに、英数キーも送信する（vim用）"（line 316-327）
+
+**推奨アクション**:
+無効化されたルール（enabled: false）を削除し、有効なルールのみを残す。削除対象：
+- Line 14-51: コマンドキー単体押し
+- Line 52-89: CTRLキー単体押し
+- Line 90-127: オプションキー単体押し
+- Line 128-221: コマンドキートグル
+- Line 222-255: 右コマンドキートグル
+- Line 289-314: 英数・かなキー+Option
+- Line 328-373: Ctrl+[
+- Line 374-413: Ctrl+[ escape送信版
+- Line 414-441: 英数・かなtoggle
+- Line 442-479: 右コマンド+左Control
+- Line 480-517: シフトキー単体押し
+
+**影響**: なし（既に無効化されているため）
+
+---
+
+### 3. コメントアウトされたalias（低優先度）
+
+**ファイル**: `modules/home/cli/shell.nix`
+
+**該当箇所**:
+```nix
+# Line 75-76
+# Zellij
+# zj = "zellij";
+```
+
+**理由**: Zellijが無効化されており、コメントアウトされたaliasは不要
+
+**推奨アクション**: コメント行を削除
+
+**影響**: なし
+
+---
+
+### 4. packages.nixの冗長な記述（低優先度）
+
+**ファイル**: `modules/home/cli/packages.nix`
+
+**該当箇所**:
+```nix
+# Line 54-65
+++ (
+  if pkgs.stdenv.isDarwin then
+    [
+      zathura
+      skimpdf
+    ]
+  else
+    [
+      # Linux: Zathura
+      zathura
+    ]
+);
+```
+
+**理由**: `zathura`がDarwinとLinuxの両方に含まれており、条件分岐が不要
+
+**推奨アクション**:
+```nix
+# 以下に簡略化
+++ (
+  if pkgs.stdenv.isDarwin then
+    [ skimpdf ]
+  else
+    [ ]
+)
+++ [ zathura ]
+```
+
+または、より簡潔に：
+```nix
+++ [ zathura ]
+++ lib.optionals pkgs.stdenv.isDarwin [ skimpdf ]
+```
+
+**影響**: なし（機能的に同一）
+
+---
+
+### 5. 使用していないユーザー設定（要確認）
+
+**ファイル**: `modules/core/home.nix`
+
+**該当箇所**:
+```nix
+users = [
+  "soranagano"
+  "s0r4d3v"
+  "m"
+  "root"
+];
+```
+
+**理由**:
+- 実際に使用しているユーザーアカウントは限定的である可能性が高い
+- 不要なユーザー設定は、ビルド時間とストレージを消費
+
+**推奨アクション**:
+実際に使用するユーザーのみを残す（例：`soranagano`のみ、など）
+
+**注意**: ユーザーの実際の使用状況を確認してから削除すること
+
+---
+
+### 6. allowUnsupportedSystem設定（要調査）
+
+**ファイル**: `modules/home/base.nix`
+
+**該当箇所**:
+```nix
+nixpkgs.config = {
+  allowUnfree = true;
+  allowUnsupportedSystem = true;
+};
+```
+
+**理由**:
+- `allowUnsupportedSystem`は通常不要
+- サポート外のシステムでパッケージをビルドする必要がある場合のみ必要
+
+**推奨アクション**:
+使用しているシステム（macOS）が正式サポート対象であれば、`allowUnsupportedSystem = true;`を削除
+
+**影響**: システムがサポート対象の場合、影響なし
+
+---
+
+## 改善推奨事項
+
+以下は、削除すると潜在的にエラーが発生する可能性があるため、慎重に検討すべき改善項目です。
+
+### 1. Neovimの設定の簡素化（検討推奨）
+
+**ファイル**: `modules/home/editor/neovim.nix`
+
+**現状**: 1103行の大規模な設定ファイル
+
+**懸念点**:
+- Jupyter/Quarto関連の設定（Molten、Quarto、Jupytext、Otter）が多数含まれる
+- これらの機能を使用していない場合、冗長な設定となる
+
+**推奨アクション**:
+もしJupyter/Quartoを使用していない場合、以下のプラグインと設定を削除検討：
+- `molten`プラグイン（line 775-777）
+- `quarto`プラグイン（line 779-791）
+- `otter`プラグイン（line 793-795）
+- `jupytext`プラグイン（line 797-808）
+- `hydra`プラグイン（line 810-812）
+- Molten関連のキーマップ（line 347-408）
+- Quarto runner関連のキーマップ（line 410-446）
+- extraConfigLua内のnotebook関連設定（line 989-1099）
+
+**注意**: これらの機能を実際に使用している場合は削除しないこと
+
+---
+
+### 2. Git設定の最適化
+
+**ファイル**: `modules/home/cli/git.nix`
+
+**現状**: 問題なし（`settings`は正しいオプション名）
+
+**参考**: [Home-manager programs.git.settings](https://discourse.nixos.org/t/home-manager-option-programs-git-settings-does-not-exist-use-programs-git-extraconfig-instead/72586)
+
+---
+
+### 3. Home Manager npm global設定
+
+**ファイル**: `modules/home/editor/neovim.nix`
+
+**該当箇所**:
+```nix
+# Line 13-19
+home.activation.installSpyglassmc = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  if ! [ -f "$HOME/.npm-global/bin/spyglassmc-language-server" ]; then
+    echo "Installing @spyglassmc/language-server..."
+    export npm_config_prefix="$HOME/.npm-global"
+    $HOME/.nix-profile/bin/npm install -g @spyglassmc/language-server
+  fi
+'';
+```
+
+**懸念点**:
+- Home Managerのactivation scriptで外部パッケージをインストールするのは非推奨
+- Nixの宣言的アプローチに反する
+
+**推奨アクション**:
+- Spyglassmc language serverをNixパッケージとして定義するか、使用していない場合は削除
+
+---
+
+### 4. lemonade設定の冗長性チェック
+
+**ファイル**:
+- `modules/home/base.nix` (launchd agent設定)
+- `modules/home/editor/neovim.nix` (clipboard設定)
+- `modules/home/cli/packages.nix` (パッケージインストール)
+- `modules/home/cli/ssh.nix` (remoteForwards設定)
+
+**現状**: lemonadeに関する設定が複数ファイルに分散
+
+**推奨アクション**: 機能的には問題ないが、設定の集約を検討
+
+---
+
+## ベストプラクティスとの比較
+
+### ✅ 実装されているベストプラクティス
+
+1. **Flake lock fileの使用**: 再現性を保証（[Nix Flakes Best Practices](https://callistaenterprise.se/blogg/teknik/2025/04/10/nix-flakes/)）
+
+2. **nixpkgs.follows**: Home ManagerとNixpkgsのバージョン一致（[Home Manager Manual](https://nix-community.github.io/home-manager/)）
+
+3. **flake-partsでのモジュール化**: 再利用可能な設定構造（[flake-parts Best Practices](https://flake.parts/best-practices-for-module-writing.html)）
+
+4. **設定の分離**: システムとユーザー設定の明確な分離
+
+5. **Catppuccinテーマの統合**: 複数ツール間での一貫したテーマ管理
+
+### ⚠️ 改善余地のある項目
+
+1. **大規模なNeovim設定**: モジュール分割の検討（[Nixvim Best Practices](https://valentinpratz.de/posts/2024-02-12-nixvim-home-manager/)）
+
+2. **無効化された設定の削除**: 使用していない設定の削除
+
+3. **npm global installのactivation hook**: より宣言的なアプローチへの移行
+
+---
+
+## ベストプラクティスに関する追加推奨事項
+
+### 1. mkOutOfStoreSymlinkの活用（検討推奨）
+
+**参考**: [Nix Flakes Best Practices](https://callistaenterprise.se/blogg/teknik/2025/04/10/nix-flakes/)
+
+**内容**: 頻繁に更新される設定（nvimなど）には、`mkOutOfStoreSymlink`を使用してdotfilesディレクトリへの直接シンボリックリンクを作成することで、`home-manager switch`なしで即座に変更を反映できます。
+
+**現状**: 実装されていない
+
+**影響**: 現在の実装でも機能するが、開発体験の向上余地あり
+
+---
+
+### 2. 秘密情報の管理
+
+**参考**: [Nix Flakes Common Mistakes](https://nixos.wiki/wiki/Flakes)
+
+**現状チェック**:
+- ✅ SSH設定に秘密鍵のパスは含まれているが、鍵自体は含まれていない
+- ✅ Git設定に認証情報は含まれていない
+- ✅ 機密情報は適切に管理されている
+
+---
+
+### 3. home.stateVersionの管理
+
+**参考**: [Home Manager stateVersion](https://github.com/nix-community/home-manager/issues/2073)
+
+**現状**:
+```nix
+home.stateVersion = "25.11";
+```
+
+**推奨**:
+- stateVersionは初回インストール時のバージョンに固定すべき
+- nixpkgsのチャネルを更新しても、stateVersionは変更しない
+- 現在25.11が初回インストールバージョンであれば問題なし
+
+---
+
+## 実装優先順位
+
+### 🔴 高優先度（すぐに実行可能）
+
+1. **Zellijモジュールの削除** - 322行の不要なコード削除
+2. **Karabinerの無効ルール削除** - 約400行の冗長な設定削除
+
+### 🟡 中優先度（検証後に実行）
+
+3. **packages.nixのzathura冗長記述の修正**
+4. **コメントアウトされたaliasの削除**
+5. **allowUnsupportedSystem設定の削除**（確認後）
+
+### 🟢 低優先度（慎重に検討）
+
+6. **使用していないユーザー設定の削除**（使用状況確認後）
+7. **Jupyter/Quarto関連設定の削除**（使用状況確認後）
+8. **spyglassmc activation scriptの見直し**（使用状況確認後）
+
+---
+
+## まとめ
+
+### 削除推奨ファイル/設定
+
+確実に削除できるもの：
+
+1. `modules/home/terminal/zellij.nix` - ファイル全体
+2. `modules/home/productivity/karabiner.nix` - 無効化されたルール（9個）
+3. `modules/home/cli/shell.nix` - コメントアウトされたalias
+4. `modules/home/cli/packages.nix` - zathuraの冗長記述
+
+### 見積もり削減量
+
+- **行数**: 約750行以上の冗長コードを削除可能
+- **ファイル数**: 1ファイル完全削除可能
+- **ビルド時間**: わずかに短縮
+- **保守性**: 大幅に向上
+
+---
+
+## 参考資料
+
+### 公式ドキュメント
 
 - [Home Manager Manual](https://nix-community.github.io/home-manager/)
-- [home-manager - flake-parts](https://flake.parts/options/home-manager)
-- [NixOS Discourse - How to organize home-manager and NixOS settings](https://discourse.nixos.org/t/how-do-you-organize-home-manager-and-nixos-settings-which-are-related/28466)
-- [nixvim Documentation](https://nix-community.github.io/nixvim/)
+- [Nix Flakes Wiki](https://nixos.wiki/wiki/Flakes)
+- [flake-parts Documentation](https://flake.parts/)
+- [Nixvim GitHub](https://github.com/nix-community/nixvim)
 
-## 改善可能な項目
+### ベストプラクティスガイド
 
-### 1. ✅ flake.nix - コメントアウトされた設定の削除【完了】
+- [Next step in Nix: Embracing Flakes and Home Manager](https://callistaenterprise.se/blogg/teknik/2025/04/10/nix-flakes/)
+- [NixOS & Flakes Book](https://nixos-and-flakes.thiscute.world/)
+- [flake-parts Best Practices for Module Writing](https://flake.parts/best-practices-for-module-writing.html)
+- [Declarative Neovim Configuration with Nixvim](https://valentinpratz.de/posts/2024-02-12-nixvim-home-manager/)
 
-**現状**: コメントアウトされたunstableブランチの設定が残っている
+### コミュニティディスカッション
 
-**実施内容**: コメント行を削除しました
-
-**影響**: なし（コメントのみ）
-
----
-
-### 2. ✅ modules/core/home.nix - ユーザーリストの整理【現状維持】
-
-**現状**: 複数のユーザーが定義されている（マルチマシン・マルチユーザー対応）
-
-**判断**: 現状維持が最適
-- マシンやリモートサーバーによってユーザー名が異なる
-- マルチ環境対応として適切な実装
-
-**影響**: なし
+- [Home-manager programs.git.settings](https://discourse.nixos.org/t/home-manager-option-programs-git-settings-does-not-exist-use-programs-git-extraconfig-instead/72586)
+- [Allow unfree in flakes](https://discourse.nixos.org/t/allow-unfree-in-flakes/29904)
+- [Nix Flakes Common Mistakes](https://dev.to/beckmateo/5-very-common-mistakes-a-beginner-should-avoid-when-trying-nixos-for-the-first-time-to-truly-start-2j3n)
 
 ---
 
-### 3. ✅ modules/home/productivity - モジュール名の重複【完了】
-
-**現状**: `productivity.nix`と`karabiner.nix`が両方とも`flake.modules.homeManager.productivity`を定義していた
-
-**実施内容**: `karabiner.nix`のモジュール名を`flake.modules.homeManager.karabiner`に変更
-
-**影響**: 両モジュールが正しく機能し、productivity.nixで定義されたパッケージが正しくインストールされるようになった
-
----
-
-### 4. ⚠️ modules/home/productivity/karabiner.nix - 無効化されたルールの整理【スキップ】
-
-**現状**: 多数のKarabinerルールが`"enabled": false`で無効化されている
-
-**判断**: 現状維持
-- 削除可能だが、ユーザーの判断で保持
-
-**影響**: なし
-
----
-
-### 5. ✅ modules/home/cli/packages.nix - コメントアウトされたパッケージ【完了】
-
-**現状**: `xdotool`がコメントアウトされていた
-
-**実施内容**: コメント行を削除
-
-**影響**: なし（コメントのみ）
-
----
-
-### 6. ✅ modules/home/cli/ssh.nix - ハードコードされたパスの修正【完了】
-
-**現状**: ユーザー名がハードコードされていた
-
-**実施内容**: `homeDir`変数を使用するように修正
-
-```nix
-# 修正前
-includes = [ "/Users/soranagano/.colima/ssh_config" ];
-
-# 修正後
-includes = [ "${homeDir}/.colima/ssh_config" ];
-```
-
-**影響**: マルチユーザー環境での移植性向上
-
----
-
-### 7. ✅ modules/home/terminal - zellij無効化【完了】
-
-**現状**: tmuxとzellijの両方が有効化されていた
-
-**実施内容**:
-- zellijを無効化（`enable = false`）
-- zjエイリアスをコメントアウト
-- tmuxのみ使用
-
-**影響**: 使用していないツールの無効化による simplification
-
----
-
-### 8. ✅ modules/home/cli/starship.nix - カラーパレット定義【完了】
-
-**現状**: Catppuccinカラーパレットが全て手動定義されていた（42行）
-
-**実施内容**: [catppuccin/nix](https://nix.catppuccin.com/)モジュールを使用
-
-**変更内容**:
-
-1. `flake.nix`にinputを追加:
-```nix
-catppuccin.url = "github:catppuccin/nix/release-25.11";
-```
-
-2. `modules/core/home.nix`でモジュールをインポート:
-```nix
-modules = [
-  inputs.nixvim.homeModules.nixvim
-  inputs.catppuccin.homeModules.catppuccin
-] ++ hmModules;
-```
-
-3. `starship.nix`で簡潔に設定（42行のパレット定義を削除）:
-```nix
-catppuccin.starship.enable = true;
-catppuccin.flavor = "macchiato";
-```
-
-**効果**:
-- 42行のカラーパレット定義を削除
-- 公式メンテナンスのテーマで常に最新
-- 他のツール（neovim, tmux等）とテーマを統一可能
-
-**参考**:
-- [Catppuccin-nix Documentation](https://nix.catppuccin.com/)
-- [Catppuccin Starship Preset](https://starship.rs/presets/catppuccin-powerline)
-
----
-
-### 9. ✅ modules/core/flake-modules.nix - 最小限のファイル【現状維持】
-
-**現状**: 1つのインポートのみを含む
-
-**判断**: 現状維持が最適
-- 将来的な拡張性を考慮した分離
-- モジュール構成の明確性維持
-
-**影響**: なし
-
----
-
-### 10. ✅ 全体 - stateVersionの統一性【問題なし】
-
-**現状**: `home.stateVersion = "25.11"`が設定されている
-
-**判断**: 適切に設定されている
-- 変更不要（[Home Manager Manual](https://nix-community.github.io/home-manager/)参照）
-
-**影響**: なし
-
----
-
-## 実施状況サマリー
-
-### ✅ 完了した項目（全10項目）
-
-1. ✅ **flake.nix** - コメント行削除
-2. ✅ **modules/core/home.nix** - ユーザーリスト（現状維持が最適）
-3. ✅ **modules/home/productivity** - モジュール名の重複修正
-4. ✅ **packages.nix** - コメント行削除
-5. ✅ **ssh.nix** - ハードコードパス修正
-6. ✅ **zellij** - 無効化、zjエイリアスコメントアウト
-7. ✅ **starship.nix** - catppuccin/nixモジュール使用（42行削減）
-8. ✅ **flake-modules.nix** - 現状維持が最適
-9. ✅ **stateVersion** - 適切に設定済み
-
-### ⚠️ スキップした項目（1項目）
-
-10. ⚠️ **karabiner.nix** - 無効ルール削除（ユーザー判断で保持）
-
----
-
-## 実施した修正内容
-
-### ファイル変更一覧（7ファイル）
-
-1. **flake.nix** - コメント行削除（3箇所）+ catppuccin input追加
-2. **modules/core/home.nix** - catppuccinモジュールのインポート追加
-3. **modules/home/productivity/karabiner.nix** - モジュール名を`karabiner`に変更
-4. **modules/home/cli/ssh.nix** - パスを`homeDir`変数使用に修正
-5. **modules/home/terminal/zellij.nix** - `enable = false`に変更
-6. **modules/home/cli/shell.nix** - zjエイリアスをコメントアウト
-7. **modules/home/cli/packages.nix** - コメント行削除
-8. **modules/home/cli/starship.nix** - catppuccin設定追加、42行のパレット定義削除
-
-### 削減できた行数
-
-- コメント行: 約10行
-- カラーパレット定義: 42行
-- **合計: 約52行の削減**
-
----
-
-## ベストプラクティスとの照合
-
-### ✅ 実施できているベストプラクティス
-
-- ✅ flake-partsの使用
-- ✅ `follows`パターンでnixpkgsバージョンの統一
-- ✅ モジュール分割による構成の整理
-- ✅ `home.stateVersion`の適切な設定
-- ✅ 公式コミュニティモジュール（catppuccin/nix）の活用
-- ✅ ハードコードパスの排除（homeDir変数使用）
-- ✅ モジュール名の一意性確保
-- ✅ 使用していないツールの無効化
-
-### 🎉 全ての改善項目が完了
-
-このdotfilesは現在、Nix/Home Managerのベストプラクティスに準拠しています。
-
----
-
-## 次のステップ
-
-### ✅ 全改善項目完了
-
-レビューで提案された全ての改善項目が完了しました。
-
-### 必須: ビルドテスト
-
-修正を適用したので、ビルドテストを実施してください：
-
-```bash
-cd ~/ghq/github.com/s0r4d3v/dotfiles
-nix build ".#homeConfigurations.$(whoami).activationPackage"
-```
-
-エラーがなければ適用：
-
-```bash
-./result/activate
-```
-
-### 期待される効果
-
-- ✅ 約52行のコード削減
-- ✅ マルチユーザー環境での移植性向上
-- ✅ モジュール名の重複解消
-- ✅ 公式メンテナンスのCatppuccinテーマ使用
-- ✅ 使用していないツールの無効化
-
----
-
-## 参考情報
-
-### 一般
-- [Home Manager Manual](https://nix-community.github.io/home-manager/)
-- [flake-parts home-manager module](https://flake.parts/options/home-manager)
-- [nixvim Documentation](https://nix-community.github.io/nixvim/)
-- [NixOS Discourse](https://discourse.nixos.org/)
-
-### テーマ・スタイリング
-- [Catppuccin-nix Documentation](https://nix.catppuccin.com/)
-- [Catppuccin Starship Preset](https://starship.rs/presets/catppuccin-powerline)
-- [Catppuccin-nix Discourse Thread](https://discourse.nixos.org/t/catppuccin-nix-the-soothing-pastel-theme-but-for-nix/42915)
-
-### その他
-- [Karabiner-Elements Documentation](https://karabiner-elements.pqrs.org/docs/manual/configuration/configure-complex-modifications/)
+**レビュー日**: 2026-03-07
+**Nixバージョン**: nixos-25.11
+**Home Managerバージョン**: release-25.11
