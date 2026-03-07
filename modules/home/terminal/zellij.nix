@@ -4,7 +4,7 @@
     { pkgs, ... }:
     {
       programs.zellij = {
-        enable = false;
+        enable = true;
         extraConfig = ''
           theme "catppuccin-macchiato"
           mouse_mode false

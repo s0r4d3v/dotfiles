@@ -66,7 +66,7 @@
           tm = "tmux";
 
           # Zellij
-          # zj = "zellij";
+          zj = "zellij";
 
           # HTTP
           http = "xh";
