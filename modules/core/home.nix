@@ -33,7 +33,10 @@ in
                 else
                   "/home/${userName}";
             };
-            modules = [ inputs.nixvim.homeModules.nixvim ] ++ hmModules;
+            modules = [
+              inputs.nixvim.homeModules.nixvim
+              inputs.catppuccin.homeModules.catppuccin
+            ] ++ hmModules;
           };
         }) users
       );

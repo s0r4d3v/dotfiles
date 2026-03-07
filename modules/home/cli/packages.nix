@@ -110,6 +110,9 @@
             };
             theme = "dark";
           };
+          mcpServers = {
+
+          };
           skills = {
           };
         };
