@@ -7,7 +7,7 @@
         enable = true;
         extraConfig = ''
           theme "catppuccin-macchiato"
-          mouse_mode false
+          mouse_mode true
           copy_command "pbcopy"
           copy_on_select false
           pane_frames false
