@@ -15,9 +15,6 @@
           raycast
           brewCasks.notion
         ]
-        ++ lib.optionals pkgs.stdenv.isLinux [
-          notion-app
-        ];
 
       # Notes and app-specific guidance left in original module
     };
