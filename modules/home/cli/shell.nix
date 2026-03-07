@@ -83,6 +83,13 @@
           updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nix build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && source ~/.zshrc && cd -";
         };
         initContent = ''
+          # Override TERM_PROGRAM when inside tmux to enable Ghostty detection
+          # tmux hardcodes TERM_PROGRAM=tmux in its source code (environ.c)
+          # This override is required for image.nvim to detect Ghostty's Kitty graphics protocol support
+          if [[ -n "$TMUX" ]] && [[ "$TERM_PROGRAM" == "tmux" ]]; then
+            export TERM_PROGRAM=ghostty
+          fi
+
           # Dev function with optional session name
           dev() {
             local session_name

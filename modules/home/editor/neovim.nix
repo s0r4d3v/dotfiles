@@ -37,7 +37,7 @@
           maplocalleader = " ";
 
           molten_auto_open_output = false;
-          molten_image_provider = "image.nvim";
+          molten_image_provider = "none";
           molten_wrap_output = true;
           molten_virt_text_output = true;
           molten_virt_lines_off_by_1 = true;
@@ -452,6 +452,10 @@
           };
         };
 
+        extraPlugins = with pkgs.vimPlugins; [
+          # Removed image.nvim - using molten_image_provider = "none" instead
+        ];
+
         plugins = {
           treesitter = {
             enable = true;
@@ -770,15 +774,6 @@
 
           molten = {
             enable = true;
-          };
-
-          image = {
-            enable = true;
-            settings = {
-              backend = "kitty";
-              processor = "magick_cli";
-              kitty_method = "normal";
-            };
           };
 
           quarto = {

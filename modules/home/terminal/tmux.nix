@@ -103,8 +103,16 @@
 
           set -g mode-style 'bg=colour141,fg=colour235'
 
-          set -gq allow-passthrough on
+          # Allow passthrough for Kitty graphics protocol (required for image.nvim)
+          set -g allow-passthrough on
           set -g visual-activity off
+
+          # Preserve terminal emulator environment variables for image support
+          # Note: TERM_PROGRAM is overridden in shell.nix since tmux hardcodes it to "tmux"
+          set -ga update-environment TERM
+          set -ga update-environment TERM_PROGRAM
+          set -ga update-environment GHOSTTY_BIN_DIR
+          set -ga update-environment GHOSTTY_RESOURCES_DIR
 
           # ============================================================================
           # smart-splits.nvim（vim-tmux-navigatorの設定と置き換え）
