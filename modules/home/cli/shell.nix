@@ -85,10 +85,15 @@
 
         initContent = lib.mkMerge [
           # Pre-compinit: Clean up fpath before completion initialization
-          # This removes non-existent paths from fpath using zsh glob qualifiers
-          # (N) = NULL_GLOB, returns empty if no match instead of error
           (lib.mkOrder 550 ''
+            # Remove non-existent directories from fpath
+            # (N) = NULL_GLOB, (-/) = follow symlinks and check if directory exists
             fpath=(''${^fpath}(N-/))
+
+            # Exclude /usr/local/share/zsh/site-functions to avoid errors from
+            # broken symlinks (_brew, _ghostty) left over from Homebrew installations
+            # Nix-managed completions are in ~/.nix-profile/share/zsh/site-functions
+            fpath=(''${fpath:#/usr/local/share/zsh/site-functions})
           '')
 
           # Post-compinit: General configuration
