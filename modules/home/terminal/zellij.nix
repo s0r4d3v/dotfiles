@@ -10,7 +10,7 @@
           mouse_mode true
           copy_command "pbcopy"
           copy_on_select false
-          pane_frames false
+          pane_frames true
           show_startup_tips false
           show_release_notes false
           default_mode "locked"
