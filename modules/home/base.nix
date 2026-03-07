@@ -37,10 +37,6 @@
               "--allow"
               "127.0.0.1/32"
             ];
-            EnvironmentVariables = {
-              LANG = "en_US.UTF-8";
-              LC_ALL = "en_US.UTF-8";
-            };
             KeepAlive = true;
             RunAtLoad = true;
             StandardOutPath = "/tmp/lemonade.log";

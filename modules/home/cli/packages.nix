@@ -59,13 +59,13 @@
       programs = {
         fzf = {
           enable = true;
-          enableZshIntegration = true;
+          enableFishIntegration = true;
         };
 
         # nix-index: provides nix-locate command
         nix-index = {
           enable = true;
-          enableZshIntegration = true;
+          enableFishIntegration = true;
         };
 
         opencode = {

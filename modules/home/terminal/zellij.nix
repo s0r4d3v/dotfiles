@@ -7,6 +7,7 @@
         enable = true;
         extraConfig = ''
           theme "catppuccin-macchiato"
+          default_shell "${pkgs.fish}/bin/fish"
           mouse_mode false
           copy_command "pbcopy"
           copy_on_select false
@@ -263,9 +264,6 @@
           // eg. "file:/path/to/my-plugin.wasm"
           // eg. "https://example.com/my-plugin.wasm"
           load_plugins {
-          }
-          web_client {
-              font "monospace"
           }
         '';
       };

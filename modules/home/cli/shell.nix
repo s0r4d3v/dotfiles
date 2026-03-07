@@ -4,19 +4,16 @@
     { lib, ... }:
     {
 
-      # Zsh
-      programs.zsh = {
+      # Fish
+      programs.fish = {
         enable = true;
-        autosuggestion.enable = true;
-        syntaxHighlighting.enable = true;
 
-        history = {
-          size = 10000;
-          save = 10000;
-          ignoreDups = true;
-          ignoreSpace = true;
-          share = true;
-        };
+        loginShellInit = ''
+          # Source Nix environment for login shells
+          if test -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+            source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+          end
+        '';
 
         shellAliases = {
           # File listing (eza)
@@ -34,10 +31,10 @@
           lg = "lazygit";
 
           # Ghq
-          repo = "cd $(ghq list --full-path | fzf)";
+          repo = "cd (ghq list --full-path | fzf)";
 
           # Mount
-          mnt = "cd ~/mnt/$(ls ~/mnt | fzf)";
+          mnt = "cd ~/mnt/(ls ~/mnt | fzf)";
 
           # Editor
           v = "nvim";
@@ -79,55 +76,44 @@
           initdirenv = "nix flake init -t $DOTFILES_PATH#direnv && echo \"use flake\" > .envrc && git add flake.nix .envrc && direnv allow";
 
           # Nix update
-          pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
-          updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nix build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && source ~/.zshrc && cd -";
+          pullenv = "cd (ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
+          updateenv = "cd (ghq root)/github.com/s0r4d3v/dotfiles && nix build \".#homeConfigurations.\"(whoami)\".activationPackage\" && ./result/activate && cd -";
         };
 
-        initContent = lib.mkMerge [
-          # Pre-compinit: Clean up fpath before completion initialization
-          (lib.mkOrder 550 ''
-            # Remove non-existent directories from fpath
-            # (N) = NULL_GLOB, (-/) = follow symlinks and check if directory exists
-            fpath=(''${^fpath}(N-/))
+        interactiveShellInit = ''
+          # Override TERM_PROGRAM when inside tmux to enable Ghostty detection
+          # tmux hardcodes TERM_PROGRAM=tmux in its source code (environ.c)
+          # This override is required for image.nvim to detect Ghostty's Kitty graphics protocol support
+          if set -q TMUX; and test "$TERM_PROGRAM" = "tmux"
+            set -gx TERM_PROGRAM ghostty
+          end
 
-            # Exclude /usr/local/share/zsh/site-functions to avoid errors from
-            # broken symlinks (_brew, _ghostty) left over from Homebrew installations
-            # Nix-managed completions are in ~/.nix-profile/share/zsh/site-functions
-            fpath=(''${fpath:#/usr/local/share/zsh/site-functions})
-          '')
+          # Disable fish greeting
+          set -g fish_greeting
+        '';
 
-          # Post-compinit: General configuration
-          ''
-            # Override TERM_PROGRAM when inside tmux to enable Ghostty detection
-            # tmux hardcodes TERM_PROGRAM=tmux in its source code (environ.c)
-            # This override is required for image.nvim to detect Ghostty's Kitty graphics protocol support
-            if [[ -n "$TMUX" ]] && [[ "$TERM_PROGRAM" == "tmux" ]]; then
-              export TERM_PROGRAM=ghostty
-            fi
+        functions = {
+          dev = ''
+            set -l session_name
+            if test (count $argv) -eq 0
+              set session_name (basename $PWD)
+            else
+              set session_name $argv[1]
+            end
 
-            # Dev function with optional session name
-            dev() {
-              local session_name
-              if [ $# -eq 0 ]; then
-                session_name="$(basename "$PWD")"
-              else
-                session_name="$1"
-              fi
-
-              if tmux has-session -t "$session_name" 2>/dev/null; then
-                tmux attach-session -t "$session_name"
-              else
-                tmux new-session -s "$session_name" nvim
-              fi
-            }
-          ''
-        ];
+            if tmux has-session -t "$session_name" 2>/dev/null
+              tmux attach-session -t "$session_name"
+            else
+              tmux new-session -s "$session_name" nvim
+            end
+          '';
+        };
       };
 
       # Zoxide (smart cd)
       programs.zoxide = {
         enable = true;
-        enableZshIntegration = true;
+        enableFishIntegration = true;
       };
     };
 }

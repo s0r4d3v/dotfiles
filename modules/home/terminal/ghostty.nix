@@ -6,13 +6,13 @@
       fonts.fontconfig.enable = true;
       home.packages = with pkgs; [
         maple-mono.NF-CN
-        nerd-fonts.fira-code
       ];
 
       programs.ghostty = {
         enable = true;
         package = if pkgs.stdenv.isDarwin then pkgs.brewCasks.ghostty else pkgs.ghostty;
         settings = {
+          command = "${pkgs.fish}/bin/fish --login";
           font-family = [
             "Maple Mono NF CN"
             "Apple Color Emoji"
@@ -63,7 +63,7 @@
             "global:ctrl+shift+i=toggle_quick_terminal"
           ];
         };
-        enableZshIntegration = true;
+        enableFishIntegration = true;
       };
     };
 }

@@ -10,7 +10,7 @@
       # Starship prompt
       programs.starship = {
         enable = true;
-        enableZshIntegration = true;
+        enableFishIntegration = true;
          settings = {
           format = ''
             $os$username$hostname$shlvl$directory$git_branch$git_commit$git_state$git_status$git_metrics$nix_shell$python$nodejs$rust$golang$java$ruby$php$docker_context$kubernetes$cmd_duration$jobs$status$line_break$character
@@ -18,14 +18,14 @@
            os = {
              disabled = false;
              symbols = {
-               Macos = "🍎";
-               Linux = "🐧";
-               Ubuntu = "🟠";
-               Debian = "🌀";
-               Fedora = "🎩";
-               Alpine = "🏔️";
-               Arch = "🔷";
-               NixOS = "❄️";
+               Macos = "🍎 ";
+               Linux = "🐧 ";
+               Ubuntu = "🟠 ";
+               Debian = "🌀 ";
+               Fedora = "🎩 ";
+               Alpine = "🏔️ ";
+               Arch = "🔷 ";
+               NixOS = "❄️ ";
              };
            };
            username = {
@@ -33,7 +33,6 @@
              show_always = false;
              format = "[$user](bold yellow)@";
              style_user = "bold yellow";
-             ssh_only = true;
            };
            hostname = {
              disabled = false;
@@ -197,19 +196,6 @@
              format = "⏱️[$duration](yellow) ";
              style = "yellow";
              show_milliseconds = false;
-           };
-           time = {
-             disabled = true;
-             format = "🕙[$time](sky) ";
-             style = "sky";
-             time_format = "%T";
-           };
-           memory_usage = {
-             disabled = true;
-             threshold = 75;
-             format = "[$symbol$ram( | $swap)](sapphire) ";
-             style = "sapphire";
-             symbol = "🧠";
            };
             battery = {
               disabled = false;
