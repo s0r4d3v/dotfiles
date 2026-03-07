@@ -11,6 +11,7 @@
     {
       nixpkgs.config = {
         allowUnfree = true;
+        allowUnsupportedSystem = true;
       };
       home.username = user;
       home.homeDirectory = homeDir;
