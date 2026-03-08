@@ -7,6 +7,8 @@
       sops = {
         # シークレットファイルのパス（flakeソースツリー内）
         defaultSopsFile = ../../../secrets/secrets.yaml;
+        # シークレットファイルが存在しない場合もビルドを通す（初回セットアップ用）
+        validateSopsFiles = false;
 
         # age 秘密鍵の設定
         age = {
