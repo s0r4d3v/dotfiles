@@ -48,6 +48,9 @@
 
           # Default settings for all hosts
           "*" = {
+            # デフォルトの SSH 秘密鍵（sops で配置される）
+            identityFile = [ "~/.ssh/id_ed25519" ];
+
             # lemonade remote clipboard
             remoteForwards = [
               {

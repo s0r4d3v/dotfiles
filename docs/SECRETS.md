@@ -4,25 +4,44 @@
 
 ### sops-nix の現在の状態
 
-**現在、sops-nix は一時的にコメントアウトされています。**
+**sops-nix は有効化されています。**
 
-理由：GitHubへの接続時にHTTP 502エラーが発生するため、flake.lockへの追加が失敗しています。
+`flake.nix` と `modules/core/home.nix` で sops-nix が有効になっており、`modules/home/cli/sops.nix` に設定が定義されています。
 
-```nix
-# flake.nix (現在の状態)
-# sops-nix = {
-#   url = "github:Mic92/sops-nix";
-#   inputs.nixpkgs.follows = "nixpkgs";
-# };
-```
+### 初回セットアップ手順
 
-### 有効化する方法
+初めてこのdotfilesを使用する場合：
 
-GitHubが正常にアクセス可能になったら：
+1. **Age鍵の生成**
+   ```bash
+   mkdir -p ~/.config/sops/age
+   age-keygen -o ~/.config/sops/age/keys.txt
+   ```
 
-1. `flake.nix` と `modules/core/home.nix` のコメントを解除
-2. `nix flake lock --update-input sops-nix` を実行
-3. `updateenv` で再ビルド
+2. **公開鍵の取得と `.sops.yaml` の更新**
+   ```bash
+   age-keygen -y ~/.config/sops/age/keys.txt
+   # 出力された公開鍵で .sops.yaml の age1xxx... を置き換える
+   ```
+
+3. **シークレットファイルの作成**
+   ```bash
+   sops secrets/secrets.yaml
+   # secrets/secrets.yaml.example を参考に実際の値を入力
+   ```
+
+4. **dotfilesの再ビルド**
+   ```bash
+   updateenv
+   ```
+
+### SSH鍵の管理
+
+sops-nix により、以下のSSH鍵が自動的に配置されます：
+
+- `~/.ssh/id_ed25519` — メインのSSH秘密鍵（mode: 0600）
+- `~/.ssh/id_ed25519.pub` — SSH公開鍵（mode: 0644）
+- `~/.ssh/tanaka-site` — tanaka-site用SSH秘密鍵（mode: 0600）
 
 ---
 
