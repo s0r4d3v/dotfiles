@@ -206,45 +206,60 @@
               # Block dangerous rm commands, suggest trash-cli instead
               PreToolUse = [
                 {
-                  name = "block-dangerous-rm";
-                  command = toString (
-                    pkgs.writeShellScript "block-rm" ''
-                      if echo "$TOOL_USE" | grep -q '"name":"Bash"' && \
-                         echo "$TOOL_USE" | grep -qE '"command":"rm -rf|rm -r"'; then
-                        echo "❌ Blocked: Use 'trash' instead of 'rm -rf' for safety"
-                        echo "💡 Install trash-cli: already in your packages.nix"
-                        exit 2  # Exit code 2 blocks the tool use
-                      fi
-                    ''
-                  );
+                  matcher = "Bash";
+                  hooks = [
+                    {
+                      type = "command";
+                      command = toString (
+                        pkgs.writeShellScript "block-rm" ''
+                          input=$(cat)
+                          cmd=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.tool_input.command // ""')
+                          if echo "$cmd" | grep -qE '^rm\s+-(rf?|r?f)\b'; then
+                            echo "❌ Blocked: Use 'trash' instead of 'rm -rf' for safety" >&2
+                            echo "💡 Install trash-cli: already in your packages.nix" >&2
+                            exit 2  # Exit code 2 blocks the tool use
+                          fi
+                        ''
+                      );
+                    }
+                  ];
                 }
                 {
-                  name = "block-force-push-main";
-                  command = toString (
-                    pkgs.writeShellScript "block-force-push" ''
-                      if echo "$TOOL_USE" | grep -q '"name":"Bash"' && \
-                         echo "$TOOL_USE" | grep -qE 'git push.*(--force|-f).*main|git push.*(--force|-f).*master'; then
-                        echo "❌ Blocked: Force push to main/master is prohibited"
-                        echo "💡 Create a feature branch instead"
-                        exit 2
-                      fi
-                    ''
-                  );
+                  matcher = "Bash";
+                  hooks = [
+                    {
+                      type = "command";
+                      command = toString (
+                        pkgs.writeShellScript "block-force-push" ''
+                          input=$(cat)
+                          cmd=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.tool_input.command // ""')
+                          if echo "$cmd" | grep -qE 'git\s+push\s+.*(-f|--force).*(main|master)'; then
+                            echo "❌ Blocked: Force push to main/master is prohibited" >&2
+                            echo "💡 Create a feature branch instead" >&2
+                            exit 2
+                          fi
+                        ''
+                      );
+                    }
+                  ];
                 }
               ];
 
               # Run code quality checks after edits (optional)
-              # postToolUse = [
+              # PostToolUse = [
               #   {
-              #     name = "format-on-edit";
-              #     command = toString (
-              #       pkgs.writeShellScript "format-check" ''
-              #         if echo "$TOOL_USE" | grep -q '"name":"Edit"'; then
-              #           echo "🔍 Running formatter..."
-              #           treefmt || echo "⚠️  Formatting issues detected"
-              #         fi
-              #       ''
-              #     );
+              #     matcher = "Edit|MultiEdit|Write";
+              #     hooks = [
+              #       {
+              #         type = "command";
+              #         command = toString (
+              #           pkgs.writeShellScript "format-check" ''
+              #             echo "🔍 Running formatter..."
+              #             treefmt || echo "⚠️  Formatting issues detected"
+              #           ''
+              #         );
+              #       }
+              #     ];
               #   }
               # ];
             };
