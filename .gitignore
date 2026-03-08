@@ -18,9 +18,11 @@ venv/
 .vscode/
 .idea/
 
-# Secrets (only allow encrypted files and examples)
-secrets/*.yaml
-!secrets/*.example
+# Secrets
+# secrets/*.yaml は sops で暗号化済みのためコミット可能
+# 平文のシークレットファイルを絶対にコミットしないこと
+secrets/*.plain
+secrets/*.decrypted
 
 # Nix
 *.drv
