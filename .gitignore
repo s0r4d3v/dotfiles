@@ -18,8 +18,9 @@ venv/
 .vscode/
 .idea/
 
-# Secrets
-secrets/
+# Secrets (only allow encrypted files and examples)
+secrets/*.yaml
+!secrets/*.example
 
 # Nix
 *.drv
