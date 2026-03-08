@@ -204,7 +204,7 @@
             #
             hooks = {
               # Block dangerous rm commands, suggest trash-cli instead
-              preToolUse = [
+              PreToolUse = [
                 {
                   name = "block-dangerous-rm";
                   command = toString (
