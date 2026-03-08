@@ -271,11 +271,21 @@
                   # Read the JSON session data from stdin
                   input=$(cat)
 
+                  # Validate input - exit gracefully if empty or invalid JSON
+                  if [ -z "$input" ] || ! echo "$input" | ${lib.getExe pkgs.jq} -e . >/dev/null 2>&1; then
+                      echo "[No session data]"
+                      exit 0
+                  fi
+
                   # Extract relevant fields with fallbacks
                   MODEL=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.model.display_name // "Unknown"')
+                  MODEL=''${MODEL:-Unknown}
                   USED_PCT=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.context_window.used_percentage // 0' | ${lib.getExe pkgs.gawk} '{printf "%.0f", $1}')
+                  USED_PCT=''${USED_PCT:-0}
                   COST=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.cost.total_cost_usd // 0')
+                  COST=''${COST:-0}
                   DIR=$(basename "$(echo "$input" | ${lib.getExe pkgs.jq} -r '.workspace.current_dir // "."')")
+                  DIR=''${DIR:-.}
 
                   # Create progress bar (10 characters)
                   if [ "$USED_PCT" -eq 0 ]; then
