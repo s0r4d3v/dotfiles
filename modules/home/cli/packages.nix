@@ -81,6 +81,7 @@
           # Development tools
           just # Modern task runner (make alternative)
           tokei # Code statistics
+          uv # Fast Python package installer (required for MCP servers)
 
           # Container/Cloud tools
           lazydocker # Docker TUI
@@ -263,8 +264,50 @@
             };
 
             # Status line configuration
+            # Displays: [Progress Bar] Used% | $Cost | Model | 📁 Directory
             statusLine = {
-              command = "input=$(cat); echo \"[$(echo \"$input\" | jq -r '.model.display_name')] 📁 $(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\")\"";
+              command = lib.getExe (
+                pkgs.writeShellScriptBin "claude-statusline" ''
+                  # Read the JSON session data from stdin
+                  input=$(cat)
+
+                  # Extract relevant fields with fallbacks
+                  MODEL=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.model.display_name // "Unknown"')
+                  USED_PCT=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.context_window.used_percentage // 0' | ${lib.getExe pkgs.gawk} '{printf "%.0f", $1}')
+                  COST=$(echo "$input" | ${lib.getExe pkgs.jq} -r '.cost.total_cost_usd // 0')
+                  DIR=$(basename "$(echo "$input" | ${lib.getExe pkgs.jq} -r '.workspace.current_dir // "."')")
+
+                  # Create progress bar (10 characters)
+                  if [ "$USED_PCT" -eq 0 ]; then
+                      FILLED=0
+                  else
+                      FILLED=$((USED_PCT / 10))
+                      if [ "$FILLED" -gt 10 ]; then
+                          FILLED=10
+                      fi
+                  fi
+                  EMPTY=$((10 - FILLED))
+
+                  BAR=$(printf "%''${FILLED}s" | tr ' ' '▓')$(printf "%''${EMPTY}s" | tr ' ' '░')
+
+                  # Color codes based on context usage
+                  if [ "$USED_PCT" -lt 50 ]; then
+                      COLOR="\033[32m"  # Green
+                  elif [ "$USED_PCT" -lt 80 ]; then
+                      COLOR="\033[33m"  # Yellow
+                  else
+                      COLOR="\033[31m"  # Red
+                  fi
+
+                  RESET="\033[0m"
+
+                  # Format cost with 4 decimal places
+                  COST_FORMATTED=$(printf '%.4f' "$COST")
+
+                  # Output: [Progress Bar] Used% | $Cost | Model | 📁 Directory
+                  echo -e "''${COLOR}[''${BAR}]''${RESET} ''${USED_PCT}% | \$''${COST_FORMATTED} | ''${MODEL} | 📁 ''${DIR}"
+                ''
+              );
               padding = 0;
               type = "command";
             };
@@ -333,11 +376,11 @@
 
             # Filesystem access with restricted paths (security-hardened)
             # Only allows access to safe development directories
+            # Uses npx for Node.js-based MCP server
             filesystem = {
-              command = lib.getExe pkgs.uv;
+              command = "npx";
               args = [
-                "tool"
-                "run"
+                "-y"
                 "@modelcontextprotocol/server-filesystem"
               ];
               env = {
@@ -352,24 +395,21 @@
 
             # Memory server - persistent context across sessions
             # Stores conversation context, learned preferences, and project knowledge
+            # Uses npx for Node.js-based MCP server
             memory = {
-              command = lib.getExe pkgs.uv;
+              command = "npx";
               args = [
-                "tool"
-                "run"
+                "-y"
                 "@modelcontextprotocol/server-memory"
               ];
             };
 
             # Git integration (advanced version control)
             # Provides semantic git operations beyond basic commands
+            # Uses uvx for Python-based MCP server
             git = {
-              command = lib.getExe pkgs.uv;
-              args = [
-                "tool"
-                "run"
-                "@modelcontextprotocol/server-git"
-              ];
+              command = "uvx";
+              args = [ "mcp-server-git" ];
             };
 
             # ─────────────────────────────────────────────────────────────────────────
@@ -377,45 +417,44 @@
             # ─────────────────────────────────────────────────────────────────────────
 
             # GitHub integration (requires personal access token)
+            # Disabled: Use gh CLI instead for GitHub operations
             # Enables PR creation, issue management, code review
             # Token should be set via environment variable GITHUB_PERSONAL_ACCESS_TOKEN
             # or will attempt to use gh CLI configuration if available
-            github = {
-              command = lib.getExe pkgs.uv;
-              args = [
-                "tool"
-                "run"
-                "@modelcontextprotocol/server-github"
-              ];
-              # env.GITHUB_PERSONAL_ACCESS_TOKEN can be set in shell or via sops-nix
-            };
+            # github = {
+            #   command = lib.getExe pkgs.uv;
+            #   args = [
+            #     "tool"
+            #     "run"
+            #     "@modelcontextprotocol/server-github"
+            #   ];
+            #   # env.GITHUB_PERSONAL_ACCESS_TOKEN can be set in shell or via sops-nix
+            # };
 
             # ─────────────────────────────────────────────────────────────────────────
             # Knowledge & Search Servers
             # ─────────────────────────────────────────────────────────────────────────
 
             # Brave Search - web and code search
+            # Disabled: Requires BRAVE_API_KEY environment variable
             # Note: Requires BRAVE_API_KEY environment variable
             # Get API key from: https://brave.com/search/api/
-            brave-search = {
-              command = lib.getExe pkgs.uv;
-              args = [
-                "tool"
-                "run"
-                "@modelcontextprotocol/server-brave-search"
-              ];
-              # env.BRAVE_API_KEY will be read from environment if set
-            };
+            # brave-search = {
+            #   command = lib.getExe pkgs.uv;
+            #   args = [
+            #     "tool"
+            #     "run"
+            #     "@modelcontextprotocol/server-brave-search"
+            #   ];
+            #   # env.BRAVE_API_KEY will be read from environment if set
+            # };
 
             # Fetch - web content retrieval
             # Safely fetches and processes web pages
+            # Uses uvx for Python-based MCP server
             fetch = {
-              command = lib.getExe pkgs.uv;
-              args = [
-                "tool"
-                "run"
-                "@modelcontextprotocol/server-fetch"
-              ];
+              command = "uvx";
+              args = [ "mcp-server-fetch" ];
             };
 
             # ─────────────────────────────────────────────────────────────────────────
@@ -424,11 +463,11 @@
 
             # Sequential Thinking - enhanced reasoning for complex problems
             # Enables step-by-step problem decomposition
+            # Uses npx for Node.js-based MCP server
             sequential-thinking = {
-              command = lib.getExe pkgs.uv;
+              command = "npx";
               args = [
-                "tool"
-                "run"
+                "-y"
                 "@modelcontextprotocol/server-sequential-thinking"
               ];
             };
