@@ -9,8 +9,6 @@
         settings = {
           # Sync settings (optional - requires account at atuin.sh or self-hosted)
           auto_sync = false; # Set to true if you want to sync across machines
-          sync_frequency = "5m";
-          sync_address = "https://api.atuin.sh";
 
           # Search settings
           search_mode = "fuzzy"; # fuzzy, exact, prefix, fulltext, skim

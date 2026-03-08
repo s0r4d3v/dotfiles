@@ -44,11 +44,6 @@
           # statix.enable = true; # Nix linter
         };
 
-        settings = {
-          formatter = {
-            # Additional custom formatters can be added here
-          };
-        };
       };
 
       # Make treefmt available as formatter for `nix fmt`
