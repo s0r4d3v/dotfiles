@@ -47,16 +47,6 @@
           quick-terminal-screen = "main";
           macos-option-as-alt = "left";
 
-          # ============================================================================
-          # OSC 52 clipboard integration (nested tmux support)
-          # ============================================================================
-
-          # Terminal capability settings (improved tmux compatibility)
-          # term = "xterm-256color";
-
-          # Explicitly disable shell integration (avoid conflict with tmux)
-          shell-integration = "none";
-
           keybind = [
             "ctrl+shift+f=toggle_maximize"
             "global:ctrl+shift+h=toggle_visibility"

@@ -61,9 +61,6 @@
           cdi = "zi";
           ps = "procs";
 
-          # Tmux (disabled but aliased for reference)
-          # tm = "tmux";
-
           # Zellij
           zj = "zellij";
 
@@ -97,13 +94,6 @@
         };
 
         interactiveShellInit = ''
-          # Override TERM_PROGRAM when inside tmux to enable Ghostty detection
-          # tmux hardcodes TERM_PROGRAM=tmux in its source code (environ.c)
-          # This override is required for image.nvim to detect Ghostty's Kitty graphics protocol support
-          if set -q TMUX; and test "$TERM_PROGRAM" = "tmux"
-            set -gx TERM_PROGRAM ghostty
-          end
-
           # Disable fish greeting
           set -g fish_greeting
         '';
