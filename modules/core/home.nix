@@ -12,6 +12,10 @@ in
   perSystem =
     { system, ... }:
     let
+      pkgsUnstable = import inputs.nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
       homeConfigurations = builtins.listToAttrs (
         map (userName: {
           name = userName;
@@ -21,6 +25,10 @@ in
               overlays = [
                 inputs.nur.overlays.default
                 inputs.brew-nix.overlays.default
+                # claude-code from nixpkgs-unstable only (statusLine bug fix)
+                (_final: _prev: {
+                  claude-code = pkgsUnstable.claude-code;
+                })
               ];
             };
             extraSpecialArgs = {

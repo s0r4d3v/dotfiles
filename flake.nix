@@ -5,6 +5,10 @@
   inputs = {
     # Core Nix ecosystem
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+
+    # nixpkgs-unstable for claude-code only (statusLine bug fix)
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
     # Home-manager ecosystem
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
