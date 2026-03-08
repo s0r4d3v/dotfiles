@@ -49,13 +49,17 @@ exec fish  # または exec zsh（使用しているシェル）
 ghq get s0r4d3v/dotfiles
 ```
 
-### 3. シェルの切り替え（オプション）
-
-このdotfilesはFishシェルを使用します。初回起動時に自動的に設定されますが、デフォルトシェルを変更する場合：
+### 3. Fish をデフォルトシェルに設定
 
 ```bash
-# Fishシェルをデフォルトに設定
+# Fish を /etc/shells に追加（要 sudo）
+echo $(which fish) | sudo tee -a /etc/shells
+
+# デフォルトシェルを Fish に変更
 chsh -s $(which fish)
+
+# シェルを再起動して反映
+exec fish
 ```
 
 ## 🔄 アップデート方法

@@ -4,27 +4,6 @@
     { lib, ... }:
     {
 
-      # SSH ログイン時に fish を起動する（bash がデフォルトシェルの場合）
-      programs.bash = {
-        enable = true;
-        profileExtra = ''
-          # SSH などのログインシェルで fish を起動する
-          if [[ $- == *i* ]] && [[ -z "$FISH_VERSION" ]] && command -v fish &>/dev/null; then
-            exec fish --login
-          fi
-        '';
-      };
-
-      # SSH ログイン時に fish を起動する（zsh がデフォルトシェルの場合、macOS デフォルト含む）
-      home.file.".zprofile" = {
-        text = ''
-          # SSH などのログインシェルで fish を起動する
-          if [ -z "$FISH_VERSION" ] && command -v fish >/dev/null 2>&1; then
-            exec fish --login
-          fi
-        '';
-      };
-
       # Fish
       programs.fish = {
         enable = true;
