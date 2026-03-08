@@ -1,8 +1,17 @@
 { ... }:
 {
   flake.modules.homeManager.sops =
-    { homeDir, pkgs, ... }:
+    { homeDir, pkgs, lib, ... }:
     {
+      # sops-nix.service が前回の失敗状態のまま残っている場合にリセットする
+      # これにより「The user systemd session is degraded」エラーを防ぐ
+      home.activation.resetFailedSopsNix = lib.mkIf (!pkgs.stdenv.isDarwin) (
+        lib.hm.dag.entryBefore [ "reloadSystemd" ] ''
+          if ${pkgs.systemd}/bin/systemctl --user is-failed sops-nix.service &>/dev/null; then
+            $DRY_RUN_CMD ${pkgs.systemd}/bin/systemctl --user reset-failed sops-nix.service
+          fi
+        ''
+      );
       sops = {
         defaultSopsFile = ../../../secrets/secrets.yaml;
         validateSopsFiles = false;
