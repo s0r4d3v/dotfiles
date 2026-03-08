@@ -1,241 +1,206 @@
 # シークレット管理ガイド
 
-## ⚠️ 重要な注意事項
+sops-nix + age を使ってSSH鍵などのシークレットを暗号化・Git管理しています。
 
-### sops-nix の現在の状態
+## 仕組み
 
-**sops-nix は有効化されています。**
+- `secrets/secrets.yaml` — age で暗号化されたシークレットファイル（Git管理）
+- `~/.config/sops/age/keys.txt` — age 秘密鍵（**Git管理しない**）
+- `.sops.yaml` — 復号に使う公開鍵の設定（Git管理）
+- `SOPS_AGE_KEY_FILE` — 秘密鍵の場所を指す環境変数（シェル起動時に自動設定）
 
-`flake.nix` と `modules/core/home.nix` で sops-nix が有効になっており、`modules/home/cli/sops.nix` に設定が定義されています。
+Home Manager のビルド時に secrets.yaml が復号され、SSH鍵などが正しいパーミッションで配置されます。
 
-### 初回セットアップ手順
+## 管理しているシークレット
 
-初めてこのdotfilesを使用する場合：
-
-1. **Age鍵の生成**
-   ```bash
-   mkdir -p ~/.config/sops/age
-   age-keygen -o ~/.config/sops/age/keys.txt
-   ```
-
-2. **公開鍵の取得と `.sops.yaml` の更新**
-   ```bash
-   age-keygen -y ~/.config/sops/age/keys.txt
-   # 出力された公開鍵で .sops.yaml の age1xxx... を置き換える
-   ```
-
-3. **シークレットファイルの作成**
-   ```bash
-   sops secrets/secrets.yaml
-   # secrets/secrets.yaml.example を参考に実際の値を入力
-   ```
-
-4. **dotfilesの再ビルド**
-   ```bash
-   updateenv
-   ```
-
-### SSH鍵の管理
-
-sops-nix により、以下のSSH鍵が自動的に配置されます：
-
-- `~/.ssh/id_ed25519` — メインのSSH秘密鍵（mode: 0600）
-- `~/.ssh/id_ed25519.pub` — SSH公開鍵（mode: 0644）
-- `~/.ssh/tanaka-site` — tanaka-site用SSH秘密鍵（mode: 0600）
+| キー | 配置先 | 用途 |
+|------|--------|------|
+| `ssh-private-key-ed25519` | `~/.ssh/id_ed25519` | メインSSH秘密鍵 |
+| `ssh-public-key-ed25519` | `~/.ssh/id_ed25519.pub` | メインSSH公開鍵 |
+| `ssh-private-key-rsa` | `~/.ssh/id_rsa` | RSA SSH秘密鍵 |
+| `ssh-public-key-rsa` | `~/.ssh/id_rsa.pub` | RSA SSH公開鍵 |
+| `ssh-private-key-tanaka-site` | `~/.ssh/tanaka-site` | tanaka-site用SSH秘密鍵 |
+| `ssh-config-hosts` | `~/.ssh/config.d/hosts` | SSHホスト設定（IP等） |
 
 ---
 
-## 🔐 シークレット管理の概要
+## age 秘密鍵のバックアップ
 
-このdotfilesは [sops-nix](https://github.com/Mic92/sops-nix) を使用してシークレット（パスワード、APIキー、SSH鍵など）を安全に管理します。
+**age秘密鍵を紛失すると secrets.yaml を復号できなくなります。** 必ず安全な場所にバックアップしてください。
 
-### sops-nix とは？
+### バックアップ方法（優先順）
 
-- **暗号化**: age または GPG を使用してシークレットを暗号化
-- **Git管理**: 暗号化されたシークレットを安全にGitリポジトリにコミット可能
-- **自動復号化**: Home Manager によるビルド時に自動的に復号化
-- **マルチフォーマット**: YAML, JSON, dotenv, binary をサポート
-
-### 代替手段（sops-nix が利用できない場合）
-
-sops-nix が利用できない間は、以下の方法でシークレットを管理できます：
-
-1. **環境変数** - `~/.config/fish/conf.d/secrets.fish` に記述（Gitには含めない）
-2. **手動管理** - `~/.ssh/`, `~/.config/gh/` などに直接配置
-3. **1Password CLI** - `op` コマンドでシークレットを取得
-
----
-
-## 📖 sops-nix の使用方法（利用可能になったら）
-
-### 1. Age鍵の生成
+**1. 1Password（推奨）**
 
 ```bash
-# Age鍵を生成
+# 秘密鍵の内容を確認
+cat ~/.config/sops/age/keys.txt
+
+# 1Password に "age secret key (dotfiles)" などの名前でセキュアノートとして保存
+# → 1Password アプリ > 新規アイテム > セキュアノート
+```
+
+**2. 暗号化したファイルを別ドライブに保存**
+
+```bash
+# USB等に暗号化して保存（復号パスワードは別途記憶）
+age -p ~/.config/sops/age/keys.txt > /Volumes/USB/age-keys-backup.age
+```
+
+**3. 紙に印刷して保管**
+
+```bash
+# keys.txt の内容を印刷し、鍵と一緒に保管
+cat ~/.config/sops/age/keys.txt
+```
+
+---
+
+## 新しいマシンへの引き継ぎ
+
+### パターンA: 同じ age 鍵を使い回す（推奨・簡単）
+
+既存の秘密鍵をそのままコピーするので、`.sops.yaml` の変更不要です。
+
+```bash
+# 1. 新マシンで鍵ディレクトリを作成
+mkdir -p ~/.config/sops/age
+
+# 2. バックアップから秘密鍵を復元
+#    - 1Password からコピペ、または
+#    - 旧マシンから scp でコピー:
+scp old-machine:~/.config/sops/age/keys.txt ~/.config/sops/age/keys.txt
+chmod 600 ~/.config/sops/age/keys.txt
+
+# 3. dotfiles をクローン
+nix run nixpkgs#git -- clone https://github.com/s0r4d3v/dotfiles ~/ghq/github.com/s0r4d3v/dotfiles
+
+# 4. ビルド・適用（sops が復号して SSH 鍵等を配置）
+updateenv
+```
+
+### パターンB: 新しいマシン専用の age 鍵を使う
+
+セキュリティを高めたい場合。`.sops.yaml` に新しい公開鍵を追加して再暗号化します。
+
+```bash
+# === 新マシンで作業 ===
+
+# 1. 新しい age 鍵を生成
 mkdir -p ~/.config/sops/age
 age-keygen -o ~/.config/sops/age/keys.txt
+# → 公開鍵が表示される: age1xxxxxxxxxx...
 
-# 公開鍵を表示（次のステップで使用）
+# 公開鍵を確認（後で使う）
 age-keygen -y ~/.config/sops/age/keys.txt
-```
 
-出力例：
-```
-age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
-```
 
-### 2. .sops.yaml の作成
+# === 旧マシン（または既存マシン）で作業 ===
 
-dotfiles ルートディレクトリに `.sops.yaml` を作成：
+# 2. .sops.yaml に新マシンの公開鍵を追加
+#    例: new-machine のエントリを追加
+#
+# keys:
+#   - &primary  age1gxcqm7f4m226vmakn3r6evxs8wc85ck2h0lkss9tfskxszg50uesn35x8q
+#   - &new-machine age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#
+# creation_rules:
+#   - path_regex: secrets/[^/]+\.yaml$
+#     key_groups:
+#       - age:
+#           - *primary
+#           - *new-machine
 
-```yaml
-# .sops.yaml
-keys:
-  - &admin age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+# 3. secrets.yaml を新しい鍵で再暗号化
+sops updatekeys secrets/secrets.yaml
 
-creation_rules:
-  - path_regex: secrets/[^/]+\.yaml$
-    key_groups:
-      - age:
-          - *admin
-```
+# 4. コミット・プッシュ
+git add .sops.yaml secrets/secrets.yaml
+git commit -m "feat: add age key for new-machine"
+git push
 
-### 3. シークレットファイルの作成と暗号化
 
-```bash
-# secretsディレクトリを作成
-mkdir -p secrets
+# === 新マシンで作業に戻る ===
 
-# シークレットファイルを作成・編集
-sops secrets/secrets.yaml
-```
-
-エディタが開くので、YAMLフォーマットでシークレットを記述：
-
-```yaml
-# secrets/secrets.yaml (暗号化前)
-github-token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-ssh-private-key: |
-  -----BEGIN OPENSSH PRIVATE KEY-----
-  b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-  ...
-  -----END OPENSSH PRIVATE KEY-----
-aws-access-key: AKIAIOSFODNN7EXAMPLE
-aws-secret-key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-```
-
-保存すると自動的に暗号化されます。
-
-### 4. sops.nix の設定を有効化
-
-`modules/home/cli/sops.nix` のコメントを解除：
-
-```nix
-sops = {
-  defaultSopsFile = ./secrets/secrets.yaml;
-  validateSopsFiles = false;
-
-  age = {
-    keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    generateKey = true;
-  };
-
-  secrets = {
-    # GitHub Personal Access Token
-    "github-token" = {
-      path = "${config.home.homeDirectory}/.config/gh/token";
-    };
-
-    # SSH Private Key
-    "ssh-private-key" = {
-      path = "${config.home.homeDirectory}/.ssh/id_ed25519";
-      mode = "0600";
-    };
-
-    # AWS Credentials
-    "aws-access-key" = {};
-    "aws-secret-key" = {};
-  };
-};
-```
-
-### 5. シークレットの利用
-
-```bash
-# 再ビルド
+# 5. dotfiles をクローン・ビルド
+nix run nixpkgs#git -- clone https://github.com/s0r4d3v/dotfiles ~/ghq/github.com/s0r4d3v/dotfiles
 updateenv
-
-# シークレットが配置される
-ls -la ~/.config/gh/token
-ls -la ~/.ssh/id_ed25519
-
-# 環境変数として使用する場合
-cat ~/.run/secrets/aws-access-key
 ```
 
-## 🔧 高度な使用方法
+---
 
-### 複数マシンでの使用
+## 日常的な操作
 
-各マシンで異なるage鍵を使用する場合：
-
-```yaml
-# .sops.yaml
-keys:
-  - &laptop age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
-  - &desktop age1yqz8h7zxqn8q7yy2x2j2j2j2j2j2j2j2j2j2j2j2j2j2j2j2j2j2j2
-
-creation_rules:
-  - path_regex: secrets/[^/]+\.yaml$
-    key_groups:
-      - age:
-          - *laptop
-          - *desktop
-```
-
-### シークレットの再暗号化
-
-age鍵を変更した場合：
+### シークレットを編集する
 
 ```bash
-# すべてのシークレットを再暗号化
+sops secrets/secrets.yaml
+# エディタが開く → 編集して保存すると自動で再暗号化される
+```
+
+### 特定のキーを確認する
+
+```bash
+# 全体を復号して確認
+sops -d secrets/secrets.yaml
+
+# 特定のキーだけ
+sops -d secrets/secrets.yaml | yq '.ssh-config-hosts'
+```
+
+### 新しいシークレットを追加する
+
+1. `sops secrets/secrets.yaml` で編集・追加
+2. `modules/home/cli/sops.nix` に `secrets."new-key"` のエントリを追加
+3. `updateenv` で再ビルド
+
+---
+
+## トラブルシューティング
+
+### `no identity matched any of the recipients` エラー
+
+```bash
+# 秘密鍵の場所を確認
+ls -la ~/.config/sops/age/keys.txt
+
+# 環境変数が設定されているか確認
+echo $SOPS_AGE_KEY_FILE
+
+# シェルを再起動して環境変数を読み込ませる
+exec fish
+```
+
+### 現在の公開鍵と .sops.yaml が一致しているか確認
+
+```bash
+# 手元の秘密鍵から公開鍵を表示
+age-keygen -y ~/.config/sops/age/keys.txt
+
+# .sops.yaml の公開鍵と比較
+cat .sops.yaml
+```
+
+### secrets.yaml の再暗号化
+
+```bash
+# 鍵の更新・追加後に再暗号化
 sops updatekeys secrets/secrets.yaml
 ```
 
-### シークレットの編集
+---
 
-```bash
-# 既存のシークレットを編集
-sops secrets/secrets.yaml
+## セキュリティ上のルール
 
-# 特定のキーを表示
-sops -d secrets/secrets.yaml | yq '.github-token'
-```
+- ✅ `.sops.yaml` はコミットする（公開鍵のみ含む）
+- ✅ `secrets/secrets.yaml` はコミットする（暗号化済み）
+- ✅ age 秘密鍵は必ず複数箇所にバックアップ
+- ❌ `~/.config/sops/age/keys.txt` はコミットしない（`.gitignore` で除外済み）
+- ❌ 復号した平文をファイルに書き出してコミットしない
 
-## 🛡️ セキュリティのベストプラクティス
-
-### やるべきこと
-
-- ✅ `.sops.yaml` をGitにコミット（公開鍵のみ）
-- ✅ 暗号化された `secrets/*.yaml` をGitにコミット
-- ✅ age秘密鍵を安全に保管（バックアップ推奨）
-- ✅ `.gitignore` で平文のシークレットを除外
-
-### やってはいけないこと
-
-- ❌ age秘密鍵（`~/.config/sops/age/keys.txt`）をGitにコミット
-- ❌ 平文のシークレットをGitにコミット
-- ❌ 暗号化していないシークレットファイルを作成
-
-## 📚 参考資料
-
-- [sops-nix 公式ドキュメント](https://github.com/Mic92/sops-nix)
-- [sops 公式ドキュメント](https://github.com/mozilla/sops)
-- [age 公式サイト](https://age-encryption.org/)
-
-## 🔗 関連ドキュメント
+## 関連ドキュメント
 
 - [セットアップガイド](SETUP.md)
-- [モダンツールの使い方](TOOLS.md)
 - [開発環境のセットアップ](DEVENV.md)
-- [README](../README.md)
+- [sops-nix 公式ドキュメント](https://github.com/Mic92/sops-nix)
+- [age 公式サイト](https://age-encryption.org/)
