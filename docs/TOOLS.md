@@ -32,7 +32,7 @@
 
 ### 基本的な使い方
 
-```fish
+```zsh
 # 履歴を検索（Ctrl+Rで起動）
 # または
 atuin search <query>
@@ -77,7 +77,7 @@ style = "compact";          # compact, full
 
 ### 使い方
 
-```fish
+```zsh
 # エイリアスを使用（推奨）
 nb     # = nom build
 ns     # = nom shell
@@ -107,7 +107,7 @@ nom develop
 
 **従来のツール**: `jq`（JSON専用）
 
-```fish
+```zsh
 # YAML を JSON に変換
 yq -o=json file.yaml
 
@@ -125,7 +125,7 @@ yq -p=xml -o=json file.xml > file.json
 
 **従来のツール**: `jq . | less`
 
-```fish
+```zsh
 # JSONファイルを閲覧
 jless data.json
 
@@ -146,7 +146,7 @@ jless config.yaml
 
 **従来のツール**: `jq` + 複雑なフィルタ
 
-```fish
+```zsh
 # JSON をパス形式に展開
 gron data.json
 
@@ -179,7 +179,7 @@ json.age = 30;
 
 ### 使い方
 
-```fish
+```zsh
 # PDF内を検索
 rga "研究" papers/
 
@@ -210,7 +210,7 @@ rga --type-add 'docs:*.{pdf,docx}' --type docs "keyword" .
 
 ### 使い方
 
-```fish
+```zsh
 # すべてのプロセスを表示
 procs
 
@@ -242,7 +242,7 @@ procs --sortd cpu
 
 ### 使い方
 
-```fish
+```zsh
 # 単一コマンドの測定
 hyperfine 'fd -e rs'
 
@@ -278,7 +278,7 @@ Summary
 
 **従来のツール**: `dig`
 
-```fish
+```zsh
 # シンプルなクエリ
 dog example.com
 
@@ -297,7 +297,7 @@ dog example.com --json
 
 **従来のツール**: `ping`
 
-```fish
+```zsh
 # ホストにping
 gping google.com
 
@@ -312,7 +312,7 @@ gping --color green example.com
 
 **従来のツール**: `iftop`, `nethogs`（要root）
 
-```fish
+```zsh
 # 帯域幅を監視（要sudo）
 sudo bandwhich
 
@@ -337,7 +337,7 @@ sudo bandwhich -i en0
 
 ### 使い方
 
-```fish
+```zsh
 # lazydocker を起動
 lzd  # または lazydocker
 
@@ -361,7 +361,7 @@ lzd  # または lazydocker
 
 **エイリアス**: `k`
 
-```fish
+```zsh
 # 基本的な使い方
 k get pods
 k get svc
@@ -378,7 +378,7 @@ kubens <namespace>         # 切り替え
 
 ### k9s - Kubernetes TUI
 
-```fish
+```zsh
 # k9s を起動
 k9s
 
@@ -405,7 +405,7 @@ k9s --context my-cluster
 
 ### git-cliff - CHANGELOG 生成
 
-```fish
+```zsh
 # CHANGELOG を生成
 git-cliff > CHANGELOG.md
 
@@ -421,7 +421,7 @@ git-cliff --config cliff.toml
 
 ### onefetch - リポジトリ情報表示
 
-```fish
+```zsh
 # 現在のリポジトリ情報を表示
 onefetch
 
@@ -442,7 +442,7 @@ onefetch --no-art
 
 **従来のツール**: `make`
 
-```fish
+```zsh
 # Justfile を作成
 cat > justfile <<'EOF'
 # Build the project
@@ -471,7 +471,7 @@ just --list
 
 **従来のツール**: `cloc`, `sloccount`
 
-```fish
+```zsh
 # 現在のディレクトリの統計
 tokei
 

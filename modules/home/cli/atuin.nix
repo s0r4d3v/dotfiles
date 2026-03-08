@@ -5,7 +5,7 @@
     {
       programs.atuin = {
         enable = true;
-        enableFishIntegration = true;
+        enableZshIntegration = true;
         settings = {
           # Sync settings (optional - requires account at atuin.sh or self-hosted)
           auto_sync = false; # Set to true if you want to sync across machines

@@ -7,7 +7,7 @@
         enable = true;
         extraConfig = ''
           theme "catppuccin-macchiato"
-          default_shell "${pkgs.fish}/bin/fish"
+          default_shell "${pkgs.zsh}/bin/zsh"
           mouse_mode false
           copy_command "pbcopy"
           copy_on_select false

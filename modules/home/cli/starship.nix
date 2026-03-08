@@ -10,7 +10,7 @@
       # Starship prompt
       programs.starship = {
         enable = true;
-        enableFishIntegration = true;
+        enableZshIntegration = true;
          settings = {
           format = ''
             $os$username$hostname$shlvl$directory$git_branch$git_commit$git_state$git_status$git_metrics$nix_shell$python$nodejs$rust$golang$java$ruby$php$docker_context$kubernetes$cmd_duration$jobs$status$line_break$character

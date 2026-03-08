@@ -4,15 +4,18 @@
     { lib, ... }:
     {
 
-      # Fish
-      programs.fish = {
+      # Zsh
+      programs.zsh = {
         enable = true;
+        enableCompletion = true;
+        autosuggestion.enable = true;
+        syntaxHighlighting.enable = true;
 
-        loginShellInit = ''
-          # Source Nix environment for login shells
-          if test -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
-            source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
-          end
+        loginExtra = ''
+          # Source Nix environment for login shells (mainly for Linux)
+          if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+            source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          fi
         '';
 
         shellAliases = {
@@ -31,10 +34,10 @@
           lg = "lazygit";
 
           # Ghq
-          repo = "cd (ghq list --full-path | fzf)";
+          repo = "cd $(ghq list --full-path | fzf)";
 
           # Mount
-          mnt = "cd ~/mnt/(ls ~/mnt | fzf)";
+          mnt = "cd ~/mnt/$(ls ~/mnt | fzf)";
 
           # Editor
           v = "nvim";
@@ -89,106 +92,82 @@
           initdevenv = "devenv init && git add devenv.nix devenv.lock .envrc && direnv allow";
 
           # Nix update
-          pullenv = "cd (ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
-          updateenv = "cd (ghq root)/github.com/s0r4d3v/dotfiles && nom build \".#homeConfigurations.\"(whoami)\".activationPackage\" && ./result/activate && cd -";
+          pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
+          updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nom build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && cd -";
         };
 
-        interactiveShellInit = ''
-          # Disable fish greeting
-          set -g fish_greeting
-        '';
-
-        functions = {
-          # Zellij development session (replacing tmux)
-          dev = ''
-            set -l session_name
-            if test (count $argv) -eq 0
-              set session_name (basename $PWD)
+        initContent = ''
+          # Zellij development session
+          function dev() {
+            local session_name
+            if [[ $# -eq 0 ]]; then
+              session_name=$(basename $PWD)
             else
-              set session_name $argv[1]
-            end
-
-            # Use zellij instead of tmux
-            if zellij list-sessions 2>/dev/null | grep -q "^$session_name"
+              session_name=$1
+            fi
+            if zellij list-sessions 2>/dev/null | grep -q "^$session_name"; then
               zellij attach "$session_name"
             else
               zellij --session "$session_name" -- nvim
-            end
-          '';
+            fi
+          }
 
           # Make directory and cd into it
-          mkcd = ''
-            mkdir -p $argv[1]
-            and cd $argv[1]
-          '';
+          function mkcd() {
+            mkdir -p "$1" && cd "$1"
+          }
 
           # Extract various archive formats
-          extract = ''
-            if test (count $argv) -ne 1
+          function extract() {
+            if [[ $# -ne 1 ]]; then
               echo "Usage: extract <archive>"
               return 1
-            end
-
-            if not test -f $argv[1]
-              echo "Error: '$argv[1]' is not a valid file"
+            fi
+            if [[ ! -f "$1" ]]; then
+              echo "Error: '$1' is not a valid file"
               return 1
-            end
-
-            switch $argv[1]
-              case '*.tar.bz2'
-                tar xjf $argv[1]
-              case '*.tar.gz'
-                tar xzf $argv[1]
-              case '*.tar.xz'
-                tar xJf $argv[1]
-              case '*.bz2'
-                bunzip2 $argv[1]
-              case '*.rar'
-                unrar x $argv[1]
-              case '*.gz'
-                gunzip $argv[1]
-              case '*.tar'
-                tar xf $argv[1]
-              case '*.tbz2'
-                tar xjf $argv[1]
-              case '*.tgz'
-                tar xzf $argv[1]
-              case '*.zip'
-                unzip $argv[1]
-              case '*.Z'
-                uncompress $argv[1]
-              case '*.7z'
-                7z x $argv[1]
-              case '*'
-                echo "Error: '$argv[1]' cannot be extracted via extract()"
-                return 1
-            end
-          '';
+            fi
+            case "$1" in
+              *.tar.bz2) tar xjf "$1" ;;
+              *.tar.gz)  tar xzf "$1" ;;
+              *.tar.xz)  tar xJf "$1" ;;
+              *.bz2)     bunzip2 "$1" ;;
+              *.rar)     unrar x "$1" ;;
+              *.gz)      gunzip "$1" ;;
+              *.tar)     tar xf "$1" ;;
+              *.tbz2)    tar xjf "$1" ;;
+              *.tgz)     tar xzf "$1" ;;
+              *.zip)     unzip "$1" ;;
+              *.Z)       uncompress "$1" ;;
+              *.7z)      7z x "$1" ;;
+              *) echo "Error: '$1' cannot be extracted via extract()" ; return 1 ;;
+            esac
+          }
 
           # Quick backup of a file
-          backup = ''
-            if test (count $argv) -ne 1
+          function backup() {
+            if [[ $# -ne 1 ]]; then
               echo "Usage: backup <file>"
               return 1
-            end
-            cp $argv[1] $argv[1].bak.(date +%Y%m%d_%H%M%S)
-          '';
+            fi
+            cp "$1" "$1.bak.$(date +%Y%m%d_%H%M%S)"
+          }
 
           # Find processes using a port
-          port = ''
-            if test (count $argv) -ne 1
+          function port() {
+            if [[ $# -ne 1 ]]; then
               echo "Usage: port <port_number>"
               return 1
-            end
-            lsof -i :$argv[1]
-          '';
-        };
+            fi
+            lsof -i :"$1"
+          }
+        '';
       };
 
       # Zoxide (smart cd)
       programs.zoxide = {
         enable = true;
-        enableFishIntegration = true;
+        enableZshIntegration = true;
       };
     };
 }

@@ -45,21 +45,21 @@ export USER="$(whoami)"
 # ghq でdotfilesを再配置
 cd ..
 rm -rf dotfiles
-exec fish  # または exec zsh（使用しているシェル）
+exec zsh
 ghq get s0r4d3v/dotfiles
 ```
 
-### 3. Fish をデフォルトシェルに設定
+### 3. Zsh をデフォルトシェルに設定
 
 ```bash
-# Fish を /etc/shells に追加（要 sudo）
-echo $(which fish) | sudo tee -a /etc/shells
+# Zsh を /etc/shells に追加（要 sudo、未登録の場合のみ）
+echo $(which zsh) | sudo tee -a /etc/shells
 
-# デフォルトシェルを Fish に変更
-chsh -s $(which fish)
+# デフォルトシェルを Zsh に変更
+chsh -s $(which zsh)
 
 # シェルを再起動して反映
-exec fish
+exec zsh
 ```
 
 ## 🔄 アップデート方法
@@ -172,7 +172,7 @@ comma <package-name>
 
 ```bash
 # シェルを再起動
-exec fish  # または exec zsh
+exec zsh
 ```
 
 ### Homebrewとの競合（macOS）

@@ -89,7 +89,7 @@ nix flake check --no-build
 
 ### Shell & Terminal
 
-- **Fish**: Modern shell with excellent defaults
+- **Zsh**: Shell with autosuggestions, syntax highlighting, and completion
 - **Starship**: Fast, customizable prompt
 - **Ghostty**: GPU-accelerated terminal emulator
 - **Zellij**: Terminal multiplexer (tmux alternative)
