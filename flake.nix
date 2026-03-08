@@ -39,6 +39,19 @@
 
     catppuccin.url = "github:catppuccin/nix/release-25.11";
 
+    # Secrets management (temporarily disabled due to network issues)
+    # Uncomment when GitHub is available
+    # sops-nix = {
+    #   url = "github:Mic92/sops-nix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
+    # Formatting tools
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
 }

@@ -3,8 +3,10 @@
   flake.modules.homeManager.tmux =
     { pkgs, ... }:
     {
+      # tmux is disabled in favor of zellij
+      # To re-enable, set enable = true and uncomment the tm alias in shell.nix
       programs.tmux = {
-        enable = true;
+        enable = false;
         shell = "${pkgs.fish}/bin/fish";
         shortcut = "a";
         mouse = false;

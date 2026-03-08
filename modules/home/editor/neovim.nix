@@ -507,6 +507,13 @@
               jsonls.enable = true;
               # Shell (Bash/Zsh)
               bashls.enable = true;
+              # Docker
+              dockerls.enable = true;
+              docker_compose_language_service.enable = true;
+              # Terraform
+              terraformls.enable = true;
+              # Helm (Kubernetes)
+              helm_ls.enable = true;
               # mcfunction (Minecraft datapack)
               spyglassmc_language_server = {
                 enable = true;

@@ -20,9 +20,11 @@
           btop # Modern htop
           dust # Modern du
           duf # Modern df
+          procs # Modern ps with tree view and colors
+          bottom # Alternative to btop (Rust-based)
 
           # Productivity
-          tldr # Simplified man pages
+          tealdeer # Faster tldr implementation (Rust)
           trash-cli # Safe rm
           entr # Run command on file change
           sshfs # Mount remote directories over SSH
@@ -31,6 +33,7 @@
 
           # Search
           ripgrep
+          ripgrep-all # ripgrep for PDFs, DOCX, ZIPs
           fd
 
           # Process
@@ -44,9 +47,50 @@
 
           # Nix tools
           comma # Run uninstalled commands: , cowsay hello
+          nix-output-monitor # Better nix build output (nom)
+          devenv # Fast, declarative dev environments
 
           # Clipboard
           lemonade # Remote clipboard over SSH
+
+          # Data processing
+          yq-go # YAML/JSON/XML/CSV processor (like jq for YAML)
+          jless # Interactive JSON viewer
+          gron # Make JSON greppable
+          fx # Interactive JSON viewer and processor
+
+          # Benchmarking
+          hyperfine # Command-line benchmarking tool
+
+          # Network tools
+          bandwhich # Network bandwidth monitor
+          dog # DNS client (dig alternative)
+          gping # Graphical ping
+          trippy # Modern traceroute
+
+          # Text processing
+          sd # Modern sed alternative
+
+          # File management
+          broot # Directory navigation
+
+          # Git tools
+          git-cliff # Changelog generator
+          onefetch # Git repository info display
+
+          # Development tools
+          just # Modern task runner (make alternative)
+          tokei # Code statistics
+
+          # Container/Cloud tools
+          lazydocker # Docker TUI
+          kubectl # Kubernetes CLI
+          k9s # Kubernetes TUI
+          kubectx # Kubernetes context switcher
+          awscli2 # AWS CLI
+          google-cloud-sdk # GCP CLI
+          terraform # Infrastructure as Code
+          terragrunt # Terraform wrapper
 
           # Misc
           pokemon-colorscripts

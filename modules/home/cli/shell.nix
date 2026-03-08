@@ -55,12 +55,14 @@
           top = "btop";
           du = "dust";
           df = "duf";
-          help = "tldr";
+          help = "tealdeer";
+          tldr = "tealdeer";
           cd = "z";
           cdi = "zi";
+          ps = "procs";
 
-          # Tmux
-          tm = "tmux";
+          # Tmux (disabled but aliased for reference)
+          # tm = "tmux";
 
           # Zellij
           zj = "zellij";
@@ -72,12 +74,26 @@
           # Opencode
           oc = "opencode";
 
+          # Nix build with nom (nix-output-monitor)
+          nb = "nom build";
+          ns = "nom shell";
+          nd = "nom develop";
+
+          # Docker
+          lzd = "lazydocker";
+
+          # Kubernetes
+          k = "kubectl";
+
           # Direnv setup
           initdirenv = "nix flake init -t $DOTFILES_PATH#direnv && echo \"use flake\" > .envrc && git add flake.nix .envrc && direnv allow";
 
+          # Devenv setup
+          initdevenv = "devenv init && git add devenv.nix devenv.lock .envrc && direnv allow";
+
           # Nix update
           pullenv = "cd (ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
-          updateenv = "cd (ghq root)/github.com/s0r4d3v/dotfiles && nix build \".#homeConfigurations.\"(whoami)\".activationPackage\" && ./result/activate && cd -";
+          updateenv = "cd (ghq root)/github.com/s0r4d3v/dotfiles && nom build \".#homeConfigurations.\"(whoami)\".activationPackage\" && ./result/activate && cd -";
         };
 
         interactiveShellInit = ''
@@ -93,6 +109,7 @@
         '';
 
         functions = {
+          # Zellij development session (replacing tmux)
           dev = ''
             set -l session_name
             if test (count $argv) -eq 0
@@ -101,11 +118,79 @@
               set session_name $argv[1]
             end
 
-            if tmux has-session -t "$session_name" 2>/dev/null
-              tmux attach-session -t "$session_name"
+            # Use zellij instead of tmux
+            if zellij list-sessions 2>/dev/null | grep -q "^$session_name"
+              zellij attach "$session_name"
             else
-              tmux new-session -s "$session_name" nvim
+              zellij --session "$session_name" -- nvim
             end
+          '';
+
+          # Make directory and cd into it
+          mkcd = ''
+            mkdir -p $argv[1]
+            and cd $argv[1]
+          '';
+
+          # Extract various archive formats
+          extract = ''
+            if test (count $argv) -ne 1
+              echo "Usage: extract <archive>"
+              return 1
+            end
+
+            if not test -f $argv[1]
+              echo "Error: '$argv[1]' is not a valid file"
+              return 1
+            end
+
+            switch $argv[1]
+              case '*.tar.bz2'
+                tar xjf $argv[1]
+              case '*.tar.gz'
+                tar xzf $argv[1]
+              case '*.tar.xz'
+                tar xJf $argv[1]
+              case '*.bz2'
+                bunzip2 $argv[1]
+              case '*.rar'
+                unrar x $argv[1]
+              case '*.gz'
+                gunzip $argv[1]
+              case '*.tar'
+                tar xf $argv[1]
+              case '*.tbz2'
+                tar xjf $argv[1]
+              case '*.tgz'
+                tar xzf $argv[1]
+              case '*.zip'
+                unzip $argv[1]
+              case '*.Z'
+                uncompress $argv[1]
+              case '*.7z'
+                7z x $argv[1]
+              case '*'
+                echo "Error: '$argv[1]' cannot be extracted via extract()"
+                return 1
+            end
+          '';
+
+          # Quick backup of a file
+          backup = ''
+            if test (count $argv) -ne 1
+              echo "Usage: backup <file>"
+              return 1
+            end
+            cp $argv[1] $argv[1].bak.(date +%Y%m%d_%H%M%S)
+          '';
+
+          # Find processes using a port
+          port = ''
+            if test (count $argv) -ne 1
+              echo "Usage: port <port_number>"
+              return 1
+            end
+            lsof -i :$argv[1]
           '';
         };
       };

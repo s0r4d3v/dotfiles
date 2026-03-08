@@ -36,6 +36,7 @@ in
             modules = [
               inputs.nixvim.homeModules.nixvim
               inputs.catppuccin.homeModules.catppuccin
+              # inputs.sops-nix.homeModules.sops  # Temporarily disabled
             ] ++ hmModules;
           };
         }) users
