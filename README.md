@@ -14,9 +14,9 @@ nix build ".#homeConfigurations.$(whoami).activationPackage"
 ./result/activate
 
 ## Docs
-- Setup: `docs/SETUP.md`
-- Devenv: `docs/DEVENV.md`
-- Tools: `docs/TOOLS.md`
-- Secrets: `docs/SECRETS.md`
+- [Setup](docs/SETUP.md)
+- [Devenv](docs/DEVENV.md)
+- [Tools](docs/TOOLS.md)
+- [Secrets](docs/SECRETS.md)
 
 License: MIT
