@@ -11,10 +11,12 @@
 
   # https://devenv.sh/languages/
   # Uncomment the languages you need
-  # languages.rust.enable = true;
-  # languages.python.enable = true;
-  # languages.nodejs.enable = true;
-  # languages.go.enable = true;
+  languages = {
+    # rust.enable = true;
+    # python.enable = true;
+    # nodejs.enable = true;
+    # go.enable = true;
+  }
 
   # https://devenv.sh/processes/
   # processes.cargo-watch.exec = "cargo-watch";

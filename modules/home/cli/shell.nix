@@ -85,10 +85,7 @@
           # Kubernetes
           k = "kubectl";
 
-          # Direnv setup
-          initdirenv = "nix flake init -t $DOTFILES_PATH#direnv && echo \"use flake\" > .envrc && git add flake.nix .envrc && direnv allow";
-
-          # Devenv setup
+          # Devenv setup (preferred)
           initdevenv = "devenv init && git add devenv.nix devenv.lock .envrc && direnv allow";
 
           # Nix update
