@@ -6,15 +6,22 @@
       home.packages = with pkgs; [
         quarto
         nodejs
+        shellcheck
+        htmlhint
+        stylelint
       ];
 
       home.sessionPath = [ "$HOME/.npm-global/bin" ];
 
-      home.activation.installSpyglassmc = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      home.activation.installNpmLanguageServers = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        export npm_config_prefix="$HOME/.npm-global"
         if ! [ -f "$HOME/.npm-global/bin/spyglassmc-language-server" ]; then
           echo "Installing @spyglassmc/language-server..."
-          export npm_config_prefix="$HOME/.npm-global"
-          $HOME/.nix-profile/bin/npm install -g @spyglassmc/language-server
+          $HOME/.nix-profile/bin/npm install -g spyglassmc-language-server
+        fi
+        if ! [ -f "$HOME/.npm-global/bin/unocss-language-server" ]; then
+          echo "Installing @unocss/language-server..."
+          $HOME/.nix-profile/bin/npm install -g unocss-language-server
         fi
       '';
 
@@ -103,6 +110,7 @@
               "BufWritePost"
               "BufReadPost"
               "InsertLeave"
+              "LspAttach"
             ];
             pattern = "*";
             command = "lua require('lint').try_lint()";
@@ -393,6 +401,17 @@
           # Removed image.nvim - using molten_image_provider = "none" instead
         ];
 
+        diagnostic = {
+          settings = {
+            virtual_lines = {
+              current_line = true;
+            };
+            virtual_text = false;
+            signs = true;
+            severity_sort = true;
+          };
+        };
+
         plugins = {
           treesitter = {
             enable = true;
@@ -427,64 +446,10 @@
               typescript
               css
               html
+              vue
               regex
               comment
             ];
-          };
-
-          treesitter-context = {
-            enable = true;
-          };
-
-          treesitter-textobjects = {
-            enable = true;
-            settings = {
-              select = {
-                enable = true;
-                lookahead = true;
-                keymaps = {
-                  "af" = "@function.outer";
-                  "if" = "@function.inner";
-                  "ac" = "@class.outer";
-                  "ic" = "@class.inner";
-                  "ib" = {
-                    query = "@code_cell.inner";
-                    desc = "in block";
-                  };
-                  "ab" = {
-                    query = "@code_cell.outer";
-                    desc = "around block";
-                  };
-                };
-              };
-              move = {
-                enable = true;
-                set_jumps = false;
-                goto_next_start = {
-                  "]f" = "@function.outer";
-                  "]b" = {
-                    query = "@code_cell.inner";
-                    desc = "next code block";
-                  };
-                };
-                goto_previous_start = {
-                  "[f" = "@function.outer";
-                  "[b" = {
-                    query = "@code_cell.inner";
-                    desc = "previous code block";
-                  };
-                };
-              };
-              swap = {
-                enable = true;
-                swap_next = {
-                  "<leader>sbl" = "@code_cell.outer";
-                };
-                swap_previous = {
-                  "<leader>sbh" = "@code_cell.outer";
-                };
-              };
-            };
           };
 
           lsp = {
@@ -499,6 +464,21 @@
               ruff.enable = true;
               # Markdown (also covers Marp files)
               marksman.enable = true;
+              # HTML
+              html.enable = true;
+              # HTMX
+              htmx.enable = true;
+              # CSS
+              cssls.enable = true;
+              # UnoCSS
+              unocss = {
+                enable = true;
+                package = null;
+              };
+              # Vue
+              # ts_ls.enable = true;
+              # vtsls.enable = true;
+              # vue_ls.enable = true;
               # YAML
               yamlls.enable = true;
               # TOML
@@ -520,39 +500,6 @@
                 package = null;
               };
             };
-          };
-
-          blink-cmp = {
-            enable = true;
-            settings = {
-              keymap.preset = "default";
-              completion = {
-                documentation.auto_show = true;
-                documentation.auto_show_delay_ms = 200;
-              };
-              signature.enabled = true;
-              sources = {
-                default = [
-                  "lsp"
-                  "path"
-                  "snippets"
-                  "buffer"
-                  "lazydev"
-                ];
-                providers = {
-                  snippets.opts.friendly_snippets = true;
-                  lazydev = {
-                    name = "LazyDev";
-                    module = "lazydev.integrations.blink";
-                    score_offset = 100;
-                  };
-                };
-              };
-            };
-          };
-
-          friendly-snippets = {
-            enable = true;
           };
 
           conform-nvim = {
@@ -612,7 +559,97 @@
               python = [ "ruff" ];
               bash = [ "shellcheck" ];
               nix = [ "nix" ];
+              html = [ "htmlhint" ];
+              css = [ "stylelint" ];
             };
+          };
+
+          treesitter-context = {
+            enable = true;
+          };
+
+          treesitter-textobjects = {
+            enable = true;
+            settings = {
+              select = {
+                enable = true;
+                lookahead = true;
+                keymaps = {
+                  "af" = "@function.outer";
+                  "if" = "@function.inner";
+                  "ac" = "@class.outer";
+                  "ic" = "@class.inner";
+                  "ib" = {
+                    query = "@code_cell.inner";
+                    desc = "in block";
+                  };
+                  "ab" = {
+                    query = "@code_cell.outer";
+                    desc = "around block";
+                  };
+                };
+              };
+              move = {
+                enable = true;
+                set_jumps = false;
+                goto_next_start = {
+                  "]f" = "@function.outer";
+                  "]c" = {
+                    query = "@code_cell.inner";
+                    desc = "next code block";
+                  };
+                };
+                goto_previous_start = {
+                  "[f" = "@function.outer";
+                  "[c" = {
+                    query = "@code_cell.inner";
+                    desc = "previous code block";
+                  };
+                };
+              };
+              swap = {
+                enable = true;
+                swap_next = {
+                  "<leader>sbl" = "@code_cell.outer";
+                };
+                swap_previous = {
+                  "<leader>sbh" = "@code_cell.outer";
+                };
+              };
+            };
+          };
+
+          blink-cmp = {
+            enable = true;
+            settings = {
+              keymap.preset = "default";
+              completion = {
+                documentation.auto_show = true;
+                documentation.auto_show_delay_ms = 200;
+              };
+              signature.enabled = true;
+              sources = {
+                default = [
+                  "lsp"
+                  "path"
+                  "snippets"
+                  "buffer"
+                  "lazydev"
+                ];
+                providers = {
+                  snippets.opts.friendly_snippets = true;
+                  lazydev = {
+                    name = "LazyDev";
+                    module = "lazydev.integrations.blink";
+                    score_offset = 100;
+                  };
+                };
+              };
+            };
+          };
+
+          friendly-snippets = {
+            enable = true;
           };
 
           trouble = {

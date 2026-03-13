@@ -85,9 +85,6 @@
           # Kubernetes
           k = "kubectl";
 
-          # Devenv setup (preferred)
-          initdevenv = "devenv init && git add devenv.nix devenv.lock .envrc && direnv allow";
-
           # Nix update
           pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
           updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nom build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && cd -";
