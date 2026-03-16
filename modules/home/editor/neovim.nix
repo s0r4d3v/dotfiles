@@ -121,6 +121,20 @@
         clipboard.register = "unnamedplus";
 
         keymaps = [
+          # Window split
+          {
+            key = "<C-w>-";
+            action = ":split<CR>";
+            mode = [ "n" ];
+            options.desc = "Split window horizontally";
+          }
+          {
+            key = "<C-w>\\";
+            action = ":vsplit<CR>";
+            mode = [ "n" ];
+            options.desc = "Split window vertically";
+          }
+
           # File & Buffer commands
           {
             key = "<leader>w";
@@ -739,6 +753,10 @@
           };
 
           neotest = {
+            enable = true;
+          };
+
+          tmux-navigator = {
             enable = true;
           };
 

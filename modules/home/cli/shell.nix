@@ -64,8 +64,8 @@
           cdi = "zi";
           ps = "procs";
 
-          # Zellij
-          zj = "zellij";
+          # Tmux
+          tm = "tmux";
 
           # HTTP
           http = "xh";
