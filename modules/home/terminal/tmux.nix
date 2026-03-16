@@ -7,7 +7,7 @@
         enable = true;
         prefix = "C-a";
         keyMode = "vi";
-        escapeTime = 0;
+        escapeTime = 10;
         historyLimit = 10000;
         terminal = "tmux-256color";
         mouse = false;
@@ -20,7 +20,7 @@
             extraConfig = ''
               set -g @catppuccin_flavor 'macchiato'
               set -g @catppuccin_window_status_style "rounded"
-              set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}"
+              set -g status-right "#{prefix_highlight}#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}"
               set -g status-left ""
             '';
           }
@@ -51,6 +51,13 @@
           yank
           vim-tmux-navigator
           {
+            plugin = prefix-highlight;
+            extraConfig = ''
+              set -g @prefix_highlight_show_copy_mode 'on'
+              set -g @prefix_highlight_copy_mode_attr 'fg=black,bg=yellow,bold'
+            '';
+          }
+          {
             plugin = tmux-sessionx;
             extraConfig = ''
               set -g @sessionx-bind 'o'
@@ -58,6 +65,12 @@
           }
           extrakto
           tmux-thumbs
+          {
+            plugin = fuzzback;
+            extraConfig = ''
+              set -g @fuzzback-bind '/'
+            '';
+          }
         ];
 
         extraConfig = ''
@@ -70,10 +83,14 @@
 
           bind v copy-mode
 
+          bind-key -T copy-mode-vi v send-keys -X begin-selection
+          bind-key -T copy-mode-vi V send-keys -X select-line
+
           bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
 
           setw -g pane-base-index 1
           set -g display-panes-time 10000
+          set -g focus-events on
         '';
       };
     };
