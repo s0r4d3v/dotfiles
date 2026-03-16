@@ -91,7 +91,7 @@
         };
 
         initContent = ''
-          # Zellij development session
+          # Tmux development session
           function dev() {
             local session_name
             if [[ $# -eq 0 ]]; then
@@ -99,10 +99,10 @@
             else
               session_name=$1
             fi
-            if zellij list-sessions 2>/dev/null | grep -q "^$session_name"; then
-              zellij attach "$session_name"
+            if tmux has-session -t "$session_name" 2>/dev/null; then
+              tmux attach-session -t "$session_name"
             else
-              zellij --session "$session_name" -- nvim
+              tmux new-session -s "$session_name" -c "$PWD" nvim
             fi
           }
 

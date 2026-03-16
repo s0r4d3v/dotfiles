@@ -52,7 +52,7 @@
             "global:ctrl+shift+i=toggle_quick_terminal"
           ];
         };
-        enableFishIntegration = true;
+        enableZshIntegration = true;
       };
     };
 }

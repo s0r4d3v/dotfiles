@@ -78,7 +78,6 @@
                 # Shell configs (prevent backdoor injection)
                 "Write(${config.home.homeDirectory}/.bashrc)"
                 "Write(${config.home.homeDirectory}/.zshrc)"
-                "Write(${config.home.homeDirectory}/.config/fish/config.fish)"
 
                 # Git credentials
                 "Read(${config.home.homeDirectory}/.git-credentials)"

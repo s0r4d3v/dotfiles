@@ -104,13 +104,13 @@
       programs = {
         fzf = {
           enable = true;
-          enableFishIntegration = true;
+          enableZshIntegration = true;
         };
 
         # nix-index: provides nix-locate command
         nix-index = {
           enable = true;
-          enableFishIntegration = true;
+          enableZshIntegration = true;
         };
 
         yazi = {
