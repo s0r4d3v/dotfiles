@@ -84,6 +84,17 @@
 
           # Kubernetes
           k = "kubectl";
+          kl = "stern";
+          kns = "kubens";
+
+          # Diff
+          diff = "difft";
+
+          # Watch
+          watch = "viddy";
+
+          # Markdown
+          md = "glow";
 
           # Nix update
           pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";

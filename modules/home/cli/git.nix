@@ -21,6 +21,7 @@
             init.defaultBranch = "main";
             push.autoSetupRemote = true;
             pull.rebase = true;
+            diff.external = "difft";
           };
         };
 

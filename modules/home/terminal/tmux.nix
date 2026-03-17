@@ -91,6 +91,11 @@
           setw -g pane-base-index 1
           set -g display-panes-time 10000
           set -g focus-events on
+          set -g pane-border-lines heavy
+          set -g pane-border-style 'fg=colour240'
+          set -g pane-active-border-style 'fg=#8aadf4,bold'
+          set -g pane-border-status top
+          set -g pane-border-format " #{pane_index}: #{pane_current_command} "
         '';
       };
     };

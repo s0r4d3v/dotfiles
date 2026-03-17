@@ -16,6 +16,7 @@ in
         inherit system;
         config.allowUnfree = true;
       };
+      isDarwin = (import inputs.nixpkgs { inherit system; }).stdenv.isDarwin;
       homeConfigurations = builtins.listToAttrs (
         map (userName: {
           name = userName;
@@ -24,17 +25,17 @@ in
               inherit system;
               overlays = [
                 inputs.nur.overlays.default
-                inputs.brew-nix.overlays.default
                 # claude-code from nixpkgs-unstable only (statusLine bug fix)
                 (_final: _prev: {
                   claude-code = pkgsUnstable.claude-code;
                 })
-              ];
+              ]
+              ++ (if isDarwin then [ inputs.brew-nix.overlays.default ] else [ ]);
             };
             extraSpecialArgs = {
               user = userName;
               homeDir =
-                if (import inputs.nixpkgs { inherit system; }).stdenv.isDarwin then
+                if isDarwin then
                   "/Users/${userName}"
                 else if userName == "root" then
                   "/root"
@@ -45,7 +46,8 @@ in
               inputs.nixvim.homeModules.nixvim
               inputs.catppuccin.homeModules.catppuccin
               inputs.sops-nix.homeModules.sops
-            ] ++ hmModules;
+            ]
+            ++ hmModules;
           };
         }) users
       );
