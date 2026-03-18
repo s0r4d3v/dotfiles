@@ -29,6 +29,7 @@ chmod 600 ~/.config/sops/age/keys.txt
 ## Change default shell to zsh
 
 ```bash
+which zsh | sudo tee -a /etc/shells
 chsh -s $(which zsh)
 ```
 
