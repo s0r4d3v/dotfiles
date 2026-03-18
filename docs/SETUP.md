@@ -10,6 +10,9 @@ git clone https://github.com/s0r4d3v/dotfiles.git
 cd dotfiles
 nix build ".#homeConfigurations.$(whoami).activationPackage"
 ./result/activate
+cd ..
+rm dotfiles
+ghq clone git@github.com:s0r4d3v/dotfiles.git
 ```
 
 ## Update
