@@ -48,6 +48,9 @@
         nix-output-monitor # Better nix build output (nom)
         devenv # Fast, declarative dev environments
 
+        # Clipboard
+        lemonade # Remote clipboard over SSH
+
         # Data processing
         yq-go # YAML/JSON/XML/CSV processor (like jq for YAML)
         jless # Interactive JSON viewer
@@ -119,10 +122,8 @@
 
         # PDF viewer
         zathura
-      ] ++ lib.optionals pkgs.stdenv.isDarwin [
-        # Clipboard (Linux/WSL has native clipboard integration)
-        lemonade # Remote clipboard over SSH
       ];
+
 
       programs = {
         fzf = {
