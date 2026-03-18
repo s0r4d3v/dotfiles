@@ -15,6 +15,25 @@ rm dotfiles
 ghq clone git@github.com:s0r4d3v/dotfiles.git
 ```
 
+## Set up SOPS age key
+
+Place your age key before activation:
+
+```bash
+mkdir -p ~/.config/sops/age
+# Copy the age key content from Bitwarden and paste it into keys.txt
+nano ~/.config/sops/age/keys.txt
+chmod 600 ~/.config/sops/age/keys.txt
+```
+
+## Change default shell to zsh
+
+```bash
+chsh -s $(which zsh)
+```
+
+Log out and back in.
+
 ## Update
 
 ```bash
