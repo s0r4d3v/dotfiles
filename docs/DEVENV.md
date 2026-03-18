@@ -4,12 +4,10 @@ Use `devenv` for project environments and `direnv` only as an auto-activate trig
 
 Quick steps:
 
-1. Initialize template:
+1. Initialize:
 
 ```
-nix flake init -t ~/ghq/github.com/s0r4d3v/dotfiles#devenv
-# or
-initdevenv
+devenv init
 ```
 
 2. Allow direnv:
