@@ -98,7 +98,7 @@
 
           # Nix update
           pullenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && git pull && cd -";
-          updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && nom build \".#homeConfigurations.$(whoami).activationPackage\" && ./result/activate && cd -";
+          updateenv = "cd $(ghq root)/github.com/s0r4d3v/dotfiles && home-manager switch --flake \".\" && cd -";
         };
 
         initContent = ''
