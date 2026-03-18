@@ -88,6 +88,11 @@
 
           bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
 
+          bind -r H resize-pane -L 5
+          bind -r J resize-pane -D 5
+          bind -r K resize-pane -U 5
+          bind -r L resize-pane -R 5
+
           setw -g pane-base-index 1
           set -g display-panes-time 10000
           set -g focus-events on
