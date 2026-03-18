@@ -837,7 +837,7 @@
                     icon = " ";
                     desc = "Browse Repo";
                     padding = 1;
-                    key = "b";
+                    key = "B";
                     action = {
                       __raw = ''
                         function()
@@ -858,7 +858,7 @@
                             action = function()
                               vim.ui.open("https://github.com/notifications")
                             end,
-                            key = "n",
+                            key = "N",
                             icon = " ",
                             height = 5,
                             enabled = true,
@@ -866,7 +866,7 @@
                           {
                             title = "Open Issues",
                             cmd = "gh issue list -L 3",
-                            key = "i",
+                            key = "I",
                             action = function()
                               vim.fn.jobstart("gh issue list --web", { detach = true })
                             end,
@@ -877,7 +877,7 @@
                             icon = " ",
                             title = "Open PRs",
                             cmd = "gh pr list -L 3",
-                            key = "p",
+                            key = "P",
                             action = function()
                               vim.fn.jobstart("gh pr list --web", { detach = true })
                             end,
