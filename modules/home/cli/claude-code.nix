@@ -174,19 +174,6 @@
                   DIR=$(basename "$(echo "$input" | ${lib.getExe pkgs.jq} -r '.workspace.current_dir // "."')")
                   DIR=''${DIR:-.}
 
-                  # Create progress bar (10 characters)
-                  if [ "$USED_PCT" -eq 0 ]; then
-                      FILLED=0
-                  else
-                      FILLED=$((USED_PCT / 10))
-                      if [ "$FILLED" -gt 10 ]; then
-                          FILLED=10
-                      fi
-                  fi
-                  EMPTY=$((10 - FILLED))
-
-                  BAR=$(printf "%''${FILLED}s" | tr ' ' '▓')$(printf "%''${EMPTY}s" | tr ' ' '░')
-
                   # Color codes based on context usage
                   if [ "$USED_PCT" -lt 50 ]; then
                       COLOR="\033[32m"  # Green
@@ -201,8 +188,8 @@
                   # Format cost with 4 decimal places
                   COST_FORMATTED=$(printf '%.4f' "$COST")
 
-                  # Output: [Progress Bar] Used% | $Cost | Model | 📁 Directory
-                  echo -e "''${COLOR}[''${BAR}]''${RESET} ''${USED_PCT}% | \$''${COST_FORMATTED} | ''${MODEL} | 📁 ''${DIR}"
+                  # Output: Used% | $Cost | Model | 📁 Directory
+                  echo -e "''${COLOR}''${USED_PCT}%''${RESET} | \$''${COST_FORMATTED} | ''${MODEL} | 📁 ''${DIR}"
                 ''
               );
               padding = 0;
