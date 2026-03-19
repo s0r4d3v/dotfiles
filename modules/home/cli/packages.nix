@@ -2,6 +2,7 @@
 {
   flake.modules.homeManager.packages =
     { pkgs, lib, ... }:
+    lib.mkMerge [
     {
       home.packages = with pkgs; [
         # Modern ls/cat
@@ -146,5 +147,28 @@
           };
         };
       };
-    };
+    }
+
+    # macOS only: auto-start lemonade server via launchd.
+    # Linux is intentionally excluded because the same config is applied to
+    # remote Linux machines — running lemonade server there would conflict
+    # with the SSH RemoteForward on port 2489.
+    (lib.mkIf pkgs.stdenv.isDarwin {
+      launchd.agents.lemonade = {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "${pkgs.lemonade}/bin/lemonade"
+            "server"
+            "--port"
+            "2489"
+          ];
+          RunAtLoad = true;
+          KeepAlive = true;
+          StandardOutPath = "/tmp/lemonade.log";
+          StandardErrorPath = "/tmp/lemonade.err";
+        };
+      };
+    })
+  ];
 }

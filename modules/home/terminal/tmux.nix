@@ -93,6 +93,8 @@
           bind -r K resize-pane -U 5
           bind -r L resize-pane -R 5
 
+          set -g set-clipboard on
+
           setw -g pane-base-index 1
           set -g display-panes-time 10000
           set -g focus-events on
