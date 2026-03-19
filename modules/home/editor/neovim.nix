@@ -945,22 +945,38 @@
 
           -- ============================================================
           -- SSH環境のクリップボード設定
-          -- OSC 52経由でローカル端末（Ghostty）のクリップボードを読み書きする。
-          -- Ghosttyはclipboard-read/write = "allow"で両方向に対応。
-          -- tmuxのset-clipboard onでOSC 52シーケンスを転送する。
+          -- lemonade経由でローカルMacのクリップボードを双方向に読み書きする。
+          -- lemonadeサーバーはローカルMacのlaunchd agentで常時起動し、
+          -- SSH RemoteForward 2489でリモートから透過的にアクセスできる。
+          -- lemonadeが未インストールの場合はOSC 52にフォールバック。
           -- ============================================================
           if os.getenv("SSH_TTY") ~= nil or os.getenv("SSH_CLIENT") ~= nil then
-            vim.g.clipboard = {
-              name  = "OSC 52",
-              copy  = {
-                ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-                ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-              },
-              paste = {
-                ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-                ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
-              },
-            }
+            if vim.fn.exepath("lemonade") ~= "" then
+              vim.g.clipboard = {
+                name  = "lemonade",
+                copy  = {
+                  ["+"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "copy" },
+                  ["*"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "copy" },
+                },
+                paste = {
+                  ["+"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "paste" },
+                  ["*"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "paste" },
+                },
+                cache_enabled = 0,
+              }
+            else
+              vim.g.clipboard = {
+                name  = "OSC 52",
+                copy  = {
+                  ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+                  ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+                },
+                paste = {
+                  ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+                  ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+                },
+              }
+            end
           end
 
           -- Activate Quarto for markdown

@@ -162,6 +162,8 @@
             "server"
             "--port"
             "2489"
+            "--allow"
+            "127.0.0.1"
           ];
           RunAtLoad = true;
           KeepAlive = true;
