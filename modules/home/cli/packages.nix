@@ -150,9 +150,8 @@
     }
 
     # macOS only: auto-start lemonade server via launchd.
-    # Linux is intentionally excluded because the same config is applied to
-    # remote Linux machines — running lemonade server there would conflict
-    # with the SSH RemoteForward on port 2489.
+    # Linux is excluded — same config applies to remote Linux machines and
+    # running lemonade server there would conflict with SSH RemoteForward 2489.
     (lib.mkIf pkgs.stdenv.isDarwin {
       launchd.agents.lemonade = {
         enable = true;
@@ -165,6 +164,7 @@
             "--allow"
             "127.0.0.1"
           ];
+          # Required for pbcopy/pbpaste to handle UTF-8 (Japanese, CJK, etc.)
           EnvironmentVariables = {
             LANG = "en_US.UTF-8";
             LC_ALL = "en_US.UTF-8";

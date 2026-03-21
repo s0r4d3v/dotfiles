@@ -955,12 +955,12 @@
               vim.g.clipboard = {
                 name  = "lemonade",
                 copy  = {
-                  ["+"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "copy" },
-                  ["*"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "copy" },
+                  ["+"] = { "lemonade", "--port", "2489", "copy" },
+                  ["*"] = { "lemonade", "--port", "2489", "copy" },
                 },
                 paste = {
-                  ["+"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "paste" },
-                  ["*"] = { "lemonade", "--port", "2489", "--allow", "127.0.0.1", "paste" },
+                  ["+"] = { "lemonade", "--port", "2489", "paste" },
+                  ["*"] = { "lemonade", "--port", "2489", "paste" },
                 },
                 cache_enabled = 0,
               }

@@ -94,6 +94,7 @@
           bind -r L resize-pane -R 5
 
           set -g set-clipboard on
+          set -g allow-passthrough on
 
           setw -g pane-base-index 1
           set -g display-panes-time 10000

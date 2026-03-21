@@ -51,7 +51,7 @@
             # デフォルトの SSH 秘密鍵（sops で配置される）
             identityFile = [ "~/.ssh/id_ed25519" ];
 
-            # lemonade remote clipboard
+            # lemonade remote clipboard (SSH RemoteForward tunnels port 2489 to local server)
             remoteForwards = [
               {
                 bind.port = 2489;
