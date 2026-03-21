@@ -21,8 +21,8 @@
       home.sessionVariables = {
         DOTFILES_PATH = "${homeDir}/ghq/github.com/s0r4d3v/dotfiles";
         # UTF-8 locale for proper Unicode handling (especially for lemonade clipboard)
-        LANG = "en_US.UTF-8";
-        LC_ALL = "en_US.UTF-8";
+        LANG = "C.UTF-8";
+        LC_ALL = "C.UTF-8";
       };
 
       # macOS only: lemonade clipboard server for SSH remote clipboard access
