@@ -1,0 +1,26 @@
+[user]
+    name = s0r4d3v
+    email = s0r4d3v@gmail.com
+[init]
+    defaultBranch = main
+[push]
+    autoSetupRemote = true
+[pull]
+    rebase = true
+[diff]
+    external = difft
+    colorMoved = default
+[core]
+    pager = delta
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true
+[merge]
+    conflictstyle = diff3
+[credential "https://github.com"]
+    helper =
+    helper = !/usr/bin/env gh auth git-credential
+[credential "https://gist.github.com"]
+    helper =
+    helper = !/usr/bin/env gh auth git-credential

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "ENABLE_TOOL_SEARCH": "auto",
+    "MAX_MCP_OUTPUT_TOKENS": "50000",
+    "MCP_TIMEOUT": "60000"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "{{ .chezmoi.homeDir }}/.local/bin/block-rm",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "{{ .chezmoi.homeDir }}/.local/bin/block-force-push",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ]
+  },
+  "mcpServers": {
+    "mcp-nixos": {
+      "command": "uvx",
+      "args": ["mcp-nixos"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {
+        "ALLOWED_DIRECTORIES": "{{ .chezmoi.homeDir }}/ghq:{{ .chezmoi.homeDir }}/Projects:{{ .chezmoi.homeDir }}/Documents:{{ .chezmoi.homeDir }}/Downloads"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "git": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    }
+  },
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Edit",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "ask": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(git push:*)",
+      "Bash(git push --force:*)",
+      "Bash(npm publish:*)",
+      "Read(.env:*)",
+      "Read(**/*token*)",
+      "Read(**/*key*)",
+      "Read(**/*secret*)",
+      "Read(**/*password*)"
+    ],
+    "deny": [
+      "Read({{ .chezmoi.homeDir }}/.ssh/**)",
+      "Write({{ .chezmoi.homeDir }}/.ssh/**)",
+      "Read({{ .chezmoi.homeDir }}/.gnupg/**)",
+      "Write({{ .chezmoi.homeDir }}/.gnupg/**)",
+      "Read({{ .chezmoi.homeDir }}/.aws/credentials)",
+      "Read({{ .chezmoi.homeDir }}/.azure/**)",
+      "Read({{ .chezmoi.homeDir }}/.kube/config)",
+      "Read({{ .chezmoi.homeDir }}/.config/gcloud/**)",
+      "Read({{ .chezmoi.homeDir }}/.npmrc)",
+      "Read({{ .chezmoi.homeDir }}/.pypirc)",
+      "Read({{ .chezmoi.homeDir }}/.gem/credentials)",
+      "Write({{ .chezmoi.homeDir }}/.bashrc)",
+      "Write({{ .chezmoi.homeDir }}/.zshrc)",
+      "Read({{ .chezmoi.homeDir }}/.git-credentials)",
+      "Read({{ .chezmoi.homeDir }}/.netrc)"
+    ]
+  },
+  "statusLine": {
+    "command": "{{ .chezmoi.homeDir }}/.local/bin/claude-statusline",
+    "padding": 0,
+    "type": "command"
+  },
+  "theme": "dark"
+}

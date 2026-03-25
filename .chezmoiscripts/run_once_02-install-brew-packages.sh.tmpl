@@ -1,0 +1,5 @@
+#!/bin/sh
+# Install all packages from Brewfile (macOS only)
+{{ if eq .chezmoi.os "darwin" -}}
+brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
+{{ end -}}

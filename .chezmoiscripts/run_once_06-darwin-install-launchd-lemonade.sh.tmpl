@@ -1,0 +1,59 @@
+#!/bin/sh
+# Install lemonade binary + launchd agent (macOS only)
+{{ if eq .chezmoi.os "darwin" -}}
+# Install lemonade binary if missing
+if ! command -v lemonade >/dev/null 2>&1; then
+    echo "Installing lemonade..."
+    ARCH=$(uname -m)
+    case "$ARCH" in
+        arm64)  LEMONADE_ARCH="arm64" ;;
+        x86_64) LEMONADE_ARCH="amd64" ;;
+        *)      echo "Unknown arch: $ARCH"; exit 1 ;;
+    esac
+    LEMONADE_VERSION=$(curl -s https://api.github.com/repos/lemonade-command/lemonade/releases/latest | grep '"tag_name"' | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/')
+    LEMONADE_URL="https://github.com/lemonade-command/lemonade/releases/download/${LEMONADE_VERSION}/lemonade_${LEMONADE_VERSION#v}_darwin_${LEMONADE_ARCH}.tar.gz"
+    curl -sL "$LEMONADE_URL" | tar -xz -C /usr/local/bin lemonade
+    echo "lemonade installed."
+fi
+
+PLIST="$HOME/Library/LaunchAgents/com.lemonade.server.plist"
+if [ ! -f "$PLIST" ]; then
+    echo "Installing lemonade LaunchAgent..."
+    cat > "$PLIST" << 'PLIST_EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lemonade.server</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>lemonade</string>
+        <string>server</string>
+        <string>--port</string>
+        <string>2489</string>
+        <string>--allow</string>
+        <string>127.0.0.1</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>LANG</key>
+        <string>en_US.UTF-8</string>
+        <key>LC_ALL</key>
+        <string>en_US.UTF-8</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/lemonade.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/lemonade.err</string>
+</dict>
+</plist>
+PLIST_EOF
+    launchctl load "$PLIST"
+    echo "lemonade LaunchAgent loaded."
+fi
+{{ end -}}

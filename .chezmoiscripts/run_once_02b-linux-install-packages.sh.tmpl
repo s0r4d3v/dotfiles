@@ -1,0 +1,30 @@
+#!/bin/sh
+# Linux setup: apt base packages + mise CLI tools
+{{ if eq .chezmoi.os "linux" -}}
+
+# ── apt base packages ──────────────────────────────────────────────────────────
+if command -v apt-get >/dev/null 2>&1; then
+    echo "Installing apt packages..."
+    sudo apt-get update -qq
+    sudo apt-get install -y \
+        git curl wget unzip build-essential \
+        tmux xclip \
+        sshfs zathura zathura-pdf-backend-mupdf
+fi
+
+# ── install mise ───────────────────────────────────────────────────────────────
+if ! command -v mise >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/mise" ]; then
+    echo "Installing mise..."
+    curl https://mise.run | sh
+fi
+export PATH="$HOME/.local/bin:$PATH"
+
+# ── CLI tools via mise ─────────────────────────────────────────────────────────
+echo "Installing CLI tools via mise..."
+mise use -g \
+    eza bat ripgrep ripgrep-all fd chezmoi \
+    starship atuin zoxide fzf direnv \
+    neovim lazygit gh delta jujutsu yazi \
+    age shellcheck shfmt stylua
+
+{{ end -}}

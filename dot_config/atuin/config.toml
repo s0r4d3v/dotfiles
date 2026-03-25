@@ -1,0 +1,19 @@
+auto_sync = false
+common_subcommands = [
+    "cargo",
+    "git",
+    "npm",
+    "yarn",
+    "kubectl",
+    "docker",
+]
+enter_accept = true
+exit_mode = "return-original"
+filter_mode = "global"
+inline_height = 20
+keymap_mode = "vim-normal"
+search_mode = "fuzzy"
+show_help = true
+show_preview = true
+style = "compact"
+update_check = false

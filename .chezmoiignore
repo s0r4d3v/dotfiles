@@ -1,0 +1,24 @@
+# Nix / flake files (kept for reference, not managed as dotfiles)
+flake.nix
+flake.lock
+modules/
+templates/
+docs/
+secrets/
+memory/
+*.nix
+
+# Repo meta
+CLAUDE.md
+README.md
+.editorconfig
+.envrc
+.gitignore
+.gitattributes
+
+# Chezmoi data files (not deployed to home)
+.chezmoidata.toml
+Brewfile
+
+# Chezmoi binary (downloaded by install script, not a dotfile)
+bin/

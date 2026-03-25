@@ -1,0 +1,33 @@
+background-blur = 10
+background-opacity = 0.800000
+background-opacity-cells = true
+clipboard-read = allow
+clipboard-write = allow
+cursor-style = block
+cursor-style-blink = false
+focus-follows-mouse = false
+font-codepoint-map = U+1F300-U+1F9FF=Apple Color Emoji
+font-codepoint-map = U+2600-U+26FF=Apple Color Emoji
+font-codepoint-map = U+2700-U+27BF=Apple Color Emoji
+font-codepoint-map = U+1F000-U+1F02F=Apple Color Emoji
+font-codepoint-map = U+1F0A0-U+1F0FF=Apple Color Emoji
+font-codepoint-map = U+1FA00-U+1FAFF=Apple Color Emoji
+font-family = Maple Mono NF CN
+{{ if eq .chezmoi.os "darwin" -}}
+font-family = Apple Color Emoji
+{{ end -}}
+font-size = 10
+keybind = ctrl+shift+f=toggle_maximize
+keybind = global:ctrl+shift+h=toggle_visibility
+keybind = global:ctrl+shift+i=toggle_quick_terminal
+maximize = true
+mouse-hide-while-typing = true
+quick-terminal-position = right
+quick-terminal-screen = main
+theme = Catppuccin Macchiato
+window-decoration = auto
+{{ if eq .chezmoi.os "darwin" -}}
+macos-option-as-alt = left
+macos-titlebar-proxy-icon = hidden
+macos-titlebar-style = hidden
+{{ end -}}

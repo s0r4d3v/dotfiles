@@ -1,0 +1,10 @@
+encryption = "age"
+
+[data]
+  homeDir  = "{{ .chezmoi.homeDir }}"
+  os       = "{{ .chezmoi.os }}"
+  hostname = "{{ .chezmoi.hostname }}"
+
+[age]
+  identity   = "{{ .chezmoi.homeDir }}/.config/age/key.txt"
+  recipients = ["age1ejkuz6syvfx6vezw99ms0uk5ldqfvgqp4zqsl92w26dh34yuddwsgyku8n"]
