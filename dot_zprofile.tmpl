@@ -1,0 +1,16 @@
+# Login shell configuration
+
+{{ if eq .chezmoi.os "linux" -}}
+# Source Nix environment for login shells (Linux only)
+if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+fi
+{{ end -}}
+
+# Homebrew
+{{ if eq .chezmoi.os "darwin" -}}
+eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ end -}}
+
+# npm global
+export PATH="$HOME/.npm-global/bin:$PATH"

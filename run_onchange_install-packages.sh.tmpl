@@ -1,0 +1,13 @@
+#!/bin/bash
+# Install packages — triggered when Brewfile changes
+# Brewfile hash: {{ include "Brewfile" | sha256sum }}
+
+set -euo pipefail
+
+{{ if eq .chezmoi.os "darwin" -}}
+echo "Installing packages via Homebrew..."
+brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
+{{ else -}}
+echo "Linux detected — install packages manually or via your package manager."
+echo "See Brewfile for the full list of tools."
+{{ end -}}

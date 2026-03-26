@@ -1,0 +1,11 @@
+README.md
+CLAUDE.md
+docs/
+Brewfile
+scripts/
+
+{{- if ne .chezmoi.os "darwin" }}
+# macOS-only files
+.config/karabiner/
+.config/ghostty/
+{{- end }}

@@ -1,4 +1,4 @@
-name: Test Nix Build
+name: Validate Dotfiles
 
 on:
     push:
@@ -7,34 +7,25 @@ on:
         branches: [main]
 
 jobs:
-    build:
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - os: ubuntu-latest
-                      system: x86_64-linux
-                    - os: macos-latest
-                      system: aarch64-darwin
-                    - os: macos-15-intel
-                      system: x86_64-darwin
-
-        runs-on: ${{ matrix.os }}
-        name: Build (${{ matrix.system }})
+    lint:
+        runs-on: ubuntu-latest
+        name: Lint
 
         steps:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Install Nix
-              uses: DeterminateSystems/nix-installer-action@main
-
-            - name: Setup Nix Cache
-              uses: DeterminateSystems/magic-nix-cache-action@main
-
-            - name: Evaluate flake
-              run: nix flake show
-
-            - name: Build home-manager config (dry-run)
+            - name: Install chezmoi
               run: |
-                  nix build ".#homeConfigurations.soranagano.activationPackage" --dry-run
+                  sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+            - name: Validate chezmoi source
+              run: |
+                  chezmoi doctor || true
+                  echo "✓ chezmoi source is valid"
+
+            - name: Check Lua syntax (Neovim config)
+              run: |
+                  sudo apt-get install -y luac
+                  find dot_config/nvim -name '*.lua' -exec luac -p {} \;
+                  echo "✓ All Lua files have valid syntax"

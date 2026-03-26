@@ -1,0 +1,6 @@
+# nix-direnv integration for fast Nix flake evaluation
+if type nix_direnv_manual_reload &>/dev/null; then
+    :
+else
+    source_url "https://raw.githubusercontent.com/nix-community/nix-direnv/main/direnvrc" "sha256-FMMzLTEWMa31GPLHG7Ac8jAPiJKhJyDQ/bPXBmp7MFg="
+fi

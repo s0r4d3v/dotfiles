@@ -1,0 +1,60 @@
+#!/bin/bash
+# Setup lemonade launchd agent (macOS only)
+# Hash: {{ include "Brewfile" | sha256sum }}
+
+{{ if ne .chezmoi.os "darwin" -}}
+exit 0
+{{ end -}}
+
+set -euo pipefail
+
+PLIST_DIR="$HOME/Library/LaunchAgents"
+PLIST_FILE="$PLIST_DIR/com.lemonade.server.plist"
+LEMONADE_BIN="$(command -v lemonade 2>/dev/null || echo "")"
+
+if [ -z "$LEMONADE_BIN" ]; then
+    echo "lemonade not found, skipping launchd setup"
+    exit 0
+fi
+
+mkdir -p "$PLIST_DIR"
+
+cat > "$PLIST_FILE" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lemonade.server</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$LEMONADE_BIN</string>
+        <string>server</string>
+        <string>--port</string>
+        <string>2489</string>
+        <string>--allow</string>
+        <string>127.0.0.1</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>LANG</key>
+        <string>en_US.UTF-8</string>
+        <key>LC_ALL</key>
+        <string>en_US.UTF-8</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/lemonade.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/lemonade.err</string>
+</dict>
+</plist>
+EOF
+
+# Reload the agent
+launchctl unload "$PLIST_FILE" 2>/dev/null || true
+launchctl load "$PLIST_FILE"
+echo "✓ Lemonade launchd agent loaded"

@@ -1,12 +1,24 @@
-# Claude Code Context - Nix Dotfiles
+# Claude Code Context — chezmoi Dotfiles
 
 Minimal project context for automated tooling.
 
-- Uses Nix, Home Manager, flake-parts
-- Templates: `templates/devenv`
-- Docs: `docs/`
+- Uses chezmoi for dotfiles management
+- Secrets encrypted with age
+- Packages: Brewfile (macOS) + manual (Linux)
+- Neovim: Lua + lazy.nvim
+- Shell: zsh + zinit
+- Theme: Catppuccin Macchiato everywhere
 
-Guidelines:
+## Structure
+
+- `dot_*` — chezmoi source files (mapped to `~/.*`)
+- `dot_config/*` — mapped to `~/.config/*`
+- `run_once_*` / `run_onchange_*` — chezmoi scripts
+- `scripts/` — utility scripts (not managed by chezmoi)
+
+## Guidelines
+
 - Read files before editing
-- Validate changes with `nix flake check --no-build`
-- Test locally before committing
+- Test with `chezmoi diff` before applying
+- Apply with `chezmoi apply`
+- Secrets: `chezmoi add --encrypt <path>`

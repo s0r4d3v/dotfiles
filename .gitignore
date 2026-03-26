@@ -1,15 +1,10 @@
-# Build outputs
-result
-
 # Environment
 .direnv
 .env
 .envrc
 
 # Temporary files
-temp_ssh_config
 temp_*
-local.nix
 
 # Virtual environments
 venv/
@@ -18,17 +13,12 @@ venv/
 .vscode/
 .idea/
 
-# Secrets
-# secrets/*.yaml は sops で暗号化済みのためコミット可能
-# 平文のシークレットファイルを絶対にコミットしないこと
-secrets/*.plain
-secrets/*.decrypted
-
-# Nix
-*.drv
-
 # Logs
 *.log
 
 # OS-specific
 .DS_Store
+
+# chezmoi
+# Age key (never commit)
+key.txt

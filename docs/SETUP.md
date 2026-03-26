@@ -1,29 +1,53 @@
 # Setup
 
-Prerequisites: Git, Nix, internet.
+Prerequisites: Git, internet.
 
-## Install
+## macOS
 
 ```bash
-curl -fsSL https://install.determinate.systems/nix | sh -s -- install
-git clone https://github.com/s0r4d3v/dotfiles.git
-cd dotfiles
-nix build ".#homeConfigurations.$(whoami).activationPackage"
-./result/activate
-cd ..
-rm dotfiles
-ghq clone git@github.com:s0r4d3v/dotfiles.git
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install chezmoi and apply
+brew install chezmoi
+chezmoi init --apply s0r4d3v
 ```
 
-## Set up SOPS age key
+## Linux / WSL
 
-Place your age key before activation:
+```bash
+# Install chezmoi
+sh -c "$(curl -fsLS get.chezmoi.io)"
+
+# Apply
+chezmoi init --apply s0r4d3v
+```
+
+## Set up age key
+
+Place your age key before applying:
 
 ```bash
 mkdir -p ~/.config/sops/age
-# Copy the age key content from Bitwarden and paste it into keys.txt
+# Copy the age key content from Bitwarden/1Password and paste it into keys.txt
 nano ~/.config/sops/age/keys.txt
 chmod 600 ~/.config/sops/age/keys.txt
+```
+
+## Migrate secrets (from sops)
+
+If migrating from the previous Nix setup:
+
+```bash
+git show legacy/nix:secrets/secrets.yaml > /tmp/secrets.yaml
+./scripts/migrate-secrets.sh /tmp/secrets.yaml
+# Then add each secret to chezmoi
+chezmoi add --encrypt ~/.ssh/id_ed25519
+chezmoi add --encrypt ~/.ssh/id_ed25519.pub
+chezmoi add --encrypt ~/.ssh/id_rsa
+chezmoi add --encrypt ~/.ssh/id_rsa.pub
+chezmoi add --encrypt ~/.ssh/tanaka-site
+chezmoi add --encrypt ~/.ssh/config.d/hosts
 ```
 
 ## Change default shell to zsh
@@ -38,15 +62,11 @@ Log out and back in.
 ## Update
 
 ```bash
+chezmoi update
+# or
 pullenv && updateenv
-```
-
-## Validate (before activating)
-
-```bash
-nix flake check --no-build
 ```
 
 ## WSL (Windows)
 
-Works on WSL2. Follow the same steps above — macOS-specific tools (Karabiner, Homebrew casks) are automatically skipped on Linux.
+Works on WSL2. Follow the Linux steps above — macOS-specific tools (Karabiner, Ghostty, Homebrew casks) are automatically skipped on Linux via `.chezmoiignore`.
