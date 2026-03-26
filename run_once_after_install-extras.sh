@@ -6,7 +6,8 @@ set -euo pipefail
 TPM_INSTALL="$HOME/.tmux/plugins/tpm/bin/install_plugins"
 if [[ -x "$TPM_INSTALL" ]]; then
     echo "Installing tmux plugins..."
-    "$TPM_INSTALL"
+    TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins" "$TPM_INSTALL" || \
+        echo "TPM install failed — run prefix+I inside tmux to install plugins manually"
 else
     echo "TPM not found at $HOME/.tmux/plugins/tpm — skipping plugin install"
 fi
