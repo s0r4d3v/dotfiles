@@ -1,16 +1,74 @@
-[".tmux/plugins/tpm"]
-type = "git-repo"
-url = "https://github.com/tmux-plugins/tpm.git"
-refreshPeriod = "168h"
-
+# ─── Shell ───────────────────────────────────────────────────────────────────
 [".local/share/zinit/zinit.git"]
 type = "git-repo"
 url = "https://github.com/zdharma-continuum/zinit.git"
 refreshPeriod = "168h"
 
+# ─── Neovim ──────────────────────────────────────────────────────────────────
 [".local/share/nvim/lazy/lazy.nvim"]
 type = "git-repo"
 url = "https://github.com/folke/lazy.nvim.git"
 refreshPeriod = "168h"
 [".local/share/nvim/lazy/lazy.nvim".clone]
 args = ["--filter=blob:none", "--branch=main"]
+
+# ─── Tmux ────────────────────────────────────────────────────────────────────
+[".tmux/plugins/tpm"]
+type = "git-repo"
+url = "https://github.com/tmux-plugins/tpm.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux"]
+type = "git-repo"
+url = "https://github.com/catppuccin/tmux.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-floax"]
+type = "git-repo"
+url = "https://github.com/omerxx/tmux-floax.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-resurrect"]
+type = "git-repo"
+url = "https://github.com/tmux-plugins/tmux-resurrect.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-continuum"]
+type = "git-repo"
+url = "https://github.com/tmux-plugins/tmux-continuum.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-yank"]
+type = "git-repo"
+url = "https://github.com/tmux-plugins/tmux-yank.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/vim-tmux-navigator"]
+type = "git-repo"
+url = "https://github.com/christoomey/vim-tmux-navigator.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-prefix-highlight"]
+type = "git-repo"
+url = "https://github.com/tmux-plugins/tmux-prefix-highlight.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-sessionx"]
+type = "git-repo"
+url = "https://github.com/omerxx/tmux-sessionx.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/extrakto"]
+type = "git-repo"
+url = "https://github.com/laktak/extrakto.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-thumbs"]
+type = "git-repo"
+url = "https://github.com/fcsonline/tmux-thumbs.git"
+refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-fuzzback"]
+type = "git-repo"
+url = "https://github.com/roosta/tmux-fuzzback.git"
+refreshPeriod = "168h"

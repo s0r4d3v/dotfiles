@@ -98,11 +98,18 @@ CARGO_PACKAGES=(
     asciinema
 )
 
-echo "Installing cargo packages (this may take a while)..."
+# Install cargo-binstall for fast pre-compiled binary installs
+if ! command -v cargo-binstall &>/dev/null; then
+    echo "Installing cargo-binstall..."
+    curl -L --proto '=https' --tlsv1.2 -sSf \
+        https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+fi
+
+echo "Installing cargo packages..."
 for pkg in "${CARGO_PACKAGES[@]}"; do
     if ! command -v "${pkg%%[- ]*}" &>/dev/null; then
         echo "  Installing $pkg..."
-        cargo install "$pkg" 2>/dev/null || echo "  Warning: failed to install $pkg"
+        cargo binstall -y --no-confirm "$pkg" 2>/dev/null || echo "  Warning: failed to install $pkg"
     fi
 done
 

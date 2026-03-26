@@ -1,17 +1,6 @@
 #!/bin/bash
-# Install tmux plugins and gh extensions
+# Install gh extensions
 set -euo pipefail
-
-# Tmux plugins (start server so TPM can read its config)
-TPM_INSTALL="$HOME/.tmux/plugins/tpm/bin/install_plugins"
-if [[ -x "$TPM_INSTALL" ]]; then
-    echo "Installing tmux plugins..."
-    tmux start-server 2>/dev/null || true
-    TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins" "$TPM_INSTALL" || \
-        echo "TPM install failed — run prefix+I inside tmux to install plugins manually"
-else
-    echo "TPM not found at $HOME/.tmux/plugins/tpm — skipping plugin install"
-fi
 
 # GitHub CLI extensions
 if command -v gh &>/dev/null; then
