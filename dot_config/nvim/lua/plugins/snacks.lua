@@ -9,12 +9,6 @@ return {
             enabled = true,
             sections = {
                 {
-                    section = "terminal",
-                    cmd = "pokemon-colorscripts --random --no-title",
-                    indent = 4,
-                    height = 20,
-                },
-                {
                     section = "keys",
                     gap = 1,
                     padding = 1,
@@ -42,7 +36,7 @@ return {
                             key = "N",
                             icon = " ",
                             height = 5,
-                            enabled = true,
+                            enabled = vim.fn.system("gh extension list"):find("gh%-notify") ~= nil,
                         },
                         {
                             title = "Open Issues",

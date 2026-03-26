@@ -11,20 +11,6 @@ return {
                 "javascript", "typescript", "css", "html", "vue",
                 "regex", "comment",
             },
-        },
-        config = function(_, opts)
-            require("nvim-treesitter.configs").setup(opts)
-        end,
-    },
-    {
-        "nvim-treesitter/nvim-treesitter-context",
-        event = { "BufReadPost", "BufNewFile" },
-    },
-    {
-        "nvim-treesitter/nvim-treesitter-textobjects",
-        event = { "BufReadPost", "BufNewFile" },
-        dependencies = { "nvim-treesitter/nvim-treesitter" },
-        opts = {
             textobjects = {
                 select = {
                     enable = true,
@@ -61,8 +47,14 @@ return {
                 },
             },
         },
-        config = function(_, opts)
-            require("nvim-treesitter.configs").setup(opts)
-        end,
+    },
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        event = { "BufReadPost", "BufNewFile" },
+    },
+    {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        event = { "BufReadPost", "BufNewFile" },
+        dependencies = { "nvim-treesitter/nvim-treesitter" },
     },
 }
