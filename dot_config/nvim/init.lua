@@ -1,7 +1,9 @@
--- lazy.nvim is managed by chezmoi (.chezmoiexternal.toml)
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-    error("lazy.nvim not found. Run 'chezmoi apply' to install it.")
+    vim.fn.system({
+        "git", "clone", "--filter=blob:none", "--branch=main",
+        "https://github.com/folke/lazy.nvim.git", lazypath,
+    })
 end
 vim.opt.rtp:prepend(lazypath)
 
