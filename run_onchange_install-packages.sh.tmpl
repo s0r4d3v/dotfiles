@@ -45,13 +45,16 @@ APT_PACKAGES=(
 
 echo "Installing apt packages..."
 sudo apt-get update -qq
-sudo apt-get install -y -qq "${APT_PACKAGES[@]}"
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+    -o DPkg::options::="--force-confdef" \
+    -o DPkg::options::="--force-confold" \
+    "${APT_PACKAGES[@]}"
 
 # ─── Cargo/binary installs (tools not in apt or outdated) ────────────────────
 # Install cargo if not present
 if ! command -v cargo &>/dev/null; then
     echo "Installing Rust toolchain..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
     source "$HOME/.cargo/env"
 fi
 

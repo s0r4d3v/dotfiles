@@ -1,5 +1,6 @@
 {{- $name := promptStringOnce . "name" "Your name" -}}
 {{- $email := promptStringOnce . "email" "Your email" -}}
+{{- warnf "chezmoi: using name=%q email=%q" $name $email -}}
 
 encryption = "age"
 
