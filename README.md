@@ -27,8 +27,10 @@ chezmoi init --apply s0r4d3v
 **Linux / WSL:**
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply s0r4d3v
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v
 ```
+
+> The `-b ~/.local/bin` flag installs the chezmoi binary to `~/.local/bin` instead of `./bin/` in the current directory. Make sure `~/.local/bin` is in your `PATH`.
 
 This will:
 - Prompt for your name and email
