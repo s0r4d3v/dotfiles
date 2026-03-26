@@ -177,7 +177,7 @@ function port() {
 eval "$(zoxide init zsh)"
 
 # fzf
-source <(fzf --zsh)
+command -v fzf &>/dev/null && source <(fzf --zsh)
 
 # Atuin (shell history)
 eval "$(atuin init zsh)"
