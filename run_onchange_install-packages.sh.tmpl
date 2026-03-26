@@ -61,41 +61,42 @@ if ! command -v rustup &>/dev/null && [ ! -d "$HOME/.rustup" ]; then
     source "$HOME/.cargo/env" 2>/dev/null || true
 fi
 
+# Format: "package:binary" — binary is what's checked with command -v
 CARGO_PACKAGES=(
-    eza
-    btop           # note: btop is C++ but recent versions available via cargo
-    dust
-    duf
-    procs
-    bottom
-    tealdeer
-    hyperfine
-    bandwhich
-    doggo
-    gping
-    trippy
-    sd
-    broot
-    git-cliff
-    onefetch
-    lazygit
-    delta
-    difftastic
-    tokei
-    just
-    jless
-    gron
-    xh
-    yazi-fm
-    viddy
-    glow
-    starship
-    zoxide
-    atuin
-    mprocs
-    posting
-    vhs
-    asciinema
+    eza:eza
+    btop:btop
+    dust:dust
+    duf:duf
+    procs:procs
+    bottom:btm
+    tealdeer:tldr
+    hyperfine:hyperfine
+    bandwhich:bandwhich
+    doggo:doggo
+    gping:gping
+    trippy:trip
+    sd:sd
+    broot:broot
+    git-cliff:git-cliff
+    onefetch:onefetch
+    lazygit:lazygit
+    git-delta:delta
+    difftastic:difft
+    tokei:tokei
+    just:just
+    jless:jless
+    gron:gron
+    xh:xh
+    yazi-fm:yazi
+    viddy:viddy
+    glow:glow
+    starship:starship
+    zoxide:zoxide
+    atuin:atuin
+    mprocs:mprocs
+    posting:posting
+    vhs:vhs
+    asciinema:asciinema
 )
 
 # Install cargo-binstall for fast pre-compiled binary installs
@@ -106,8 +107,10 @@ if ! command -v cargo-binstall &>/dev/null; then
 fi
 
 echo "Installing cargo packages..."
-for pkg in "${CARGO_PACKAGES[@]}"; do
-    if ! command -v "${pkg%%[- ]*}" &>/dev/null; then
+for entry in "${CARGO_PACKAGES[@]}"; do
+    pkg="${entry%%:*}"
+    bin="${entry##*:}"
+    if ! command -v "$bin" &>/dev/null; then
         echo "  Installing $pkg..."
         cargo binstall -y --no-confirm "$pkg" 2>/dev/null || echo "  Warning: failed to install $pkg"
     fi
