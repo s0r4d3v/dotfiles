@@ -17,6 +17,3 @@ require("lazy").setup({
     change_detection = { notify = false },
     rocks = { enabled = false },
 })
-
--- Load clipboard config (after plugins)
-require("config.clipboard")

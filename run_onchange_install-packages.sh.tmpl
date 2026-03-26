@@ -166,5 +166,11 @@ if ! command -v trash-put &>/dev/null; then
     pip3 install --user trash-cli 2>/dev/null || sudo apt-get install -y -qq trash-cli
 fi
 
+# claude-code (Anthropic Claude CLI)
+if ! command -v claude &>/dev/null; then
+    echo "Installing Claude Code..."
+    npm install -g @anthropic-ai/claude-code
+fi
+
 echo "Done! Some tools may need a shell restart to be available."
 {{ end -}}

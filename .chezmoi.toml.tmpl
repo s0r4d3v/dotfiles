@@ -10,8 +10,3 @@ recipient = "age1gxcqm7f4m226vmakn3r6evxs8wc85ck2h0lkss9tfskxszg50uesn35x8q"
 [data]
 name = {{ $name | quote }}
 email = {{ $email | quote }}
-{{- if eq .chezmoi.os "darwin" }}
-os = "darwin"
-{{- else }}
-os = "linux"
-{{- end }}

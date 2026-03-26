@@ -20,11 +20,12 @@
 
 - `dot_*` / `dot_config/*` — chezmoi source files → `~/.*` / `~/.config/*`
 - `run_once_before_*` — prerequisites (age key validation)
-- `run_once_after_*` — one-time installs (gh extensions, tmux plugins)
-- `run_onchange_*` — re-run on content change (packages, launchd)
+- `run_once_after_*` — one-time installs (extras, lemonade launchd)
+- `run_onchange_*` — re-run on content change (packages)
 - `.chezmoiexternal.toml` — external repos (zinit, lazy.nvim, TPM)
 - `scripts/` — utility scripts (not managed by chezmoi)
 - `dot_ssh/encrypted_*` — age-encrypted SSH keys
+- Neovim plugins: `ui.lua`, `editor.lua`, `coding.lua`, `snacks.lua`, `treesitter.lua`, `notebook.lua`
 
 ## Guidelines
 

@@ -4,47 +4,6 @@ return {
         "benlubas/molten-nvim",
         build = ":UpdateRemotePlugins",
         ft = { "python", "quarto", "markdown" },
-    },
-    -- Quarto: notebook runner
-    {
-        "quarto-dev/quarto-nvim",
-        ft = { "quarto", "markdown" },
-        dependencies = { "jmbuhr/otter.nvim" },
-        opts = {
-            codeRunner = {
-                enabled = true,
-                default_method = "molten",
-                ft_runners = {
-                    python = "molten",
-                },
-                never_run = { "yaml" },
-            },
-        },
-    },
-    -- Otter: code cell editing
-    {
-        "jmbuhr/otter.nvim",
-        ft = { "quarto", "markdown" },
-        opts = {},
-    },
-    -- Jupytext: notebook format conversion
-    {
-        "GCBallesteros/jupytext.nvim",
-        ft = { "python", "quarto", "markdown" },
-        opts = {
-            custom_language_formatting = {
-                python = {
-                    extension = "qmd",
-                    style = "quarto",
-                    force_ft = "quarto",
-                },
-            },
-        },
-    },
-    -- Notebook autocmds for import/export
-    {
-        "benlubas/molten-nvim",
-        ft = { "python", "quarto", "markdown" },
         init = function()
             -- Automatically import/export output chunks
             local imb = function(e)
@@ -153,6 +112,42 @@ return {
                 end
             end, { nargs = 1, complete = "file" })
         end,
+    },
+    -- Quarto: notebook runner
+    {
+        "quarto-dev/quarto-nvim",
+        ft = { "quarto", "markdown" },
+        dependencies = { "jmbuhr/otter.nvim" },
+        opts = {
+            codeRunner = {
+                enabled = true,
+                default_method = "molten",
+                ft_runners = {
+                    python = "molten",
+                },
+                never_run = { "yaml" },
+            },
+        },
+    },
+    -- Otter: code cell editing
+    {
+        "jmbuhr/otter.nvim",
+        ft = { "quarto", "markdown" },
+        opts = {},
+    },
+    -- Jupytext: notebook format conversion
+    {
+        "GCBallesteros/jupytext.nvim",
+        ft = { "python", "quarto", "markdown" },
+        opts = {
+            custom_language_formatting = {
+                python = {
+                    extension = "qmd",
+                    style = "quarto",
+                    force_ft = "quarto",
+                },
+            },
+        },
     },
     -- Hydra for notebook-like interactions
     {

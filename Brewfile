@@ -1,61 +1,41 @@
 # Brewfile — managed by chezmoi
 # Install: brew bundle --file=Brewfile
 
-# ─── Modern replacements ──────────────────────────────────────────────────────
+# ─── CLI essentials ──────────────────────────────────────────────────────────
 brew "eza"           # Modern ls
 brew "bat"           # Modern cat
+brew "sd"            # Modern sed
+brew "fd"            # Modern find
+brew "ripgrep"
+brew "ripgrep-all"   # ripgrep for PDFs, DOCX, ZIPs
 brew "jq"            # JSON processor
+brew "yq"            # YAML/JSON/XML/CSV processor
+brew "jless"         # Interactive JSON viewer
+brew "gron"          # Make JSON greppable
+brew "fx"            # Interactive JSON viewer and processor
 brew "curl"
 brew "wget"
 brew "xh"            # Modern curl for APIs
+brew "broot"         # Directory navigation
+brew "trash-cli"     # Safe rm
+brew "tealdeer"      # Faster tldr
+brew "ghostscript"
+brew "imagemagick"
 
-# ─── System monitoring ────────────────────────────────────────────────────────
+# ─── System monitoring ──────────────────────────────────────────────────────
 brew "btop"          # Modern htop
 brew "dust"          # Modern du
 brew "duf"           # Modern df
 brew "procs"         # Modern ps
 brew "bottom"        # Alt to btop (Rust-based)
 
-# ─── Productivity ─────────────────────────────────────────────────────────────
-brew "tealdeer"      # Faster tldr
-brew "trash-cli"     # Safe rm
-brew "entr"          # Run command on file change
-brew "autossh"
-brew "yarn"
-
-# ─── Search ───────────────────────────────────────────────────────────────────
-brew "ripgrep"
-brew "ripgrep-all"   # ripgrep for PDFs, DOCX, ZIPs
-brew "fd"
-
-# ─── PDF ──────────────────────────────────────────────────────────────────────
-brew "ghostscript"
-
-# ─── Image ────────────────────────────────────────────────────────────────────
-brew "imagemagick"
-
-# ─── Data processing ─────────────────────────────────────────────────────────
-brew "yq"            # YAML/JSON/XML/CSV processor
-brew "jless"         # Interactive JSON viewer
-brew "gron"          # Make JSON greppable
-brew "fx"            # Interactive JSON viewer and processor
-
-# ─── Benchmarking ─────────────────────────────────────────────────────────────
-brew "hyperfine"
-
-# ─── Network tools ────────────────────────────────────────────────────────────
+# ─── Network tools ──────────────────────────────────────────────────────────
 brew "bandwhich"     # Network bandwidth monitor
 brew "doggo"         # DNS client
 brew "gping"         # Graphical ping
 brew "trippy"        # Modern traceroute
 
-# ─── Text processing ─────────────────────────────────────────────────────────
-brew "sd"            # Modern sed
-
-# ─── File management ─────────────────────────────────────────────────────────
-brew "broot"         # Directory navigation
-
-# ─── Git tools ────────────────────────────────────────────────────────────────
+# ─── Git tools ───────────────────────────────────────────────────────────────
 brew "git"
 brew "git-cliff"     # Changelog generator
 brew "onefetch"      # Git repo info display
@@ -63,16 +43,21 @@ brew "ghq"           # Git repository manager
 brew "lazygit"       # Git TUI
 brew "gh"            # GitHub CLI
 brew "delta"         # Git diff viewer
+brew "difftastic"    # Structural diffs
 brew "jj"            # Jujutsu VCS
 
-# ─── Development tools ────────────────────────────────────────────────────────
+# ─── Development tools ──────────────────────────────────────────────────────
 brew "just"          # Modern task runner
 brew "tokei"         # Code statistics
 brew "uv"            # Fast Python package installer
 brew "node"          # Node.js
+brew "yarn"
 brew "shellcheck"
+brew "hyperfine"     # Benchmarking
+brew "entr"          # Run command on file change
+brew "mise"          # Polyglot runtime version manager
 
-# ─── Container/Cloud tools ────────────────────────────────────────────────────
+# ─── Container/Cloud tools ──────────────────────────────────────────────────
 brew "lazydocker"    # Docker TUI
 brew "kubectl"       # Kubernetes CLI
 brew "k9s"           # Kubernetes TUI
@@ -82,52 +67,38 @@ brew "helmfile"      # Declarative helm management
 brew "kustomize"     # K8s config overlays
 brew "stern"         # Multi-pod log tailing
 brew "awscli"        # AWS CLI
-cask "gcloud-cli"        # Google Cloud SDK
+cask "gcloud-cli"    # Google Cloud SDK
 brew "terraform"
 brew "terragrunt"
 
-# ─── Diff ─────────────────────────────────────────────────────────────────────
-brew "difftastic"    # Structural diffs
-
-# ─── HTTP/API ─────────────────────────────────────────────────────────────────
-brew "posting"       # TUI HTTP client
-
-# ─── Terminal utilities ───────────────────────────────────────────────────────
-brew "glow"          # Markdown viewer
-brew "viddy"         # Modern watch
-brew "navi"          # Interactive cheatsheet
-brew "mprocs"        # Run multiple processes in TUI
-brew "tmux"
-
-# ─── Security/Crypto ─────────────────────────────────────────────────────────
-brew "age"           # Modern encryption
-brew "sops"          # Encrypted file editor
-
-# ─── Recording ────────────────────────────────────────────────────────────────
-brew "asciinema"     # Terminal recording
-brew "vhs"           # Record terminal to GIF
-
-# ─── Runtime management ──────────────────────────────────────────────────────
-brew "mise"          # Polyglot runtime version manager
-
-# ─── Shell ────────────────────────────────────────────────────────────────────
+# ─── Terminal & Shell ────────────────────────────────────────────────────────
 brew "zsh"
 brew "zoxide"        # Smart cd
 brew "fzf"           # Fuzzy finder
 brew "atuin"         # Shell history
 brew "starship"      # Prompt
 brew "direnv"        # Auto env loading
+brew "tmux"
+brew "glow"          # Markdown viewer
+brew "viddy"         # Modern watch
+brew "navi"          # Interactive cheatsheet
+brew "mprocs"        # Run multiple processes in TUI
+brew "posting"       # TUI HTTP client
+brew "autossh"
 
-# ─── Editor ───────────────────────────────────────────────────────────────────
+# ─── Security ────────────────────────────────────────────────────────────────
+brew "age"           # Modern encryption
+brew "sops"          # Encrypted file editor
+
+# ─── Editor & Tools ─────────────────────────────────────────────────────────
 brew "neovim"
-
-# ─── File manager ─────────────────────────────────────────────────────────────
-brew "yazi"
-
-# ─── Misc ─────────────────────────────────────────────────────────────────────
+brew "yazi"          # File manager
+brew "claude-code"   # Anthropic Claude CLI
 brew "chezmoi"
+brew "asciinema"     # Terminal recording
+brew "vhs"           # Record terminal to GIF
 
-# ─── macOS Casks ──────────────────────────────────────────────────────────────
+# ─── macOS Casks ─────────────────────────────────────────────────────────────
 cask "ghostty"
 cask "raycast"
 cask "zoom"

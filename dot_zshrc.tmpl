@@ -59,7 +59,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 
 # Safety
-{{- if eq .os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 alias rm="trash"
 {{- else }}
 alias rm="trash-put"
