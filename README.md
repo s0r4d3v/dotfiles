@@ -16,22 +16,14 @@ chmod 600 ~/.config/sops/age/keys.txt
 
 ### 2. Install chezmoi and apply dotfiles
 
-**macOS:**
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew install chezmoi
-chezmoi init --apply s0r4d3v
-```
-
-**Linux / WSL:**
-
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v
 ```
 
-> `~/.local/bin` is added to PATH by the dotfiles after apply, but you need to export it first so the chezmoi binary is found during the initial setup.
+Works on macOS, Linux, and WSL. Homebrew is installed automatically on macOS if missing.
+
+> `~/.local/bin` is added to PATH by the dotfiles after apply, but the export is needed so the chezmoi binary is found during the initial run.
 
 This will:
 - Prompt for your name and email
