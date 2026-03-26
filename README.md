@@ -27,10 +27,11 @@ chezmoi init --apply s0r4d3v
 **Linux / WSL:**
 
 ```bash
+export PATH="$HOME/.local/bin:$PATH"
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v
 ```
 
-> The `-b ~/.local/bin` flag installs the chezmoi binary to `~/.local/bin` instead of `./bin/` in the current directory. Make sure `~/.local/bin` is in your `PATH`.
+> `~/.local/bin` is added to PATH by the dotfiles after apply, but you need to export it first so the chezmoi binary is found during the initial setup.
 
 This will:
 - Prompt for your name and email
