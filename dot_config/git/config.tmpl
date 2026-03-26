@@ -13,6 +13,7 @@
 
 [diff]
     external = difft
+    colorMoved = default
 
 [core]
     pager = delta
@@ -27,5 +28,11 @@
 [merge]
     conflictstyle = diff3
 
-[diff]
-    colorMoved = default
+[rerere]
+    enabled = true
+
+[fetch]
+    prune = true
+
+[commit]
+    verbose = true

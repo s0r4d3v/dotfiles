@@ -1,11 +1,7 @@
--- Bootstrap lazy.nvim
+-- lazy.nvim is managed by chezmoi (.chezmoiexternal.toml)
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-        "git", "clone", "--filter=blob:none",
-        "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", lazypath,
-    })
+if not vim.uv.fs_stat(lazypath) then
+    error("lazy.nvim not found. Run 'chezmoi apply' to install it.")
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -15,8 +11,11 @@ require("config.keymaps")
 require("config.autocmds")
 
 -- Setup lazy.nvim
-require("lazy").setup("plugins", {
+require("lazy").setup({
+    { import = "plugins" },
+}, {
     change_detection = { notify = false },
+    rocks = { enabled = false },
 })
 
 -- Load clipboard config (after plugins)

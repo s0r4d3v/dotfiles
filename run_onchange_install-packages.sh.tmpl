@@ -5,9 +5,166 @@
 set -euo pipefail
 
 {{ if eq .chezmoi.os "darwin" -}}
+if ! command -v brew &>/dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if [ -f /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -f /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+fi
 echo "Installing packages via Homebrew..."
 brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
+
 {{ else -}}
-echo "Linux detected — install packages manually or via your package manager."
-echo "See Brewfile for the full list of tools."
+echo "Installing packages for Linux..."
+
+# ─── apt packages ────────────────────────────────────────────────────────────
+APT_PACKAGES=(
+    curl
+    wget
+    git
+    jq
+    zsh
+    tmux
+    direnv
+    shellcheck
+    fzf
+    bat
+    fd-find
+    ripgrep
+    neovim
+    imagemagick
+    ghostscript
+    nodejs
+    npm
+    autossh
+    entr
+)
+
+echo "Installing apt packages..."
+sudo apt-get update -qq
+sudo apt-get install -y -qq "${APT_PACKAGES[@]}"
+
+# ─── Cargo/binary installs (tools not in apt or outdated) ────────────────────
+# Install cargo if not present
+if ! command -v cargo &>/dev/null; then
+    echo "Installing Rust toolchain..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+fi
+
+CARGO_PACKAGES=(
+    eza
+    btop           # note: btop is C++ but recent versions available via cargo
+    dust
+    duf
+    procs
+    bottom
+    tealdeer
+    hyperfine
+    bandwhich
+    doggo
+    gping
+    trippy
+    sd
+    broot
+    git-cliff
+    onefetch
+    lazygit
+    delta
+    difftastic
+    tokei
+    just
+    jless
+    gron
+    xh
+    yazi-fm
+    viddy
+    glow
+    starship
+    zoxide
+    atuin
+    mprocs
+    posting
+    vhs
+    asciinema
+)
+
+echo "Installing cargo packages (this may take a while)..."
+for pkg in "${CARGO_PACKAGES[@]}"; do
+    if ! command -v "${pkg%%[- ]*}" &>/dev/null; then
+        echo "  Installing $pkg..."
+        cargo install "$pkg" 2>/dev/null || echo "  Warning: failed to install $pkg"
+    fi
+done
+
+# ─── Standalone installs ────────────────────────────────────────────────────
+# age
+if ! command -v age &>/dev/null; then
+    echo "Installing age..."
+    sudo apt-get install -y -qq age 2>/dev/null || {
+        AGE_VERSION="1.2.0"
+        curl -fsSL "https://dl.filippo.io/age/v${AGE_VERSION}?for=linux/amd64" | sudo tar -xz -C /usr/local/bin
+    }
+fi
+
+# sops
+if ! command -v sops &>/dev/null; then
+    echo "Installing sops..."
+    SOPS_VERSION=$(curl -fsSL https://api.github.com/repos/getsops/sops/releases/latest | jq -r .tag_name)
+    curl -fsSL "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.amd64" -o /tmp/sops
+    sudo install /tmp/sops /usr/local/bin/sops
+fi
+
+# gh (GitHub CLI)
+if ! command -v gh &>/dev/null; then
+    echo "Installing GitHub CLI..."
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt-get update -qq && sudo apt-get install -y -qq gh
+fi
+
+# mise
+if ! command -v mise &>/dev/null; then
+    echo "Installing mise..."
+    curl https://mise.run | sh
+fi
+
+# uv
+if ! command -v uv &>/dev/null; then
+    echo "Installing uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
+# kubectl
+if ! command -v kubectl &>/dev/null; then
+    echo "Installing kubectl..."
+    curl -fsSL "https://dl.k8s.io/release/$(curl -fsSL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o /tmp/kubectl
+    sudo install /tmp/kubectl /usr/local/bin/kubectl
+fi
+
+# helm
+if ! command -v helm &>/dev/null; then
+    echo "Installing helm..."
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+fi
+
+# terraform
+if ! command -v terraform &>/dev/null; then
+    echo "Installing terraform..."
+    sudo apt-get install -y -qq gnupg software-properties-common
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+    sudo apt-get update -qq && sudo apt-get install -y -qq terraform
+fi
+
+# trash-cli (Python)
+if ! command -v trash-put &>/dev/null; then
+    echo "Installing trash-cli..."
+    pip3 install --user trash-cli 2>/dev/null || sudo apt-get install -y -qq trash-cli
+fi
+
+echo "Done! Some tools may need a shell restart to be available."
 {{ end -}}

@@ -4,6 +4,8 @@
 font-family = Maple Mono NF CN
 font-family = Apple Color Emoji
 font-size = 10
+font-feature = calt
+font-feature = liga
 
 # Emoji font mapping
 font-codepoint-map = U+1F300-U+1F9FF=Apple Color Emoji

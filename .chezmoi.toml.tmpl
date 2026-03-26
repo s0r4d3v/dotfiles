@@ -1,5 +1,5 @@
-{{- $email := "s0r4d3v@gmail.com" -}}
-{{- $name := "s0r4d3v" -}}
+{{- $name := promptStringOnce . "name" "Your name" -}}
+{{- $email := promptStringOnce . "email" "Your email" -}}
 
 encryption = "age"
 
