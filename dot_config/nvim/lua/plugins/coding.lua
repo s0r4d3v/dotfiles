@@ -9,21 +9,18 @@ return {
     {
         "williamboman/mason-lspconfig.nvim",
         dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
-        opts = {},
+        opts = {
+            handlers = {
+                function(server_name)
+                    vim.lsp.enable(server_name)
+                end,
+            },
+        },
     },
-    -- LSP
+    -- LSP server configs (loaded by vim.lsp.enable via mason-lspconfig handlers)
     {
         "neovim/nvim-lspconfig",
         event = { "BufReadPost", "BufNewFile" },
-        dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
-        config = function()
-            require("mason-lspconfig").setup_handlers({
-                function(server_name)
-                    vim.lsp.config(server_name, {})
-                    vim.lsp.enable(server_name)
-                end,
-            })
-        end,
     },
     -- Formatting
     {
