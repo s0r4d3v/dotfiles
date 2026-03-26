@@ -52,10 +52,10 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
 
 # ─── Cargo/binary installs (tools not in apt or outdated) ────────────────────
 # Install cargo if not present
-if ! command -v cargo &>/dev/null; then
+if ! command -v rustup &>/dev/null; then
     echo "Installing Rust toolchain..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
-    source "$HOME/.cargo/env"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path || true
+    source "$HOME/.cargo/env" 2>/dev/null || true
 fi
 
 CARGO_PACKAGES=(
