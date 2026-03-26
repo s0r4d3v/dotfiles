@@ -121,7 +121,7 @@ done
 if ! command -v age &>/dev/null; then
     echo "Installing age..."
     sudo apt-get install -y -qq age 2>/dev/null || {
-        AGE_VERSION="1.2.0"
+        AGE_VERSION=$(curl -fsSL https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r '.tag_name | ltrimstr("v")')
         curl -fsSL "https://dl.filippo.io/age/v${AGE_VERSION}?for=linux/amd64" | sudo tar -xz -C /usr/local/bin
     }
 fi
