@@ -72,7 +72,6 @@ CARGO_PACKAGES=(
     tealdeer:tldr
     hyperfine:hyperfine
     bandwhich:bandwhich
-    doggo:doggo
     gping:gping
     trippy:trip
     sd:sd
@@ -175,6 +174,14 @@ if ! command -v terraform &>/dev/null; then
     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
     sudo apt-get update -qq && sudo apt-get install -y -qq terraform
+fi
+
+# doggo (DNS client — Go binary, not on crates.io)
+if ! command -v doggo &>/dev/null; then
+    echo "Installing doggo..."
+    DOGGO_VERSION=$(curl -fsSL https://api.github.com/repos/mr-karan/doggo/releases/latest | jq -r '.tag_name | ltrimstr("v")')
+    curl -fsSL "https://github.com/mr-karan/doggo/releases/download/v${DOGGO_VERSION}/doggo_${DOGGO_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp doggo
+    sudo install /tmp/doggo /usr/local/bin/doggo
 fi
 
 # trash-cli (Python)
