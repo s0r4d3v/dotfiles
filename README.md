@@ -15,12 +15,20 @@ Personal dotfiles. macOS + Linux.
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-### 2. Clone and apply
+### 2. Clone and bootstrap (first time only)
 
 ```sh
-git clone git@github.com:s0r4d3v/dotfiles.git ~/.config/dotfiles
-cd ~/.config/dotfiles
-darwin-rebuild switch --flake .#soranagano
+git clone git@github.com:s0r4d3v/dotfiles.git ~/.local/share/chezmoi
+sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
+sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
+sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ~/.local/share/chezmoi#soranagano
+```
+
+After bootstrap, future applies use:
+
+```sh
+darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
 ```
 
 ### 3. Install Neovim plugins
@@ -81,14 +89,35 @@ git add -p && git commit -m "..." && git push
 
 **`error: experimental Nix feature 'nix-command' is disabled`**
 
-The Nix installer enables this by default, but requires a full terminal restart (not just `exec zsh`) to take effect. If it still fails after reopening the terminal, enable it manually:
+The Nix installer enables this by default, but requires a full terminal restart (not just `exec zsh`) to take effect.
+
+On the first bootstrap, nix-darwin needs to take over `/etc/nix/nix.conf`, so you cannot pre-write to it. Instead, pass the flags inline for the bootstrap run only:
 
 ```sh
-mkdir -p ~/.config/nix
-echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#soranagano
 ```
 
-Then retry the `nix run` command.
+After a successful bootstrap, nix-darwin manages `/etc/nix/nix.conf` and `experimental-features` is set permanently via `nix.settings.experimental-features` in `darwin/configuration.nix`.
+
+**`Unexpected files in /etc, aborting activation`**
+
+nix-darwin wants to manage `/etc/nix/nix.conf`, `/etc/bashrc`, and `/etc/zshrc`. Rename them:
+
+```sh
+sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
+sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
+sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
+```
+
+**`Existing file '...' would be clobbered`**
+
+Home Manager refuses to overwrite files it didn't create. Remove the conflicting file and re-apply:
+
+```sh
+rm ~/.config/tmux/tmux.conf   # adjust path to match the error
+darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
+```
 
 ---
 
