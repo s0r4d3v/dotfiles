@@ -25,16 +25,18 @@ sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
 sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ~/.local/share/chezmoi#soranagano
 ```
 
-After bootstrap, future applies use:
+### 3. Reload shell and apply
 
-```sh
-darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
-```
-
-### 3. Install Neovim plugins
+`darwin-rebuild` is not available until the shell is reloaded:
 
 ```sh
 exec zsh
+sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
+```
+
+### 4. Install Neovim plugins
+
+```sh
 nvim  # lazy.nvim auto-installs on first launch
 ```
 
@@ -71,7 +73,7 @@ nvim
 
 | Task | Command |
 |------|---------|
-| Apply config changes | `darwin-rebuild switch --flake .#soranagano` (Mac) |
+| Apply config changes | `sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano` (Mac) |
 | Apply config changes | `home-manager switch --flake .#linux` (Linux) |
 | Add/remove a package | edit `home/shared.nix` → apply |
 | Add a Mac cask | edit `darwin/configuration.nix` → apply |
