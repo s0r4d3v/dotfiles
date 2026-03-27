@@ -19,7 +19,7 @@
     # Apply: darwin-rebuild switch --flake .#soranagano
     # Hostname comes from: scutil --get LocalHostName
     darwinConfigurations."soranagano" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
+      system = "x86_64-darwin";
       modules = [
         ./darwin/configuration.nix
         home-manager.darwinModules.home-manager

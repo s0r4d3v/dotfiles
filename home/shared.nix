@@ -50,7 +50,7 @@
       ".."  = "cd ..";
       "..." = "cd ../..";
     };
-    initExtra = ''
+    initContent = ''
       eval "$(zoxide init zsh)"
 
       autoload -Uz vcs_info

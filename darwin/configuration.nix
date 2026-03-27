@@ -31,5 +31,5 @@
   system.primaryUser = "soranagano";
   system.stateVersion = 6;
 
-  nixpkgs.hostPlatform = "aarch64-darwin";
+  nixpkgs.hostPlatform = "x86_64-darwin";
 }
