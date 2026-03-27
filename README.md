@@ -118,7 +118,19 @@ Home Manager refuses to overwrite files it didn't create. Remove the conflicting
 
 ```sh
 rm ~/.config/tmux/tmux.conf   # adjust path to match the error
-darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
+sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
+```
+
+**`Error: Unable to remove some files. Please enable Full Disk Access`**
+
+Homebrew's `cleanup = "zap"` removes launch services which requires Full Disk Access. Grant it once:
+
+System Settings → Privacy & Security → Full Disk Access → enable your terminal app
+
+Then re-apply:
+
+```sh
+sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
 ```
 
 ---
