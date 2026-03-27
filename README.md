@@ -1,33 +1,61 @@
 # dotfiles
 
-Personal dotfiles managed with [chezmoi](https://chezmoi.io). Supports macOS and Linux.
+Personal dotfiles. macOS + Linux.
+
+- **Packages & configs**: Nix + Home Manager + nix-darwin
+- **Neovim plugins**: lazy.nvim (Lua, managed in `config/nvim/`)
 
 ---
 
-## Setup
+## Setup — macOS
+
+### 1. Install Nix
 
 ```sh
-mkdir -p ~/.local/bin
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v
-exec zsh
-nvim  # lazy.nvim auto-installs plugins on first launch
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-Inside Neovim, install formatters/linters:
-```
-:Mason
-```
-
-## Reset existing machine
+### 2. Clone and apply
 
 ```sh
-rm -f ~/.zshrc ~/.tmux.conf && rm -rf ~/.config/nvim ~/.local/share/chezmoi ~/.config/chezmoi
-mkdir -p ~/.local/bin
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v
-exec zsh
+git clone git@github.com:s0r4d3v/dotfiles.git ~/.config/dotfiles
+cd ~/.config/dotfiles
+darwin-rebuild switch --flake .#soranagano
 ```
 
-> Already have chezmoi: `chezmoi init --apply s0r4d3v`
+### 3. Install Neovim plugins
+
+```sh
+exec zsh
+nvim  # lazy.nvim auto-installs on first launch
+```
+
+---
+
+## Setup — Linux (remote server)
+
+### 1. Install Nix
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+### 2. Install Home Manager and apply
+
+```sh
+nix run home-manager/master -- init --switch
+git clone git@github.com:s0r4d3v/dotfiles.git ~/.config/dotfiles
+cd ~/.config/dotfiles
+# Edit home/linux.nix: set home.username and home.homeDirectory
+home-manager switch --flake .#linux
+```
+
+### 3. Install Neovim plugins
+
+```sh
+exec zsh
+nvim
+```
 
 ---
 
@@ -35,20 +63,32 @@ exec zsh
 
 | Task | Command |
 |------|---------|
-| Edit a config | `chezmoi edit ~/.zshrc` |
-| Preview changes | `chezmoi diff` |
-| Apply to home dir | `chezmoi apply` |
-| Add a new file | `chezmoi add ~/.config/somefile` |
-| Pull + apply from remote | `chezmoi update` |
-
-**Edit packages** — edit `run_onchange_install-packages.sh.tmpl`, then `chezmoi apply` (script re-runs automatically):
-```sh
-chezmoi edit ~/.local/share/chezmoi/run_onchange_install-packages.sh.tmpl
-chezmoi apply
-```
+| Apply config changes | `darwin-rebuild switch --flake .#soranagano` (Mac) |
+| Apply config changes | `home-manager switch --flake .#linux` (Linux) |
+| Add/remove a package | edit `home/shared.nix` → apply |
+| Add a Mac cask | edit `darwin/configuration.nix` → apply |
+| Update all inputs | `nix flake update` → apply |
 
 **Push to GitHub:**
 ```sh
-chezmoi cd
+cd ~/.config/dotfiles
 git add -p && git commit -m "..." && git push
+```
+
+---
+
+## Repository structure
+
+```
+flake.nix                  # entry point: defines Mac + Linux configurations
+home/
+  shared.nix               # packages, zsh, tmux, neovim (both platforms)
+  darwin.nix               # macOS: PATH, aliases
+  linux.nix                # Linux: PATH, aliases, genericLinux target
+darwin/
+  configuration.nix        # nix-darwin: homebrew casks, system settings
+config/
+  nvim/
+    init.lua               # Neovim core options + keymaps
+    lua/plugins.lua        # lazy.nvim plugin list
 ```
