@@ -2,7 +2,7 @@
 # PATH
 # =============================================================================
 {{ if eq .chezmoi.os "darwin" -}}
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.local/bin:$PATH"
 {{ else if eq .chezmoi.os "linux" -}}
 export PATH="$HOME/.local/bin:$PATH"
 {{ end -}}
