@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, username, ... }: {
 
   # ===========================================================================
   # Homebrew — casks only (CLI tools are managed by Nix/Home Manager)
@@ -28,15 +28,13 @@
   # ===========================================================================
   # Users
   # ===========================================================================
-  users.users.soranagano = {
-    home = "/Users/soranagano";
+  users.users.${username} = {
+    home = "/Users/${username}";
   };
 
   # ===========================================================================
   # System
   # ===========================================================================
-  system.primaryUser = "soranagano";
+  system.primaryUser = username;
   system.stateVersion = 6;
-
-  nixpkgs.hostPlatform = "x86_64-darwin";
 }

@@ -1,8 +1,8 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, username, ... }: {
   imports = [ ./shared.nix ];
 
-  home.username    = "soranagano";  # change to your Linux username
-  home.homeDirectory = "/home/soranagano";  # change accordingly
+  home.username      = username;
+  home.homeDirectory = "/home/${username}";
 
   # Required for Home Manager on non-NixOS Linux
   targets.genericLinux.enable = true;

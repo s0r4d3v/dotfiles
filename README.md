@@ -1,152 +1,90 @@
 # dotfiles
 
-Personal dotfiles. macOS + Linux.
-
-- **Packages & configs**: Nix + Home Manager + nix-darwin
-- **Neovim plugins**: lazy.nvim (Lua, managed in `config/nvim/`)
+macOS + Linux dotfiles managed with Nix + Home Manager + nix-darwin.
 
 ---
 
-## Setup — macOS
+## New machine
 
-### 1. Install Nix
+### 1. Add an entry to `flake.nix`
 
-```sh
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+**Mac:**
+```nix
+darwinConfigurations."<username>" = mkDarwin {
+  username = "<username>";
+  system   = "aarch64-darwin";  # or "x86_64-darwin" for Intel
+};
 ```
 
-### 2. Clone and bootstrap (first time only)
+**Linux:**
+```nix
+homeConfigurations."<username>" = mkLinux {
+  username = "<username>";
+  system   = "x86_64-linux";  # or "aarch64-linux"
+};
+```
+
+### 2. Bootstrap
 
 ```sh
-git clone git@github.com:s0r4d3v/dotfiles.git ~/.local/share/chezmoi
+git clone git@github.com:s0r4d3v/dotfiles.git /path/to/dotfiles
+cd /path/to/dotfiles
+```
+
+**Mac (first time only):**
+```sh
 sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
 sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ~/.local/share/chezmoi#soranagano
-```
-
-### 3. Reload shell and apply
-
-`darwin-rebuild` is not available until the shell is reloaded:
-
-```sh
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#<username>
 exec zsh
-sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
+sudo darwin-rebuild switch --flake .#<username>
 ```
 
-### 4. Install Neovim plugins
-
+**Linux:**
 ```sh
-nvim  # lazy.nvim auto-installs on first launch
-```
-
----
-
-## Setup — Linux (remote server)
-
-### 1. Install Nix
-
-```sh
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-```
-
-### 2. Install Home Manager and apply
-
-```sh
-nix run home-manager/master -- init --switch
-git clone git@github.com:s0r4d3v/dotfiles.git ~/.config/dotfiles
-cd ~/.config/dotfiles
-# Edit home/linux.nix: set home.username and home.homeDirectory
-home-manager switch --flake .#linux
+nix run home-manager/master -- switch --flake .#<username>
 ```
 
 ### 3. Install Neovim plugins
 
 ```sh
-exec zsh
-nvim
+exec zsh && nvim
 ```
 
 ---
 
 ## Daily usage
 
-| Task | Command |
-|------|---------|
-| Apply config changes | `sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano` (Mac) |
-| Apply config changes | `home-manager switch --flake .#linux` (Linux) |
-| Add/remove a package | edit `home/shared.nix` → apply |
-| Add a Mac cask | edit `darwin/configuration.nix` → apply |
-| Update all inputs | `nix flake update` → apply |
-
-**Push to GitHub:**
 ```sh
-cd ~/.config/dotfiles
-git add -p && git commit -m "..." && git push
+cd /path/to/dotfiles
+sudo darwin-rebuild switch --flake .#<username>   # Mac
+home-manager switch --flake .#<username>          # Linux
 ```
+
+| Task | File |
+|------|------|
+| Add/remove a package | `home/shared.nix` |
+| Add a Mac cask | `darwin/configuration.nix` |
+| Update all inputs | `nix flake update` |
 
 ---
 
 ## Troubleshooting
 
-**`error: experimental Nix feature 'nix-command' is disabled`**
-
-The Nix installer enables this by default, but requires a full terminal restart (not just `exec zsh`) to take effect.
-
-On the first bootstrap, nix-darwin needs to take over `/etc/nix/nix.conf`, so you cannot pre-write to it. Instead, pass the flags inline for the bootstrap run only:
-
-```sh
-sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#soranagano
-```
-
-After a successful bootstrap, nix-darwin manages `/etc/nix/nix.conf` and `experimental-features` is set permanently via `nix.settings.experimental-features` in `darwin/configuration.nix`.
-
-**`Unexpected files in /etc, aborting activation`**
-
-nix-darwin wants to manage `/etc/nix/nix.conf`, `/etc/bashrc`, and `/etc/zshrc`. Rename them:
-
+**`Unexpected files in /etc`** — nix-darwin needs to own these files:
 ```sh
 sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
 sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
 ```
 
-**`Existing file '...' would be clobbered`**
-
-Home Manager refuses to overwrite files it didn't create. Remove the conflicting file and re-apply:
-
+**`Existing file '...' would be clobbered`** — remove the conflicting file and re-apply:
 ```sh
 rm ~/.config/tmux/tmux.conf   # adjust path to match the error
-sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
+sudo darwin-rebuild switch --flake .#<username>
 ```
 
-**`Error: Unable to remove some files. Please enable Full Disk Access`**
-
-Homebrew's `cleanup = "zap"` removes launch services which requires Full Disk Access. Grant it once:
+**`Unable to remove some files. Please enable Full Disk Access`** — Homebrew's `cleanup = "zap"` requires Full Disk Access:
 
 System Settings → Privacy & Security → Full Disk Access → enable your terminal app
-
-Then re-apply:
-
-```sh
-sudo darwin-rebuild switch --flake ~/.local/share/chezmoi#soranagano
-```
-
----
-
-## Repository structure
-
-```
-flake.nix                  # entry point: defines Mac + Linux configurations
-home/
-  shared.nix               # packages, zsh, tmux, neovim (both platforms)
-  darwin.nix               # macOS: PATH, aliases
-  linux.nix                # Linux: PATH, aliases, genericLinux target
-darwin/
-  configuration.nix        # nix-darwin: homebrew casks, system settings
-config/
-  nvim/
-    init.lua               # Neovim core options + keymaps
-    lua/plugins.lua        # lazy.nvim plugin list
-```

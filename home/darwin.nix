@@ -1,8 +1,8 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, username, ... }: {
   imports = [ ./shared.nix ];
 
-  home.username    = "soranagano";
-  home.homeDirectory = "/Users/soranagano";
+  home.username      = username;
+  home.homeDirectory = "/Users/${username}";
 
   home.sessionPath = [
     "/opt/homebrew/bin"
