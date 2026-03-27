@@ -1,0 +1,60 @@
+#!/bin/sh
+set -e
+
+{{ if eq .chezmoi.os "darwin" -}}
+# =============================================================================
+# macOS — Homebrew
+# =============================================================================
+
+# Install Homebrew if missing
+command -v brew >/dev/null || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
+# CLI tools
+brew "git"
+brew "neovim"
+brew "zoxide"
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "eza"
+brew "bat"
+brew "jq"
+brew "starship"
+
+# Casks (GUI apps)
+cask "ghostty"
+cask "bitwarden"
+BREWFILE
+
+{{ else if eq .chezmoi.os "linux" -}}
+# =============================================================================
+# Linux — apt (Debian/Ubuntu)
+# =============================================================================
+
+sudo apt-get update -qq
+sudo apt-get install -y \
+  git \
+  neovim \
+  fzf \
+  ripgrep \
+  fd-find \
+  bat \
+  jq \
+  curl \
+  unzip
+
+# zoxide (no apt package — use official installer)
+command -v zoxide >/dev/null || curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
+# eza (no apt package — install from GitHub releases)
+if ! command -v eza >/dev/null; then
+  EZA_VERSION=$(curl -s https://api.github.com/repos/eza-community/eza/releases/latest | grep tag_name | cut -d'"' -f4)
+  curl -sSfL "https://github.com/eza-community/eza/releases/download/${EZA_VERSION}/eza_x86_64-unknown-linux-gnu.tar.gz" \
+    | sudo tar -xz -C /usr/local/bin
+fi
+
+# starship
+command -v starship >/dev/null || curl -sSfL https://starship.rs/install.sh | sh -s -- --yes
+
+{{ end -}}

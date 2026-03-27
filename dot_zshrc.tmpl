@@ -1,0 +1,60 @@
+# =============================================================================
+# PATH
+# =============================================================================
+{{ if eq .chezmoi.os "darwin" -}}
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+{{ else if eq .chezmoi.os "linux" -}}
+export PATH="$HOME/.local/bin:$PATH"
+{{ end -}}
+
+# =============================================================================
+# Locale — UTF-8 required for Japanese input
+# =============================================================================
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# =============================================================================
+# Editor
+# =============================================================================
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# =============================================================================
+# History
+# =============================================================================
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
+
+# =============================================================================
+# Aliases
+# =============================================================================
+alias vim="nvim"
+alias ll="ls -lah"
+alias ..="cd .."
+alias ...="cd ../.."
+
+{{ if eq .chezmoi.os "darwin" -}}
+# macOS-specific
+alias ls="ls -G"
+{{ else if eq .chezmoi.os "linux" -}}
+# Linux-specific
+alias ls="ls --color=auto"
+{{ end -}}
+
+# =============================================================================
+# Zoxide
+# =============================================================================
+eval "$(zoxide init zsh)"
+
+# =============================================================================
+# Prompt (minimal)
+# =============================================================================
+autoload -Uz vcs_info
+precmd() { vcs_info }
+zstyle ':vcs_info:git:*' formats ' (%b)'
+setopt PROMPT_SUBST
+PROMPT='%F{cyan}%~%f%F{yellow}${vcs_info_msg_0_}%f %# '
