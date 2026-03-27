@@ -1,8 +1,0 @@
-#!/bin/bash
-# Merge theme into opencode config without overwriting other settings
-current=$(cat)
-if [ -z "$current" ] || ! echo "$current" | jq . &>/dev/null 2>&1; then
-    echo '{"theme": "catppuccin-macchiato"}'
-else
-    echo "$current" | jq '. + {"theme": "catppuccin-macchiato"}'
-fi
