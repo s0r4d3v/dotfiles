@@ -57,8 +57,8 @@ source "$HOME/.cargo/env" 2>/dev/null || true
 # Install rustup only if not already installed (check binary AND .rustup dir)
 if ! command -v rustup &>/dev/null && [ ! -d "$HOME/.rustup" ]; then
     echo "Installing Rust toolchain..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path || true
-    source "$HOME/.cargo/env" 2>/dev/null || true
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+    source "$HOME/.cargo/env"
 fi
 
 # Format: "package:binary" — binary is what's checked with command -v
