@@ -7,6 +7,7 @@ Personal dotfiles managed with [chezmoi](https://chezmoi.io). Supports macOS and
 ## Setup
 
 ```sh
+mkdir -p ~/.local/bin
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v
 exec zsh
 nvim  # lazy.nvim auto-installs plugins on first launch
@@ -21,7 +22,8 @@ Inside Neovim, install formatters/linters:
 
 ```sh
 rm -f ~/.zshrc ~/.tmux.conf && rm -rf ~/.config/nvim ~/.local/share/chezmoi ~/.config/chezmoi
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v  # same as first setup
+mkdir -p ~/.local/bin
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply s0r4d3v
 exec zsh
 ```
 
