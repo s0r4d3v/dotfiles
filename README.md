@@ -77,6 +77,21 @@ git add -p && git commit -m "..." && git push
 
 ---
 
+## Troubleshooting
+
+**`error: experimental Nix feature 'nix-command' is disabled`**
+
+The Nix installer enables this by default, but requires a full terminal restart (not just `exec zsh`) to take effect. If it still fails after reopening the terminal, enable it manually:
+
+```sh
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
+
+Then retry the `nix run` command.
+
+---
+
 ## Repository structure
 
 ```
