@@ -121,6 +121,7 @@ if ! command -v age &>/dev/null; then
     echo "Installing age..."
     sudo apt-get install -y -qq age 2>/dev/null || {
         AGE_VERSION=$(curl -fsSL https://api.github.com/repos/FiloSottile/age/releases/latest | jq -r '.tag_name | ltrimstr("v")')
+        [[ "$AGE_VERSION" =~ ^[0-9] ]] || { echo "Error: could not fetch age version"; exit 1; }
         curl -fsSL "https://dl.filippo.io/age/v${AGE_VERSION}?for=linux/amd64" | sudo tar -xz -C /usr/local/bin
     }
 fi
@@ -129,6 +130,7 @@ fi
 if ! command -v sops &>/dev/null; then
     echo "Installing sops..."
     SOPS_VERSION=$(curl -fsSL https://api.github.com/repos/getsops/sops/releases/latest | jq -r .tag_name)
+    [[ "$SOPS_VERSION" == v* ]] || { echo "Error: could not fetch sops version"; exit 1; }
     curl -fsSL "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.amd64" -o /tmp/sops
     sudo install /tmp/sops /usr/local/bin/sops
 fi
@@ -180,6 +182,7 @@ fi
 if ! command -v doggo &>/dev/null; then
     echo "Installing doggo..."
     DOGGO_VERSION=$(curl -fsSL https://api.github.com/repos/mr-karan/doggo/releases/latest | jq -r '.tag_name | ltrimstr("v")')
+    [[ "$DOGGO_VERSION" =~ ^[0-9] ]] || { echo "Error: could not fetch doggo version"; exit 1; }
     curl -fsSL "https://github.com/mr-karan/doggo/releases/download/v${DOGGO_VERSION}/doggo_${DOGGO_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp doggo
     sudo install /tmp/doggo /usr/local/bin/doggo
 fi
