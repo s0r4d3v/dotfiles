@@ -111,7 +111,7 @@ for entry in "${CARGO_PACKAGES[@]}"; do
     bin="${entry##*:}"
     if ! command -v "$bin" &>/dev/null; then
         echo "  Installing $pkg..."
-        cargo binstall -y --no-confirm "$pkg" 2>/dev/null || echo "  Warning: failed to install $pkg"
+        cargo binstall -y --no-confirm "$pkg" || echo "  Warning: failed to install $pkg"
     fi
 done
 
