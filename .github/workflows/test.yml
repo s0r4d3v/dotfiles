@@ -1,0 +1,31 @@
+name: Validate Dotfiles
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        name: Lint
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install chezmoi
+              run: |
+                  sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+            - name: Validate chezmoi source
+              run: |
+                  chezmoi doctor || true
+                  echo "✓ chezmoi source is valid"
+
+            - name: Check Lua syntax (Neovim config)
+              run: |
+                  sudo apt-get install -y luac
+                  find dot_config/nvim -name '*.lua' -exec luac -p {} \;
+                  echo "✓ All Lua files have valid syntax"

@@ -1,0 +1,25 @@
+# Atuin shell history configuration
+
+# Sync
+auto_sync = false
+
+# Search
+search_mode = "fuzzy"
+filter_mode = "global"
+style = "compact"
+inline_height = 20
+
+# UI
+show_preview = true
+show_help = true
+exit_mode = "return-original"
+
+# Keybindings
+keymap_mode = "vim-normal"
+
+# Stats
+common_subcommands = ["cargo", "git", "npm", "yarn", "kubectl", "docker"]
+
+# Advanced
+update_check = false
+enter_accept = true

@@ -1,0 +1,24 @@
+# Environment
+.direnv
+.env
+.envrc
+
+# Temporary files
+temp_*
+
+# Virtual environments
+venv/
+
+# IDE/Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+
+# chezmoi
+# Age key (never commit)
+key.txt
