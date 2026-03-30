@@ -109,6 +109,8 @@ return {
         "ts_ls",                     -- TypeScript / JavaScript
         "html",                      -- HTML
         "cssls",                     -- CSS
+        "jsonls",                    -- JSON
+        "yamlls",                    -- YAML
         "nixd",                      -- Nix
         "volar",                     -- Vue / Slidev
         "spyglassmc_language_server", -- mcfunction (Minecraft datapacks)
