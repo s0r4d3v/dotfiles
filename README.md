@@ -72,10 +72,52 @@ cd ~/dotfiles
 
 | Task | File |
 |------|------|
-| Add/remove a package | `home/shared.nix` |
+| Add/remove a package or LSP server | `home/shared.nix` |
 | Add a Mac cask | `darwin/configuration.nix` |
+| Change macOS system settings | `darwin/configuration.nix` → `system.defaults` |
 | Add/edit a secret | `sops secrets/secrets.yaml` |
 | Update all inputs | `nix flake update` |
+
+---
+
+## Keybindings
+
+### Tmux (`prefix` = `Ctrl+A`)
+
+| Key | Action |
+|-----|--------|
+| `prefix + t` | Floating terminal (current dir) |
+| `prefix + g` | Lazygit popup (current dir) |
+| `prefix + f` | fzf file picker → open in nvim |
+| `prefix + -` | Split horizontal |
+| `prefix + \` | Split vertical |
+| `prefix + r` | Reload tmux config |
+| `C-h/j/k/l` | Move between panes / nvim windows |
+
+### Zsh
+
+| Key | Action |
+|-----|--------|
+| `Esc` | Vi normal mode |
+| `v` (normal mode) | Edit command in `$EDITOR` |
+| `Ctrl+R` | fzf history search |
+| `Ctrl+T` | fzf file insert at cursor |
+| `Alt+C` | fzf cd into subdirectory |
+| `↑` / `↓` | History search by substring |
+| `Tab` | fzf completion menu |
+
+### Neovim (see `config/nvim/lua/plugins/` for full bindings)
+
+| Key | Action |
+|-----|--------|
+| `<leader>ff` | Find files |
+| `<leader>fg` | Live grep |
+| `<leader>gg` | Lazygit |
+| `<leader>e` | File explorer |
+| `<leader>cs` | Symbol outline |
+| `<leader>cf` | Format buffer |
+| `<leader>z` | Zen mode |
+| `<leader>sd` | Dashboard |
 
 ---
 
