@@ -10,8 +10,4 @@
   home.sessionPath = [
     "${config.home.homeDirectory}/.local/bin"
   ];
-
-  programs.zsh.shellAliases = {
-    ls = "ls --color=auto";
-  };
 }

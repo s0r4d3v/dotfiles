@@ -19,9 +19,9 @@
 
   outputs = { self, nixpkgs, home-manager, nix-darwin, sops-nix, ... }:
   let
-    # Add a new Mac:   darwinConfigurations."<name>" = mkDarwin { username = "<name>"; system = "aarch64-darwin"; };
-    # Add a new Linux: homeConfigurations."<name>"   = mkLinux  { username = "<name>"; };
-    mkDarwin = { username, system ? "x86_64-darwin" }:
+    # To add a new user, add entries for each platform they use.
+    # Apply with: ./switch  (auto-detects platform)
+    mkDarwin = { username, system }:
       nix-darwin.lib.darwinSystem {
         inherit system;
         specialArgs = { inherit username; };
@@ -29,16 +29,16 @@
           ./darwin/configuration.nix
           home-manager.darwinModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit username; };
-            home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ];
-            home-manager.users.${username} = import ./home/darwin.nix;
+            home-manager.useGlobalPkgs      = true;
+            home-manager.useUserPackages    = true;
+            home-manager.extraSpecialArgs   = { inherit username; };
+            home-manager.sharedModules      = [ sops-nix.homeManagerModules.sops ];
+            home-manager.users.${username}  = import ./home/darwin.nix;
           }
         ];
       };
 
-    mkLinux = { username, system ? "x86_64-linux" }:
+    mkLinux = { username, system }:
       home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = { inherit username; };
@@ -46,11 +46,14 @@
       };
   in
   {
-    # macOS — apply: sudo darwin-rebuild switch --flake .#<username>
-    darwinConfigurations."soranagano" = mkDarwin { username = "soranagano"; };
+    darwinConfigurations = {
+      "soranagano-aarch64" = mkDarwin { username = "soranagano"; system = "aarch64-darwin"; };
+      "soranagano-x86_64"  = mkDarwin { username = "soranagano"; system = "x86_64-darwin"; };
+    };
 
-    # Linux — apply: home-manager switch --flake .#<username>
-    homeConfigurations."soranagano" = mkLinux { username = "soranagano"; };
-
+    homeConfigurations = {
+      "soranagano-x86_64"  = mkLinux { username = "soranagano"; system = "x86_64-linux"; };
+      "soranagano-aarch64" = mkLinux { username = "soranagano"; system = "aarch64-linux"; };
+    };
   };
 }

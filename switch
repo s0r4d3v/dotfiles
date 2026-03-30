@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Pull latest if remote has new commits
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${REPO_DIR}"
+
+if git fetch --quiet origin 2>/dev/null; then
+  LOCAL=$(git rev-parse HEAD)
+  REMOTE=$(git rev-parse '@{u}' 2>/dev/null || echo "${LOCAL}")
+  if [[ "${LOCAL}" != "${REMOTE}" ]]; then
+    echo "Pulling latest changes..."
+    git pull --ff-only
+  fi
+fi
+
+USERNAME=$(whoami)
+ARCH=$(uname -m)
+OS=$(uname -s)
+
+case "${ARCH}" in
+  arm64|aarch64) NIX_ARCH="aarch64" ;;
+  x86_64)        NIX_ARCH="x86_64"  ;;
+  *) echo "Unsupported architecture: ${ARCH}"; exit 1 ;;
+esac
+
+FLAKE=".#${USERNAME}-${NIX_ARCH}"
+
+case "${OS}" in
+  Darwin)
+    echo "Applying darwin config: ${FLAKE}"
+    sudo darwin-rebuild switch --flake "${FLAKE}" "$@"
+    ;;
+  Linux)
+    echo "Applying home-manager config: ${FLAKE}"
+    home-manager switch --flake "${FLAKE}" "$@"
+    ;;
+  *) echo "Unsupported OS: ${OS}"; exit 1 ;;
+esac

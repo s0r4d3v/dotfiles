@@ -1,31 +1,27 @@
 name: Validate Dotfiles
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        name: Lint
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Install chezmoi
-              run: |
-                  sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
-
-            - name: Validate chezmoi source
-              run: |
-                  chezmoi doctor || true
-                  echo "✓ chezmoi source is valid"
-
-            - name: Check Lua syntax (Neovim config)
-              run: |
-                  sudo apt-get install -y luac
-                  find dot_config/nvim -name '*.lua' -exec luac -p {} \;
-                  echo "✓ All Lua files have valid syntax"
+  check:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            name: Linux x86_64
+          - os: macos-13
+            name: macOS Intel
+          - os: macos-latest
+            name: macOS Apple Silicon
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: "experimental-features = nix-command flakes"
+      - run: nix flake check --no-build
