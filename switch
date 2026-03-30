@@ -29,11 +29,23 @@ FLAKE=".#${USERNAME}-${NIX_ARCH}"
 case "${OS}" in
   Darwin)
     echo "Applying darwin config: ${FLAKE}"
-    sudo darwin-rebuild switch --flake "${FLAKE}" "$@"
+    if command -v darwin-rebuild &>/dev/null; then
+      sudo darwin-rebuild switch --flake "${FLAKE}" "$@"
+    else
+      echo "(darwin-rebuild not found — bootstrapping via nix run)"
+      sudo nix --extra-experimental-features 'nix-command flakes' \
+        run nix-darwin -- switch --flake "${FLAKE}" "$@"
+    fi
     ;;
   Linux)
     echo "Applying home-manager config: ${FLAKE}"
-    home-manager switch --flake "${FLAKE}" "$@"
+    if command -v home-manager &>/dev/null; then
+      home-manager switch --flake "${FLAKE}" "$@"
+    else
+      echo "(home-manager not found — bootstrapping via nix run)"
+      nix --extra-experimental-features 'nix-command flakes' \
+        run home-manager/master -- switch --flake "${FLAKE}" "$@"
+    fi
     ;;
   *) echo "Unsupported OS: ${OS}"; exit 1 ;;
 esac
