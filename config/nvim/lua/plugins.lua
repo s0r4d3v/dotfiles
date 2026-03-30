@@ -393,13 +393,35 @@ return {
     priority = 1000,
     lazy = false,
     keys = {
-      { "<leader>go", function() Snacks.gitbrowse() end, mode = { "n", "v" }, desc = "Git browse (open in browser)" },
+      { "<leader>go", function() Snacks.gitbrowse() end,   mode = { "n", "v" }, desc = "Git browse (open in browser)" },
+      { "<leader>sd", function() Snacks.dashboard() end,                        desc = "Dashboard" },
     },
     opts = {
       indent     = { enabled = true },
       scroll     = { enabled = true },
       words      = { enabled = true },
       gitbrowse  = { enabled = true },
+      dashboard  = {
+        enabled = true,
+        preset = {
+          header = [[
+  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+          keys = {
+            { icon = " ", key = "f", desc = "Find File",       action = ":FzfLua files" },
+            { icon = " ", key = "g", desc = "Live Grep",       action = ":FzfLua live_grep" },
+            { icon = " ", key = "r", desc = "Recent Files",    action = ":FzfLua oldfiles" },
+            { icon = " ", key = "s", desc = "Restore Session", action = function() require("persistence").load() end },
+            { icon = " ", key = "l", desc = "Lazy",            action = ":Lazy" },
+            { icon = "󰒲 ", key = "u", desc = "Update Plugins", action = ":Lazy update" },
+            { icon = " ", key = "q", desc = "Quit",            action = ":qa" },
+          },
+        },
+      },
     },
   },
   {
@@ -430,6 +452,7 @@ return {
         { "<leader>x",  group = "Diagnostics" },
         { "<leader>S",  group = "Session" },
         -- Standalone
+        { "<leader>sd", desc = "Dashboard" },
         { "<leader>w",  desc = "Save" },
         { "<leader>q",  desc = "Quit" },
         { "<leader>e",  desc = "Explorer" },
