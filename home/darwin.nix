@@ -10,7 +10,4 @@
     "${config.home.homeDirectory}/.local/bin"
   ];
 
-  programs.zsh.shellAliases = {
-    ls = "ls -G";
-  };
 }

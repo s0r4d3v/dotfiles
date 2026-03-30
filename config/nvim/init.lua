@@ -27,27 +27,47 @@ vim.g.clipboard = {
 
 -- Options
 vim.g.mapleader = " "
-vim.opt.number = true
+vim.opt.mouse          = ""     -- disable mouse
+vim.opt.number         = true
 vim.opt.relativenumber = true
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 2
-vim.opt.tabstop = 2
-vim.opt.smartindent = true
-vim.opt.wrap = false
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.termguicolors = true
-vim.opt.splitbelow = true
-vim.opt.splitright = true
-vim.opt.scrolloff = 8
+vim.opt.expandtab      = true
+vim.opt.shiftwidth     = 2
+vim.opt.tabstop        = 2
+vim.opt.smartindent    = true
+vim.opt.wrap           = false
+vim.opt.ignorecase     = true
+vim.opt.smartcase      = true
+vim.opt.termguicolors  = true
+vim.opt.splitbelow     = true
+vim.opt.splitright     = true
+vim.opt.scrolloff      = 8
 
 -- Keymaps
-vim.keymap.set("n", "<leader>w", "<cmd>w<cr>")
-vim.keymap.set("n", "<leader>q", "<cmd>q<cr>")
-vim.keymap.set("n", "<C-h>", "<C-w>h")
-vim.keymap.set("n", "<C-j>", "<C-w>j")
-vim.keymap.set("n", "<C-k>", "<C-w>k")
-vim.keymap.set("n", "<C-l>", "<C-w>l")
+vim.keymap.set("n", "<leader>w",   "<cmd>w<cr>",        { desc = "Save" })
+vim.keymap.set("n", "<leader>q",   "<cmd>q<cr>",        { desc = "Quit" })
+vim.keymap.set("n", "<Esc>",       "<cmd>nohlsearch<cr>")   -- clear search highlight
+vim.keymap.set("n", "<C-d>",       "<C-d>zz")               -- scroll down, keep centered
+vim.keymap.set("n", "<C-u>",       "<C-u>zz")               -- scroll up, keep centered
+vim.keymap.set("n", "n",           "nzzzv")                  -- next match, centered
+vim.keymap.set("n", "N",           "Nzzzv")                  -- prev match, centered
+vim.keymap.set("v", "<",           "<gv")                    -- indent, stay in visual
+vim.keymap.set("v", ">",           ">gv")                    -- dedent, stay in visual
+
+-- LSP keymaps (on attach)
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(ev)
+    local map = function(lhs, rhs, desc)
+      vim.keymap.set("n", lhs, rhs, { buffer = ev.buf, desc = desc })
+    end
+    map("gd",          vim.lsp.buf.definition,    "Go to definition")
+    map("gr",          vim.lsp.buf.references,    "References")
+    map("K",           vim.lsp.buf.hover,         "Hover")
+    map("<leader>cr",  vim.lsp.buf.rename,        "Rename")
+    map("<leader>ca",  vim.lsp.buf.code_action,   "Code action")
+    map("[d",          vim.diagnostic.goto_prev,  "Prev diagnostic")
+    map("]d",          vim.diagnostic.goto_next,  "Next diagnostic")
+  end,
+})
 
 -- Plugins
 require("lazy").setup("plugins")

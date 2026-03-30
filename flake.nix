@@ -11,9 +11,13 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, sops-nix, ... }:
   let
     # Add a new Mac:   darwinConfigurations."<name>" = mkDarwin { username = "<name>"; system = "aarch64-darwin"; };
     # Add a new Linux: homeConfigurations."<name>"   = mkLinux  { username = "<name>"; };
@@ -28,6 +32,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit username; };
+            home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ];
             home-manager.users.${username} = import ./home/darwin.nix;
           }
         ];
@@ -37,7 +42,7 @@
       home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = { inherit username; };
-        modules = [ ./home/linux.nix ];
+        modules = [ ./home/linux.nix sops-nix.homeManagerModules.sops ];
       };
   in
   {

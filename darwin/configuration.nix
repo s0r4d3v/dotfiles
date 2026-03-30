@@ -7,7 +7,10 @@
     enable = true;
     casks = [
       "ghostty"
-      "bitwarden"
+      "claude"
+      "google-chrome"
+      "zoom"
+      "zotero"
     ];
     # Remove casks not listed here on next darwin-rebuild switch
     onActivation.cleanup = "zap";
@@ -24,6 +27,7 @@
   # Nix
   # ===========================================================================
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs.config.allowUnfree = true;
 
   # ===========================================================================
   # Users

@@ -1,21 +1,28 @@
 { config, pkgs, ... }: {
 
   home.packages = with pkgs; [
+    # Core
     git
-    ripgrep
-    fd
+    ripgrep   # rg  — fast grep
+    fd        # fd  — fast find
     fzf
-    eza
-    bat
     jq
-    zoxide
-    starship
-    # formatters / linters (used by neovim conform + nvim-lint)
-    stylua
-    ruff
-    nodePackages.prettier
-    shfmt
-    shellcheck
+    zoxide    # z   — smart cd
+    # Modern replacements
+    eza       # ls/ll/tree
+    bat       # cat
+    delta     # git diff pager
+    dust      # du
+    btop      # top
+    glow      # markdown preview
+    tldr      # quick man pages
+    # Dev
+    gh           # GitHub CLI
+    claude-code
+    nodejs       # required for Mason to install npm-based LSP servers
+    # Secrets
+    age          # modern encryption (encrypt files, secrets)
+    sops         # secrets manager (wraps age/gpg, works with Nix)
   ];
 
   # ===========================================================================
@@ -36,6 +43,19 @@
   # ===========================================================================
   programs.zsh = {
     enable = true;
+    autosuggestion.enable = true;       # fish-like inline suggestions from history
+    syntaxHighlighting.enable = true;   # highlight commands as you type
+    historySubstringSearch = {
+      enable = true;
+      searchUpKey   = [ "^[[A" ];       # up arrow
+      searchDownKey = [ "^[[B" ];       # down arrow
+    };
+    plugins = [
+      {
+        name = "fzf-tab";               # replace completion menu with fzf
+        src  = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
+      }
+    ];
     history = {
       path     = "${config.home.homeDirectory}/.zsh_history";
       size     = 10000;
@@ -46,24 +66,53 @@
     };
     shellAliases = {
       vim   = "nvim";
-      ll    = "ls -lah";
+      # eza
+      ls    = "eza --group-directories-first";
+      ll    = "eza -la --git --group-directories-first";
+      lt    = "eza --tree --git-ignore -I '.git|node_modules|.cache|__pycache__|.DS_Store|*.pyc|dist|.next' --group-directories-first";
+      # bat
+      cat   = "bat --style=plain";
+      # fd / dust / zoxide
+      find  = "fd";
+      du    = "dust";
+      cd    = "z";
+      # nav
       ".."  = "cd ..";
       "..." = "cd ../..";
     };
     initContent = ''
       eval "$(zoxide init zsh)"
-
-      autoload -Uz vcs_info
-      precmd() { vcs_info }
-      zstyle ':vcs_info:git:*' formats ' (%b)'
-      setopt PROMPT_SUBST
-      PROMPT='%F{cyan}%~%f%F{yellow}''${vcs_info_msg_0_}%f %# '
     '';
   };
 
+  # ===========================================================================
+  # Git — delta as pager
+  # ===========================================================================
+  programs.git = {
+    enable = true;
+    settings = {
+      user.name           = "s0r4d3v";
+      user.email          = "s0r4d3v@gmail.com";
+      merge.conflictstyle = "diff3";
+      diff.colorMoved     = "default";
+    };
+  };
+
+  programs.delta = {
+    enable                = true;
+    enableGitIntegration  = true;
+    options.navigate      = true;
+  };
+
+  # ===========================================================================
+  # Starship
+  # ===========================================================================
+  programs.starship.enable = true;  # HM auto-adds `eval "$(starship init zsh)"`
+
   home.sessionVariables = {
-    LANG   = "en_US.UTF-8";
-    LC_ALL = "en_US.UTF-8";
+    LANG              = "en_US.UTF-8";
+    LC_ALL            = "en_US.UTF-8";
+    SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
   };
 
   # ===========================================================================
@@ -81,7 +130,7 @@
       set -sg escape-time 10
       set -g focus-events on
 
-      set -g mouse on
+      set -g mouse off
       set -g history-limit 50000
       set -g base-index 1
       setw -g pane-base-index 1
@@ -91,14 +140,16 @@
       set -g prefix C-a
       bind C-a send-prefix
 
-      bind r source-file ~/.tmux.conf \; display "Reloaded"
+      bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded"
       bind -  split-window -v -c "#{pane_current_path}"
       bind '\' split-window -h -c "#{pane_current_path}"
 
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
+      # C-hjkl: move between tmux panes, or nvim windows if nvim is active
+      is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?|fzf)(diff)?$'"
+      bind -n C-h if-shell "$is_vim" 'send-keys C-h' 'select-pane -L'
+      bind -n C-j if-shell "$is_vim" 'send-keys C-j' 'select-pane -D'
+      bind -n C-k if-shell "$is_vim" 'send-keys C-k' 'select-pane -U'
+      bind -n C-l if-shell "$is_vim" 'send-keys C-l' 'select-pane -R'
 
       setw -g mode-keys vi
       bind v copy-mode
@@ -106,6 +157,112 @@
       bind -T copy-mode-vi V send -X select-line
       bind -T copy-mode-vi y send -X copy-selection-and-cancel
     '';
+  };
+
+  # ===========================================================================
+  # Secrets — sops-nix decrypts on every activation
+  # Key must exist at ~/.config/sops/age/keys.txt before first run.
+  # To add a secret: edit secrets/secrets.yaml (it is sops-encrypted in the repo).
+  # Access path at runtime: config.sops.secrets.<name>.path
+  # ===========================================================================
+  # ===========================================================================
+  # SSH — config managed by HM, keys decrypted by sops-nix
+  # ===========================================================================
+  home.file.".ssh/config" = {
+    text = ''
+      Include ~/.colima/ssh_config
+      Include ~/.ssh/config.d/hosts
+
+      Host aces-ubuntu-2
+          HostName 150.249.250.83
+          User soranagano
+          Port 11022
+          ForwardAgent yes
+
+      Host aces-desktop-24
+          HostName 192.168.0.219
+          User soranagano
+          ProxyCommand ssh aces-ubuntu-2 -W %h:%p
+          ForwardAgent yes
+          ServerAliveInterval 60
+          ServerAliveCountMax 5
+
+      Host aces-desktop-13
+          HostName 192.168.0.242
+          User soranagano
+          ProxyCommand ssh aces-ubuntu-2 -W %h:%p
+          ForwardAgent yes
+          ServerAliveInterval 60
+          ServerAliveCountMax 5
+
+      Host tanaka-site
+          HostName phiz.c.u-tokyo.ac.jp
+          User tanaka
+          Port 22
+          IdentityFile ~/.ssh/tanaka-site
+
+      Host *
+          IdentityFile ~/.ssh/id_ed25519
+          RemoteForward 2489 127.0.0.1:2489
+          ControlMaster auto
+          ControlPath ~/.ssh/master-%r@%n:%p
+          ControlPersist 10m
+          ServerAliveInterval 60
+          ServerAliveCountMax 3
+          ForwardAgent no
+          HashKnownHosts no
+          AddKeysToAgent yes
+    '';
+  };
+
+  sops = {
+    age.keyFile     = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    defaultSopsFile = ../secrets/secrets.yaml;
+    secrets = {
+      "ssh/id_ed25519"       = { path = "${config.home.homeDirectory}/.ssh/id_ed25519";       mode = "0600"; };
+      "ssh/id_ed25519_pub"   = { path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";   mode = "0644"; };
+      "ssh/id_rsa"           = { path = "${config.home.homeDirectory}/.ssh/id_rsa";           mode = "0600"; };
+      "ssh/id_rsa_pub"       = { path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";       mode = "0644"; };
+      "ssh/tanaka-site"      = { path = "${config.home.homeDirectory}/.ssh/tanaka-site";      mode = "0600"; };
+      "ssh/tanaka-site_pub"  = { path = "${config.home.homeDirectory}/.ssh/tanaka-site.pub";  mode = "0644"; };
+      "ssh/m02uku_pem"       = { path = "${config.home.homeDirectory}/.ssh/m02uku.pem";       mode = "0600"; };
+      "ssh/tanaka_ppk"       = { path = "${config.home.homeDirectory}/.ssh/tanaka.ppk";       mode = "0600"; };
+      "ssh/config_d_hosts"   = { path = "${config.home.homeDirectory}/.ssh/config.d/hosts";   mode = "0600"; };
+    };
+  };
+
+  # ===========================================================================
+  # Claude Code — MCP servers
+  # ===========================================================================
+  home.file.".claude/settings.json".text = builtins.toJSON {
+    mcpServers = {
+      # Nix knowledge: nixpkgs, nix-darwin, home-manager, and any other library
+      context7 = {
+        command = "npx";
+        args    = [ "-y" "@upstash/context7-mcp" ];
+      };
+      # HTTP fetch — retrieve doc pages, APIs, or any URL
+      fetch = {
+        command = "npx";
+        args    = [ "-y" "@modelcontextprotocol/server-fetch" ];
+      };
+      # Filesystem access rooted at home directory
+      filesystem = {
+        command = "npx";
+        args    = [ "-y" "@modelcontextprotocol/server-filesystem" config.home.homeDirectory ];
+      };
+      # Structured multi-step reasoning
+      sequential-thinking = {
+        command = "npx";
+        args    = [ "-y" "@modelcontextprotocol/server-sequential-thinking" ];
+      };
+      # GitHub API — requires GITHUB_TOKEN in environment
+      github = {
+        command = "npx";
+        args    = [ "-y" "@modelcontextprotocol/server-github" ];
+        env     = { GITHUB_TOKEN = "\${GITHUB_TOKEN}"; };
+      };
+    };
   };
 
   home.stateVersion = "25.11";

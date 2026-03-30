@@ -24,10 +24,22 @@ homeConfigurations."<username>" = mkLinux {
 };
 ```
 
-### 2. Bootstrap
+### 2. Place age key
+
+The age private key must exist **before** applying. Retrieve it from Bitwarden:
 
 ```sh
-git clone git@github.com:s0r4d3v/dotfiles.git /path/to/dotfiles
+mkdir -p ~/.config/sops/age
+# Paste your private key content:
+nano ~/.config/sops/age/keys.txt
+```
+
+### 3. Bootstrap
+
+> **Note:** Clone via HTTPS on first setup — SSH keys are not yet placed until after activation.
+
+```sh
+git clone https://github.com/s0r4d3v/dotfiles.git /path/to/dotfiles
 cd /path/to/dotfiles
 ```
 
@@ -46,10 +58,81 @@ sudo darwin-rebuild switch --flake .#<username>
 nix run home-manager/master -- switch --flake .#<username>
 ```
 
-### 3. Install Neovim plugins
+SSH keys are automatically decrypted to `~/.ssh/` during activation.
+
+### 4. Install Neovim plugins
 
 ```sh
 exec zsh && nvim
+```
+
+---
+
+## Secrets
+
+Secrets are managed with [sops](https://github.com/getsops/sops) + [age](https://github.com/FiloSottile/age) and automatically decrypted during `darwin-rebuild switch` / `home-manager switch` via [sops-nix](https://github.com/Mic92/sops-nix).
+
+### Age key setup (one time per identity)
+
+```sh
+# Generate your age key
+mkdir -p ~/.config/sops/age
+age-keygen -o ~/.config/sops/age/keys.txt
+
+# Output looks like:
+# Public key: age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Print just the public key anytime:
+age-keygen -y ~/.config/sops/age/keys.txt
+```
+
+**Save the private key (`~/.config/sops/age/keys.txt` content) to Bitwarden as a secure note.**
+
+Then update `secrets/.sops.yaml` with your public key:
+
+```yaml
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    age: age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+### Add or edit secrets
+
+```sh
+cd /path/to/dotfiles
+
+# Create or edit secrets (opens $EDITOR with decrypted content, saves encrypted)
+sops secrets/secrets.yaml
+```
+
+The file structure for current secrets:
+
+```yaml
+ssh/id_ed25519: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    <paste private key content>
+    -----END OPENSSH PRIVATE KEY-----
+ssh/id_ed25519_pub: "ssh-ed25519 AAAA... user@host"
+```
+
+To add a new secret, add the key in `secrets/secrets.yaml` via `sops`, then declare it in `home/shared.nix`:
+
+```nix
+sops.secrets."github_token" = {};
+# Access at runtime: $(cat ${config.sops.secrets.github_token.path})
+```
+
+### Apply changes and sync to remote
+
+```sh
+# Commit encrypted secrets (safe to push — only readable with your age key)
+git add secrets/secrets.yaml
+git commit -m "secrets: update"
+git push
+
+# On remote machine — pull and apply (sops-nix decrypts automatically)
+git pull
+home-manager switch --flake .#<username>
 ```
 
 ---
@@ -66,6 +149,7 @@ home-manager switch --flake .#<username>          # Linux
 |------|------|
 | Add/remove a package | `home/shared.nix` |
 | Add a Mac cask | `darwin/configuration.nix` |
+| Add/edit a secret | `sops secrets/secrets.yaml` |
 | Update all inputs | `nix flake update` |
 
 ---
