@@ -39,29 +39,19 @@ git clone https://github.com/s0r4d3v/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-**Mac (first time only):**
+**Mac (first time only — move files that conflict with nix-darwin):**
 ```sh
 sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
 sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
-
-# Detect arch and bootstrap nix-darwin (required only on first run)
-ARCH=$(uname -m | sed 's/arm64/aarch64/')
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ".#$(whoami)-${ARCH}"
-exec zsh
-
-# All subsequent applies:
-./switch
 ```
 
-**Linux:**
+**All platforms (first run and every run after):**
 ```sh
-ARCH=$(uname -m)
-nix run home-manager/master -- switch --flake ".#$(whoami)-${ARCH}"
-
-# All subsequent applies:
 ./switch
 ```
+
+`./switch` auto-detects OS and architecture. On first run it bootstraps via `nix run` if `darwin-rebuild` / `home-manager` are not yet installed.
 
 SSH keys are automatically decrypted to `~/.ssh/` during activation.
 
