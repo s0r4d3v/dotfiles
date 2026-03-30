@@ -9,8 +9,12 @@ if git fetch --quiet origin 2>/dev/null; then
   LOCAL=$(git rev-parse HEAD)
   REMOTE=$(git rev-parse '@{u}' 2>/dev/null || echo "${LOCAL}")
   if [[ "${LOCAL}" != "${REMOTE}" ]]; then
-    echo "Pulling latest changes..."
-    git pull --ff-only
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+      echo "Warning: local uncommitted changes detected — skipping pull. Commit or stash them first."
+    else
+      echo "Pulling latest changes..."
+      git pull --ff-only
+    fi
   fi
 fi
 
