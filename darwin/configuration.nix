@@ -41,4 +41,44 @@
   # ===========================================================================
   system.primaryUser = username;
   system.stateVersion = 6;
+
+  system.defaults = {
+    NSGlobalDomain = {
+      # Key repeat
+      KeyRepeat                              = 2;     # fastest
+      InitialKeyRepeat                       = 15;
+      ApplePressAndHoldEnabled               = false; # disable accent popup → enables repeat in all apps
+      # Appearance
+      AppleInterfaceStyle                    = "Dark";
+      AppleShowAllExtensions                 = true;
+      # Disable autocorrections
+      NSAutomaticSpellingCorrectionEnabled   = false;
+      NSAutomaticCapitalizationEnabled       = false;
+      NSAutomaticDashSubstitutionEnabled     = false;
+      NSAutomaticQuoteSubstitutionEnabled    = false;
+      # Scroll direction
+      "com.apple.swipescrolldirection"       = false; # natural scroll off
+    };
+
+    dock = {
+      autohide                = true;
+      autohide-delay          = 0.0;
+      autohide-time-modifier  = 0.2;
+      show-recents            = false;
+      tilesize                = 48;
+    };
+
+    finder = {
+      AppleShowAllFiles       = true;   # show hidden files
+      ShowPathbar             = true;
+      ShowStatusBar           = true;
+      FXDefaultSearchScope    = "SCcf"; # search current folder
+      FXPreferredViewStyle    = "Nlsv"; # list view
+    };
+
+    screencapture = {
+      location = "~/Desktop";
+      type     = "png";
+    };
+  };
 }
