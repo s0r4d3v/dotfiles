@@ -27,7 +27,7 @@ The age private key must exist **before** applying. Retrieve it from Bitwarden:
 
 ```sh
 mkdir -p ~/.config/sops/age
-nano ~/.config/sops/age/keys.txt   # paste your private key
+vim ~/.config/sops/age/keys.txt    # paste your private key
 ```
 
 ### 3. Bootstrap
