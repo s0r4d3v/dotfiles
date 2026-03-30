@@ -18,6 +18,7 @@
     tldr      # quick man pages
     # Dev
     gh           # GitHub CLI
+    lazygit      # git TUI (used by tmux popup + nvim plugin)
     claude-code
     nodejs       # runtime for node-based LSP servers and tools
 
