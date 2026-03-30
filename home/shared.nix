@@ -80,6 +80,10 @@
         name = "fzf-tab";               # replace completion menu with fzf
         src  = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
       }
+      {
+        name = "zsh-vi-mode";           # vi mode (must be last — overwrites bindings)
+        src  = "${pkgs.zsh-vi-mode}/share/zsh-vi-mode";
+      }
     ];
     history = {
       path     = "${config.home.homeDirectory}/.zsh_history";
@@ -111,6 +115,8 @@
       # Remove zsh default aliases not needed
       unalias run-help 2>/dev/null || true
       unalias which-command 2>/dev/null || true
+      # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
+      zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
     '';
   };
 
@@ -136,6 +142,12 @@
   # ===========================================================================
   # Starship
   # ===========================================================================
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;  # Ctrl+R history, Ctrl+T file, Alt+C cd
+    # zsh-vi-mode overwrites these; zvm_after_init_commands in initContent re-binds them
+  };
+
   programs.starship.enable = true;  # HM auto-adds `eval "$(starship init zsh)"`
 
   home.sessionVariables = {
@@ -183,6 +195,7 @@
   # Claude Code — MCP servers
   # ===========================================================================
   home.file.".claude/settings.json".text = builtins.toJSON {
+    vim = true; # vi keybindings in Claude Code prompt (Esc for normal mode)
     mcpServers = {
       # Nix knowledge: nixpkgs, nix-darwin, home-manager, and any other library
       context7 = {
