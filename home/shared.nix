@@ -20,6 +20,7 @@
     gh           # GitHub CLI
     claude-code
     nodejs       # required for Mason to install npm-based LSP servers
+    nixfmt-rfc-style  # Nix formatter (used by conform.nvim, not available via Mason)
     # Secrets
     age          # modern encryption (encrypt files, secrets)
     sops         # secrets manager (wraps age/gpg, works with Nix)

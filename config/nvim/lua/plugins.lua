@@ -54,6 +54,7 @@ return {
         ensure_installed = {
           "lua", "python", "bash", "go", "typescript", "javascript",
           "json", "yaml", "toml", "markdown", "markdown_inline",
+          "html", "css", "nix", "vue",
         },
         highlight = { enable = true },
         indent = { enable = true },
@@ -90,17 +91,46 @@ return {
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim" },
     opts = {
-      ensure_installed = { "lua_ls", "pyright", "bashls" },
+      ensure_installed = {
+        "lua_ls",   -- Lua
+        "pyright",  -- Python
+        "bashls",   -- Shell
+        "ts_ls",    -- TypeScript / JavaScript
+        "html",     -- HTML
+        "cssls",    -- CSS
+        "nixd",     -- Nix
+        "volar",    -- Vue / Slidev
+      },
       automatic_enable = true,
+    },
+  },
+  {
+    -- Auto-installs formatters and linters that Mason doesn't handle via mason-lspconfig
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    opts = {
+      ensure_installed = {
+        "stylua",     -- Lua formatter
+        "prettier",   -- JS/TS/HTML/CSS/Vue/JSON/YAML/Markdown formatter
+        "shfmt",      -- Shell formatter
+        "ruff",       -- Python linter
+        "eslint_d",   -- JS/TS/Vue linter
+        "shellcheck", -- Shell linter
+        "stylelint",  -- CSS linter
+        -- nixfmt is installed via Nix (home.packages), not Mason
+      },
     },
   },
   {
     "neovim/nvim-lspconfig",  -- provides default server configs (cmd, root_dir, etc.)
     dependencies = { "williamboman/mason-lspconfig.nvim" },
     config = function()
-      -- lua_ls needs custom settings; pyright/bashls use nvim-lspconfig defaults
+      -- Servers that need custom settings; others use nvim-lspconfig defaults
       vim.lsp.config("lua_ls", {
         settings = { Lua = { diagnostics = { globals = { "vim" } } } },
+      })
+      vim.lsp.config("nixd", {
+        settings = { nixd = { formatting = { command = { "nixfmt" } } } },
       })
       -- automatic_enable = true in mason-lspconfig calls vim.lsp.enable() for installed servers
     end,
@@ -133,14 +163,20 @@ return {
     },
     opts = {
       formatters_by_ft = {
-        lua        = { "stylua" },
-        python     = { "ruff_format" },
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        json       = { "prettier" },
-        yaml       = { "prettier" },
-        markdown   = { "prettier" },
-        sh         = { "shfmt" },
+        lua              = { "stylua" },
+        python           = { "ruff_format" },
+        javascript       = { "prettier" },
+        javascriptreact  = { "prettier" },
+        typescript       = { "prettier" },
+        typescriptreact  = { "prettier" },
+        html             = { "prettier" },
+        css              = { "prettier" },
+        vue              = { "prettier" },
+        json             = { "prettier" },
+        yaml             = { "prettier" },
+        markdown         = { "prettier" },
+        sh               = { "shfmt" },
+        nix              = { "nixfmt" },
       },
       format_on_save = { timeout_ms = 500, lsp_fallback = true },
     },
@@ -151,10 +187,14 @@ return {
     config = function()
       local lint = require("lint")
       lint.linters_by_ft = {
-        python     = { "ruff" },
-        javascript = { "eslint_d" },
-        typescript = { "eslint_d" },
-        sh         = { "shellcheck" },
+        python           = { "ruff" },
+        javascript       = { "eslint_d" },
+        javascriptreact  = { "eslint_d" },
+        typescript       = { "eslint_d" },
+        typescriptreact  = { "eslint_d" },
+        vue              = { "eslint_d" },
+        css              = { "stylelint" },
+        sh               = { "shellcheck" },
       }
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
         callback = function() lint.try_lint() end,
