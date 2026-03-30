@@ -44,14 +44,23 @@ cd ~/dotfiles
 sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
 sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#<username>-aarch64
+
+# Detect arch and bootstrap nix-darwin (required only on first run)
+ARCH=$(uname -m | sed 's/arm64/aarch64/')
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ".#<username>-${ARCH}"
 exec zsh
+
+# All subsequent applies:
 ./switch
 ```
 
 **Linux:**
 ```sh
-nix run home-manager/master -- switch --flake .#<username>-x86_64
+ARCH=$(uname -m)
+nix run home-manager/master -- switch --flake ".#<username>-${ARCH}"
+
+# All subsequent applies:
+./switch
 ```
 
 SSH keys are automatically decrypted to `~/.ssh/` during activation.
