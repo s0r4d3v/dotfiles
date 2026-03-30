@@ -133,7 +133,7 @@
   # ===========================================================================
   # SSH — config managed by HM, keys decrypted by sops-nix
   # ===========================================================================
-  home.file.".ssh/config".text = builtins.readFile ../config/ssh/config;
+  # SSH config — managed as a sops secret so it stays encrypted in the public repo
 
   sops = {
     age.keyFile     = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
@@ -148,6 +148,7 @@
       "ssh/m02uku_pem"       = { path = "${config.home.homeDirectory}/.ssh/m02uku.pem";       mode = "0600"; };
       "ssh/tanaka_ppk"       = { path = "${config.home.homeDirectory}/.ssh/tanaka.ppk";       mode = "0600"; };
       "ssh/config_d_hosts"   = { path = "${config.home.homeDirectory}/.ssh/config.d/hosts";   mode = "0600"; };
+      "ssh/config"           = { path = "${config.home.homeDirectory}/.ssh/config";           mode = "0600"; };
     };
   };
 
