@@ -141,6 +141,45 @@ sops.secrets."github_token" = {};
 # Access at runtime: $(cat ${config.sops.secrets.github_token.path})
 ```
 
+### SSH keys
+
+SSH keys are stored as sops secrets and decrypted to `~/.ssh/` on every activation.
+
+**Add a new key:**
+
+1. Edit secrets: `sops secrets/secrets.yaml`
+2. Add under `ssh:`:
+   ```yaml
+   ssh:
+       my_new_key: |
+           -----BEGIN OPENSSH PRIVATE KEY-----
+           ...
+           -----END OPENSSH PRIVATE KEY-----
+       my_new_key_pub: "ssh-ed25519 AAAA..."
+   ```
+3. Declare the path in `home/shared.nix`:
+   ```nix
+   sops.secrets."ssh/my_new_key"     = { path = "${config.home.homeDirectory}/.ssh/my_new_key";     mode = "0600"; };
+   sops.secrets."ssh/my_new_key_pub" = { path = "${config.home.homeDirectory}/.ssh/my_new_key_pub"; mode = "0644"; };
+   ```
+4. Commit and apply: `git add -A && git commit -m "secrets: add my_new_key" && ./switch`
+
+**Remove a key:**
+
+1. Remove the `sops.secrets` entries from `home/shared.nix`
+2. Remove the key from `secrets/secrets.yaml` via `sops secrets/secrets.yaml`
+3. Commit and apply
+
+### Edit SSH config
+
+The SSH config (`~/.ssh/config`) is stored encrypted. To edit it:
+
+```sh
+sops secrets/secrets.yaml   # edit the ssh.config value
+git add secrets/secrets.yaml && git commit -m "secrets: update ssh config"
+./switch
+```
+
 ### Sync secrets to another machine
 
 ```sh
