@@ -47,7 +47,7 @@ sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
 
 # Detect arch and bootstrap nix-darwin (required only on first run)
 ARCH=$(uname -m | sed 's/arm64/aarch64/')
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ".#<username>-${ARCH}"
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ".#$(whoami)-${ARCH}"
 exec zsh
 
 # All subsequent applies:
@@ -57,7 +57,7 @@ exec zsh
 **Linux:**
 ```sh
 ARCH=$(uname -m)
-nix run home-manager/master -- switch --flake ".#<username>-${ARCH}"
+nix run home-manager/master -- switch --flake ".#$(whoami)-${ARCH}"
 
 # All subsequent applies:
 ./switch
