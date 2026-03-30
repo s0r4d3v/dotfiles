@@ -1,54 +1,55 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
 
   home.packages = with pkgs; [
     # Core
     git
-    ripgrep   # rg  — fast grep
-    fd        # fd  — fast find
+    ripgrep # rg  — fast grep
+    fd # fd  — fast find
     fzf
     jq
-    zoxide    # z   — smart cd
+    zoxide # z   — smart cd
     # Modern replacements
-    eza       # ls/ll/tree
-    bat       # cat
-    delta     # git diff pager
-    dust      # du
-    btop      # top
-    glow      # markdown preview
-    tldr      # quick man pages
+    eza # ls/ll/tree
+    bat # cat
+    delta # git diff pager
+    dust # du
+    btop # top
+    glow # markdown preview
+    tldr # quick man pages
     # Dev
-    gh           # GitHub CLI
-    lazygit      # git TUI (used by tmux popup + nvim plugin)
+    gh # GitHub CLI
+    lazygit # git TUI (used by tmux popup + nvim plugin)
     claude-code
-    nodejs       # runtime for node-based LSP servers and tools
+    nodejs # runtime for node-based LSP servers and tools
 
     # ===========================================================================
     # Neovim LSP servers (all managed by Nix; enabled via vim.lsp.enable in nvim)
     # ===========================================================================
-    lua-language-server          # lua_ls
-    pyright                      # python
-    bash-language-server         # bashls
-    typescript-language-server   # ts_ls  (JS / TS)
+    lua-language-server # lua_ls
+    pyright # python
+    bash-language-server # bashls
+    typescript-language-server # ts_ls  (JS / TS)
     vscode-langservers-extracted # html, cssls, jsonls
-    yaml-language-server         # yamlls
-    vue-language-server          # vue_ls (Vue / Slidev)
-    nixd                         # nixd
+    yaml-language-server # yamlls
+    vue-language-server # vue_ls (Vue / Slidev)
+    nixd # nixd
     # spyglassmc_language_server: no nixpkgs package — launched via npx in nvim config
 
     # ===========================================================================
     # Neovim formatters & linters (managed by Nix; used by conform + nvim-lint)
     # ===========================================================================
-    nixfmt                       # Nix
-    stylua                       # Lua
-    ruff                         # Python
-    shfmt                        # Shell
-    shellcheck                   # Shell
-    prettier                     # JS/TS/HTML/CSS/Vue/JSON/YAML/Markdown
-    eslint_d                     # JS/TS/Vue linter daemon
-    nodePackages.stylelint        # CSS linter
+    nixfmt # Nix
+    stylua # Lua
+    ruff # Python
+    shfmt # Shell
+    shellcheck # Shell
+    prettier # JS/TS/HTML/CSS/Vue/JSON/YAML/Markdown
+    eslint_d # JS/TS/Vue linter daemon
+    nodePackages.stylelint # CSS linter
     # Secrets
-    age          # modern encryption (encrypt files, secrets)
-    sops         # secrets manager (wraps age/gpg, works with Nix)
+    age # modern encryption (encrypt files, secrets)
+    sops # secrets manager (wraps age/gpg, works with Nix)
   ];
 
   # ===========================================================================
@@ -56,7 +57,7 @@
   # ===========================================================================
   programs.neovim = {
     enable = true;
-    defaultEditor = true;  # sets $EDITOR and $VISUAL
+    defaultEditor = true; # sets $EDITOR and $VISUAL
   };
 
   xdg.configFile."nvim" = {
@@ -69,53 +70,51 @@
   # ===========================================================================
   programs.zsh = {
     enable = true;
-    autosuggestion.enable = true;       # fish-like inline suggestions from history
-    syntaxHighlighting.enable = true;   # highlight commands as you type
+    autosuggestion.enable = true; # fish-like inline suggestions from history
+    syntaxHighlighting.enable = true; # highlight commands as you type
     historySubstringSearch = {
       enable = true;
-      searchUpKey   = [ "^[[A" ];       # up arrow
-      searchDownKey = [ "^[[B" ];       # down arrow
+      searchUpKey = [ "^[[A" ]; # up arrow
+      searchDownKey = [ "^[[B" ]; # down arrow
     };
     plugins = [
       {
-        name = "fzf-tab";               # replace completion menu with fzf
-        src  = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
+        name = "fzf-tab"; # replace completion menu with fzf
+        src = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
       }
       {
-        name = "zsh-vi-mode";           # vi mode (must be last — overwrites bindings)
-        src  = "${pkgs.zsh-vi-mode}/share/zsh-vi-mode";
+        name = "zsh-vi-mode"; # vi mode (must be last — overwrites bindings)
+        src = "${pkgs.zsh-vi-mode}/share/zsh-vi-mode";
       }
     ];
     history = {
-      path     = "${config.home.homeDirectory}/.zsh_history";
-      size     = 10000;
-      save     = 10000;
-      ignoreDups  = true;
+      path = "${config.home.homeDirectory}/.zsh_history";
+      size = 10000;
+      save = 10000;
+      ignoreDups = true;
       ignoreSpace = true;
-      share    = true;
+      share = true;
     };
     shellAliases = {
-      vim   = "nvim";
+      vim = "nvim";
       # eza
-      ls    = "eza --group-directories-first";
-      ll    = "eza -la --git --group-directories-first";
-      lt    = "eza --tree --git-ignore -I '.git|node_modules|.cache|__pycache__|.DS_Store|*.pyc|dist|.next' --group-directories-first";
+      ls = "eza --group-directories-first";
+      ll = "eza -la --git --group-directories-first";
+      lt = "eza --tree --git-ignore -I '.git|node_modules|.cache|__pycache__|.DS_Store|*.pyc|dist|.next' --group-directories-first";
       # bat
-      cat   = "bat --style=plain";
+      cat = "bat --style=plain";
       # fd / dust / zoxide
-      find  = "fd";
-      du    = "dust";
-      cd    = "z";
+      find = "fd";
+      du = "dust";
+      cd = "z";
+      cdi = "zi"; # interactive zoxide
       # nav
-      ".."  = "cd ..";
+      ".." = "cd ..";
       "..." = "cd ../..";
-      cdi   = "zi";   # interactive zoxide
     };
     initContent = ''
       eval "$(zoxide init zsh)"
       # Remove zsh default aliases not needed
-      unalias run-help 2>/dev/null || true
-      unalias which-command 2>/dev/null || true
       # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
       zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
     '';
@@ -127,17 +126,17 @@
   programs.git = {
     enable = true;
     settings = {
-      user.name           = "s0r4d3v";
-      user.email          = "s0r4d3v@gmail.com";
+      user.name = "s0r4d3v";
+      user.email = "s0r4d3v@gmail.com";
       merge.conflictstyle = "diff3";
-      diff.colorMoved     = "default";
+      diff.colorMoved = "default";
     };
   };
 
   programs.delta = {
-    enable                = true;
-    enableGitIntegration  = true;
-    options.navigate      = true;
+    enable = true;
+    enableGitIntegration = true;
+    options.navigate = true;
   };
 
   # ===========================================================================
@@ -145,15 +144,15 @@
   # ===========================================================================
   programs.fzf = {
     enable = true;
-    enableZshIntegration = true;  # Ctrl+R history, Ctrl+T file, Alt+C cd
+    enableZshIntegration = true; # Ctrl+R history, Ctrl+T file, Alt+C cd
     # zsh-vi-mode overwrites these; zvm_after_init_commands in initContent re-binds them
   };
 
-  programs.starship.enable = true;  # HM auto-adds `eval "$(starship init zsh)"`
+  programs.starship.enable = true; # HM auto-adds `eval "$(starship init zsh)"`
 
   home.sessionVariables = {
-    LANG              = "en_US.UTF-8";
-    LC_ALL            = "en_US.UTF-8";
+    LANG = "en_US.UTF-8";
+    LC_ALL = "en_US.UTF-8";
     SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
   };
 
@@ -177,18 +176,45 @@
   # SSH config — managed as a sops secret so it stays encrypted in the public repo
 
   sops = {
-    age.keyFile     = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     defaultSopsFile = ../secrets/secrets.yaml;
     secrets = {
-      "ssh/id_ed25519"       = { path = "${config.home.homeDirectory}/.ssh/id_ed25519";       mode = "0600"; };
-      "ssh/id_ed25519_pub"   = { path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";   mode = "0644"; };
-      "ssh/id_rsa"           = { path = "${config.home.homeDirectory}/.ssh/id_rsa";           mode = "0600"; };
-      "ssh/id_rsa_pub"       = { path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";       mode = "0644"; };
-      "ssh/tanaka-site"      = { path = "${config.home.homeDirectory}/.ssh/tanaka-site";      mode = "0600"; };
-      "ssh/tanaka-site_pub"  = { path = "${config.home.homeDirectory}/.ssh/tanaka-site.pub";  mode = "0644"; };
-      "ssh/m02uku_pem"       = { path = "${config.home.homeDirectory}/.ssh/m02uku.pem";       mode = "0600"; };
-      "ssh/tanaka_ppk"       = { path = "${config.home.homeDirectory}/.ssh/tanaka.ppk";       mode = "0600"; };
-      "ssh/config"           = { path = "${config.home.homeDirectory}/.ssh/config";           mode = "0600"; };
+      "ssh/id_ed25519" = {
+        path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+        mode = "0600";
+      };
+      "ssh/id_ed25519_pub" = {
+        path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
+        mode = "0644";
+      };
+      "ssh/id_rsa" = {
+        path = "${config.home.homeDirectory}/.ssh/id_rsa";
+        mode = "0600";
+      };
+      "ssh/id_rsa_pub" = {
+        path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
+        mode = "0644";
+      };
+      "ssh/tanaka-site" = {
+        path = "${config.home.homeDirectory}/.ssh/tanaka-site";
+        mode = "0600";
+      };
+      "ssh/tanaka-site_pub" = {
+        path = "${config.home.homeDirectory}/.ssh/tanaka-site.pub";
+        mode = "0644";
+      };
+      "ssh/m02uku_pem" = {
+        path = "${config.home.homeDirectory}/.ssh/m02uku.pem";
+        mode = "0600";
+      };
+      "ssh/tanaka_ppk" = {
+        path = "${config.home.homeDirectory}/.ssh/tanaka.ppk";
+        mode = "0600";
+      };
+      "ssh/config" = {
+        path = "${config.home.homeDirectory}/.ssh/config";
+        mode = "0600";
+      };
     };
   };
 
@@ -201,31 +227,51 @@
       # Nix knowledge: nixpkgs, nix-darwin, home-manager, and any other library
       context7 = {
         command = "npx";
-        args    = [ "-y" "@upstash/context7-mcp" ];
+        args = [
+          "-y"
+          "@upstash/context7-mcp"
+        ];
       };
       # HTTP fetch — retrieve doc pages, APIs, or any URL
       fetch = {
         command = "npx";
-        args    = [ "-y" "@modelcontextprotocol/server-fetch" ];
+        args = [
+          "-y"
+          "@modelcontextprotocol/server-fetch"
+        ];
       };
       # Filesystem access rooted at home directory
       filesystem = {
         command = "npx";
-        args    = [ "-y" "@modelcontextprotocol/server-filesystem" config.home.homeDirectory ];
+        args = [
+          "-y"
+          "@modelcontextprotocol/server-filesystem"
+          config.home.homeDirectory
+        ];
       };
       # Structured multi-step reasoning
       sequential-thinking = {
         command = "npx";
-        args    = [ "-y" "@modelcontextprotocol/server-sequential-thinking" ];
+        args = [
+          "-y"
+          "@modelcontextprotocol/server-sequential-thinking"
+        ];
       };
       # GitHub API — requires GITHUB_TOKEN in environment
       github = {
         command = "npx";
-        args    = [ "-y" "@modelcontextprotocol/server-github" ];
-        env     = { GITHUB_TOKEN = "\${GITHUB_TOKEN}"; };
+        args = [
+          "-y"
+          "@modelcontextprotocol/server-github"
+        ];
+        env = {
+          GITHUB_TOKEN = "\${GITHUB_TOKEN}";
+        };
       };
     };
   };
+
+  home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
 
   home.stateVersion = "25.11";
 }

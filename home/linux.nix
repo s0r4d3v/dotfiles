@@ -7,7 +7,4 @@
   # Required for Home Manager on non-NixOS Linux
   targets.genericLinux.enable = true;
 
-  home.sessionPath = [
-    "${config.home.homeDirectory}/.local/bin"
-  ];
 }
