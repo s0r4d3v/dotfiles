@@ -95,6 +95,15 @@ return {
   },
 
   -- ===========================================================================
+  -- Treesitter — auto-tag for HTML / Vue / JSX
+  -- ===========================================================================
+  {
+    "windwp/nvim-ts-autotag",
+    event = "InsertEnter",
+    opts = {},
+  },
+
+  -- ===========================================================================
   -- LSP
   -- ===========================================================================
   {
@@ -140,8 +149,23 @@ return {
     },
   },
   {
+    -- Lua LSP enhancements for editing neovim config (replaces neodev.nvim)
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
+  },
+  {
+    -- JSON/YAML schema catalog (plugs into jsonls + yamlls)
+    "b0o/SchemaStore.nvim",
+    lazy = true,
+  },
+  {
     "neovim/nvim-lspconfig",  -- provides default server configs (cmd, root_dir, etc.)
-    dependencies = { "williamboman/mason-lspconfig.nvim" },
+    dependencies = { "williamboman/mason-lspconfig.nvim", "b0o/SchemaStore.nvim" },
     config = function()
       -- Servers that need custom settings; others use nvim-lspconfig defaults
       vim.lsp.config("lua_ls", {
@@ -149,6 +173,22 @@ return {
       })
       vim.lsp.config("nixd", {
         settings = { nixd = { formatting = { command = { "nixfmt" } } } },
+      })
+      vim.lsp.config("jsonls", {
+        settings = {
+          json = {
+            schemas  = require("schemastore").json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      })
+      vim.lsp.config("yamlls", {
+        settings = {
+          yaml = {
+            schemaStore = { enable = false, url = "" },
+            schemas     = require("schemastore").yaml.schemas(),
+          },
+        },
       })
       vim.lsp.enable("nixd")  -- nixd installed via Nix, not mason
       -- automatic_enable = true in mason-lspconfig calls vim.lsp.enable() for mason-managed servers
@@ -166,7 +206,14 @@ return {
       keymap = { preset = "default" },
       appearance = { use_nvim_cmp_as_default = false },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
+        default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+        providers = {
+          lazydev = {
+            name   = "LazyDev",
+            module = "lazydev.integrations.blink",
+            score_offset = 100,  -- prioritise over lsp
+          },
+        },
       },
     },
   },
@@ -282,6 +329,20 @@ return {
     end,
   },
 
+  {
+    "stevearc/aerial.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    keys = {
+      { "<leader>cs", "<cmd>AerialToggle<cr>", desc = "Symbol outline" },
+    },
+    opts = {
+      on_attach = function(bufnr)
+        vim.keymap.set("n", "{", "<cmd>AerialPrev<cr>", { buffer = bufnr, desc = "Prev symbol" })
+        vim.keymap.set("n", "}", "<cmd>AerialNext<cr>", { buffer = bufnr, desc = "Next symbol" })
+      end,
+    },
+  },
+
   -- ===========================================================================
   -- Editing
   -- ===========================================================================
@@ -349,6 +410,27 @@ return {
     end,
   },
 
+  {
+    -- gS: split one-liner to multi-line  /  gJ: join to one-liner
+    "echasnovski/mini.splitjoin",
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
+    -- Makes . repeat work correctly for plugin operations (surround, etc.)
+    "tpope/vim-repeat",
+    event = "VeryLazy",
+  },
+  {
+    -- Generate JSDoc / Python docstrings / annotations from a keybind
+    "danymat/neogen",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    keys = {
+      { "<leader>cn", function() require("neogen").generate() end, desc = "Generate annotation" },
+    },
+    opts = { snippet_engine = "nvim" },  -- uses vim.snippet (neovim 0.10+ built-in)
+  },
+
   -- ===========================================================================
   -- Search & Replace
   -- ===========================================================================
@@ -357,6 +439,16 @@ return {
     keys = {
       { "<leader>fR", "<cmd>GrugFar<cr>", desc = "Replace in project" },
     },
+    opts = {},
+  },
+
+  -- ===========================================================================
+  -- Quickfix
+  -- ===========================================================================
+  {
+    -- Better quickfix: preview pane, fzf filtering, <Tab> to select entries
+    "kevinhwang91/nvim-bqf",
+    ft = "qf",
     opts = {},
   },
 
@@ -425,6 +517,26 @@ return {
     },
   },
   {
+    -- Inline CSS/hex/rgb/hsl color preview
+    "NvChad/nvim-colorizer.lua",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      user_default_options = {
+        css     = true,
+        css_fn  = true,
+        tailwind = true,
+        mode    = "background",
+      },
+    },
+  },
+  {
+    "folke/zen-mode.nvim",
+    keys = {
+      { "<leader>z", "<cmd>ZenMode<cr>", desc = "Zen mode" },
+    },
+    opts = { window = { width = 0.85 } },
+  },
+  {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     event = "BufReadPost",
@@ -452,7 +564,10 @@ return {
         { "<leader>x",  group = "Diagnostics" },
         { "<leader>S",  group = "Session" },
         -- Standalone
+        { "<leader>cs", desc = "Symbol outline" },
+        { "<leader>cn", desc = "Generate annotation" },
         { "<leader>sd", desc = "Dashboard" },
+        { "<leader>z",  desc = "Zen mode" },
         { "<leader>w",  desc = "Save" },
         { "<leader>q",  desc = "Quit" },
         { "<leader>e",  desc = "Explorer" },
