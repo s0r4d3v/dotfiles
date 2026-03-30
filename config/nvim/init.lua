@@ -69,5 +69,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+-- Filetype detection for non-standard extensions
+vim.filetype.add({
+  extension = {
+    mcfunction = "mcfunction",
+  },
+})
+
 -- Plugins
 require("lazy").setup("plugins")

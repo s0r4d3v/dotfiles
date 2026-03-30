@@ -50,11 +50,22 @@ return {
     build = ":TSUpdate",
     dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     config = function()
+      -- Register community grammar for mcfunction (not in official parser list)
+      -- Grammar is basic but provides syntax highlighting; LSP (Spyglass) handles intelligence.
+      require("nvim-treesitter.parsers").get_parser_configs().mcfunction = {
+        install_info = {
+          url      = "https://github.com/misode/tree-sitter-mcfunction",
+          files    = { "src/parser.c" },
+          branch   = "master",
+        },
+        filetype = "mcfunction",
+      }
+
       require("nvim-treesitter").setup({
         ensure_installed = {
           "lua", "python", "bash", "go", "typescript", "javascript",
           "json", "yaml", "toml", "markdown", "markdown_inline",
-          "html", "css", "nix", "vue",
+          "html", "css", "nix", "vue", "mcfunction",
         },
         highlight = { enable = true },
         indent = { enable = true },
@@ -92,14 +103,15 @@ return {
     dependencies = { "williamboman/mason.nvim" },
     opts = {
       ensure_installed = {
-        "lua_ls",   -- Lua
-        "pyright",  -- Python
-        "bashls",   -- Shell
-        "ts_ls",    -- TypeScript / JavaScript
-        "html",     -- HTML
-        "cssls",    -- CSS
-        "nixd",     -- Nix
-        "volar",    -- Vue / Slidev
+        "lua_ls",                    -- Lua
+        "pyright",                   -- Python
+        "bashls",                    -- Shell
+        "ts_ls",                     -- TypeScript / JavaScript
+        "html",                      -- HTML
+        "cssls",                     -- CSS
+        "nixd",                      -- Nix
+        "volar",                     -- Vue / Slidev
+        "spyglassmc_language_server", -- mcfunction (Minecraft datapacks)
       },
       automatic_enable = true,
     },
