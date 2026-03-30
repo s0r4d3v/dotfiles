@@ -31,15 +31,28 @@ vim.opt.splitright     = true
 vim.opt.scrolloff      = 8
 
 -- Keymaps
-vim.keymap.set("n", "<leader>w",   "<cmd>w<cr>",        { desc = "Save" })
-vim.keymap.set("n", "<leader>q",   "<cmd>q<cr>",        { desc = "Quit" })
-vim.keymap.set("n", "<Esc>",       "<cmd>nohlsearch<cr>")   -- clear search highlight
-vim.keymap.set("n", "<C-d>",       "<C-d>zz")               -- scroll down, keep centered
-vim.keymap.set("n", "<C-u>",       "<C-u>zz")               -- scroll up, keep centered
+vim.keymap.set("n", "<leader>w",   "<cmd>w<cr>",             { desc = "Save" })
+vim.keymap.set("n", "<leader>q",   "<cmd>q<cr>",             { desc = "Quit" })
+vim.keymap.set("n", "<Esc>",       "<cmd>nohlsearch<cr>")    -- clear search highlight
+vim.keymap.set("n", "<C-d>",       "<C-d>zz")                -- scroll down, keep centered
+vim.keymap.set("n", "<C-u>",       "<C-u>zz")                -- scroll up, keep centered
 vim.keymap.set("n", "n",           "nzzzv")                  -- next match, centered
 vim.keymap.set("n", "N",           "Nzzzv")                  -- prev match, centered
 vim.keymap.set("v", "<",           "<gv")                    -- indent, stay in visual
 vim.keymap.set("v", ">",           ">gv")                    -- dedent, stay in visual
+
+-- Buffer
+vim.keymap.set("n", "[b",          "<cmd>bprev<cr>",         { desc = "Prev buffer" })
+vim.keymap.set("n", "]b",          "<cmd>bnext<cr>",         { desc = "Next buffer" })
+vim.keymap.set("n", "<leader>bd",  "<cmd>bd<cr>",            { desc = "Close buffer" })
+
+-- Quickfix
+vim.keymap.set("n", "<leader>xq",  "<cmd>copen<cr>",         { desc = "Open quickfix" })
+vim.keymap.set("n", "[q",          "<cmd>cprev<cr>",         { desc = "Prev quickfix" })
+vim.keymap.set("n", "]q",          "<cmd>cnext<cr>",         { desc = "Next quickfix" })
+
+-- Diagnostics
+vim.keymap.set("n", "<leader>cd",  vim.diagnostic.open_float, { desc = "Diagnostic float" })
 
 -- LSP keymaps (on attach)
 vim.api.nvim_create_autocmd("LspAttach", {
