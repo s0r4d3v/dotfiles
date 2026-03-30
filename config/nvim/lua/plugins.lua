@@ -50,22 +50,26 @@ return {
     build = ":TSUpdate",
     dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     config = function()
-      -- Register community grammar for mcfunction (not in official parser list)
-      -- Grammar is basic but provides syntax highlighting; LSP (Spyglass) handles intelligence.
-      require("nvim-treesitter.parsers").get_parser_configs().mcfunction = {
-        install_info = {
-          url      = "https://github.com/misode/tree-sitter-mcfunction",
-          files    = { "src/parser.c" },
-          branch   = "master",
-        },
-        filetype = "mcfunction",
-      }
+      -- Register community grammar for mcfunction (not in official parser list).
+      -- nvim-treesitter v1 may not expose get_parser_configs; guard with pcall.
+      local ok, parsers = pcall(require, "nvim-treesitter.parsers")
+      if ok and type(parsers.get_parser_configs) == "function" then
+        parsers.get_parser_configs().mcfunction = {
+          install_info = {
+            url    = "https://github.com/misode/tree-sitter-mcfunction",
+            files  = { "src/parser.c" },
+            branch = "master",
+          },
+          filetype = "mcfunction",
+        }
+      end
 
       require("nvim-treesitter").setup({
         ensure_installed = {
           "lua", "python", "bash", "go", "typescript", "javascript",
           "json", "yaml", "toml", "markdown", "markdown_inline",
-          "html", "css", "nix", "vue", "mcfunction",
+          "html", "css", "nix", "vue",
+          -- mcfunction: install manually with :TSInstall mcfunction (community parser)
         },
         highlight = { enable = true },
         indent = { enable = true },
@@ -111,9 +115,9 @@ return {
         "cssls",                     -- CSS
         "jsonls",                    -- JSON
         "yamlls",                    -- YAML
-        "nixd",                      -- Nix
-        "volar",                     -- Vue / Slidev
+        "vue_ls",                    -- Vue / Slidev (formerly "volar")
         "spyglassmc_language_server", -- mcfunction (Minecraft datapacks)
+        -- nixd: installed via Nix (home.packages), enabled below via vim.lsp.enable
       },
       automatic_enable = true,
     },
@@ -146,7 +150,8 @@ return {
       vim.lsp.config("nixd", {
         settings = { nixd = { formatting = { command = { "nixfmt" } } } },
       })
-      -- automatic_enable = true in mason-lspconfig calls vim.lsp.enable() for installed servers
+      vim.lsp.enable("nixd")  -- nixd installed via Nix, not mason
+      -- automatic_enable = true in mason-lspconfig calls vim.lsp.enable() for mason-managed servers
     end,
   },
 

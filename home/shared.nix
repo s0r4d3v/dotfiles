@@ -21,6 +21,7 @@
     claude-code
     nodejs       # required for Mason to install npm-based LSP servers
     nixfmt  # Nix formatter (used by conform.nvim, not available via Mason)
+    nixd    # Nix LSP (used by nvim; not available via Mason on all platforms)
     # Secrets
     age          # modern encryption (encrypt files, secrets)
     sops         # secrets manager (wraps age/gpg, works with Nix)
@@ -80,9 +81,13 @@
       # nav
       ".."  = "cd ..";
       "..." = "cd ../..";
+      cdi   = "zi";   # interactive zoxide
     };
     initContent = ''
       eval "$(zoxide init zsh)"
+      # Remove zsh default aliases not needed
+      unalias run-help 2>/dev/null || true
+      unalias which-command 2>/dev/null || true
     '';
   };
 

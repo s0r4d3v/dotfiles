@@ -9,21 +9,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Clipboard — OSC 52 (syncs with Mac clipboard through tmux + SSH)
--- Uses base64 encoding internally, so Japanese/Unicode works identically to ASCII.
--- Requires Neovim 0.10+ (built-in, no plugin needed).
+-- Clipboard — use system clipboard (pbcopy/pbpaste on macOS).
+-- For SSH sessions, set DISPLAY or use OSC52 terminal support.
 vim.opt.clipboard = "unnamedplus"
-vim.g.clipboard = {
-  name = "OSC 52",
-  copy = {
-    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-  },
-  paste = {
-    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
-  },
-}
 
 -- Options
 vim.g.mapleader = " "
