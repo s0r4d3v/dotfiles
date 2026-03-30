@@ -1,44 +1,5 @@
 return {
   {
-    "williamboman/mason.nvim",
-    build = ":MasonUpdate",
-    opts = {},
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-    opts = {
-      ensure_installed = {
-        "lua_ls",                     -- Lua
-        "pyright",                    -- Python
-        "bashls",                     -- Shell
-        "ts_ls",                      -- TypeScript / JavaScript
-        "html",                       -- HTML
-        "cssls",                      -- CSS
-        "jsonls",                     -- JSON
-        "yamlls",                     -- YAML
-        "vue_ls",                     -- Vue / Slidev (formerly "volar")
-        "spyglassmc_language_server", -- mcfunction (Minecraft datapacks)
-        -- nixd: installed via Nix (home.packages), enabled below via vim.lsp.enable
-      },
-      automatic_enable = true,
-    },
-  },
-  {
-    -- Auto-installs formatters and linters that Mason doesn't handle via mason-lspconfig
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-    opts = {
-      ensure_installed = {
-        -- Node-based tools (not straightforward in nixpkgs, Mason handles these)
-        "prettier",  -- JS/TS/HTML/CSS/Vue/JSON/YAML/Markdown formatter
-        "eslint_d",  -- JS/TS/Vue linter
-        "stylelint", -- CSS linter
-        -- stylua, ruff, shfmt, shellcheck, nixfmt: installed via Nix (home.packages)
-      },
-    },
-  },
-  {
     -- Lua LSP enhancements for editing neovim config (replaces neodev.nvim)
     "folke/lazydev.nvim",
     ft = "lua",
@@ -49,14 +10,17 @@ return {
     },
   },
   {
-    -- JSON/YAML schema catalog (plugs into jsonls + yamlls)
+    -- JSON/YAML schema catalog
     "b0o/SchemaStore.nvim",
     lazy = true,
   },
   {
+    -- All LSP servers are installed via Nix (home.packages in shared.nix).
+    -- This file only configures custom settings and enables servers.
     "neovim/nvim-lspconfig",
-    dependencies = { "williamboman/mason-lspconfig.nvim", "b0o/SchemaStore.nvim" },
+    dependencies = { "b0o/SchemaStore.nvim" },
     config = function()
+      -- Custom settings (servers without custom settings use lspconfig defaults)
       vim.lsp.config("lua_ls", {
         settings = { Lua = { diagnostics = { globals = { "vim" } } } },
       })
@@ -79,7 +43,25 @@ return {
           },
         },
       })
-      vim.lsp.enable("nixd") -- nixd installed via Nix, not mason
+      -- spyglassmc has no nixpkgs package; launch via npx (nodejs is in home.packages)
+      vim.lsp.config("spyglassmc_language_server", {
+        cmd = { "npx", "--yes", "@spyglassmc/language-server" },
+      })
+
+      -- Enable all servers
+      vim.lsp.enable({
+        "lua_ls",
+        "pyright",
+        "bashls",
+        "ts_ls",
+        "html",
+        "cssls",
+        "jsonls",
+        "yamlls",
+        "vue_ls",
+        "nixd",
+        "spyglassmc_language_server",
+      })
     end,
   },
 }

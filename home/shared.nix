@@ -19,14 +19,32 @@
     # Dev
     gh           # GitHub CLI
     claude-code
-    nodejs       # required for Mason to install npm-based LSP servers
-    nixfmt      # Nix formatter
-    nixd        # Nix LSP
-    # Formatters / linters — installed via Nix instead of Mason for reliability
-    stylua      # Lua formatter
-    ruff        # Python linter + formatter
-    shfmt       # Shell formatter
-    shellcheck  # Shell linter
+    nodejs       # runtime for node-based LSP servers and tools
+
+    # ===========================================================================
+    # Neovim LSP servers (all managed by Nix; enabled via vim.lsp.enable in nvim)
+    # ===========================================================================
+    lua-language-server          # lua_ls
+    pyright                      # python
+    bash-language-server         # bashls
+    typescript-language-server   # ts_ls  (JS / TS)
+    vscode-langservers-extracted # html, cssls, jsonls
+    yaml-language-server         # yamlls
+    vue-language-server          # vue_ls (Vue / Slidev)
+    nixd                         # nixd
+    # spyglassmc_language_server: no nixpkgs package — launched via npx in nvim config
+
+    # ===========================================================================
+    # Neovim formatters & linters (managed by Nix; used by conform + nvim-lint)
+    # ===========================================================================
+    nixfmt                       # Nix
+    stylua                       # Lua
+    ruff                         # Python
+    shfmt                        # Shell
+    shellcheck                   # Shell
+    prettier                     # JS/TS/HTML/CSS/Vue/JSON/YAML/Markdown
+    eslint_d                     # JS/TS/Vue linter daemon
+    nodePackages.stylelint        # CSS linter
     # Secrets
     age          # modern encryption (encrypt files, secrets)
     sops         # secrets manager (wraps age/gpg, works with Nix)
