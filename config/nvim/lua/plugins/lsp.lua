@@ -30,14 +30,11 @@ return {
     dependencies = { "williamboman/mason.nvim" },
     opts = {
       ensure_installed = {
-        "stylua",     -- Lua formatter
-        "prettier",   -- JS/TS/HTML/CSS/Vue/JSON/YAML/Markdown formatter
-        "shfmt",      -- Shell formatter
-        "ruff",       -- Python linter
-        "eslint_d",   -- JS/TS/Vue linter
-        "shellcheck", -- Shell linter
-        "stylelint",  -- CSS linter
-        -- nixfmt is installed via Nix (home.packages), not Mason
+        -- Node-based tools (not straightforward in nixpkgs, Mason handles these)
+        "prettier",  -- JS/TS/HTML/CSS/Vue/JSON/YAML/Markdown formatter
+        "eslint_d",  -- JS/TS/Vue linter
+        "stylelint", -- CSS linter
+        -- stylua, ruff, shfmt, shellcheck, nixfmt: installed via Nix (home.packages)
       },
     },
   },

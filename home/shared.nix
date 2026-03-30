@@ -20,8 +20,13 @@
     gh           # GitHub CLI
     claude-code
     nodejs       # required for Mason to install npm-based LSP servers
-    nixfmt  # Nix formatter (used by conform.nvim, not available via Mason)
-    nixd    # Nix LSP (used by nvim; not available via Mason on all platforms)
+    nixfmt      # Nix formatter
+    nixd        # Nix LSP
+    # Formatters / linters — installed via Nix instead of Mason for reliability
+    stylua      # Lua formatter
+    ruff        # Python linter + formatter
+    shfmt       # Shell formatter
+    shellcheck  # Shell linter
     # Secrets
     age          # modern encryption (encrypt files, secrets)
     sops         # secrets manager (wraps age/gpg, works with Nix)
