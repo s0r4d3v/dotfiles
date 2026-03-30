@@ -54,6 +54,8 @@
     homeConfigurations = {
       "soranagano-x86_64"  = mkLinux { username = "soranagano"; system = "x86_64-linux"; };
       "soranagano-aarch64" = mkLinux { username = "soranagano"; system = "aarch64-linux"; };
+      "s0r4d3v-x86_64"    = mkLinux { username = "s0r4d3v";    system = "x86_64-linux"; };
+      "s0r4d3v-aarch64"   = mkLinux { username = "s0r4d3v";    system = "aarch64-linux"; };
     };
   };
 }

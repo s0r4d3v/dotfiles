@@ -201,3 +201,15 @@ rm ~/.ssh/config   # adjust path to match the error
 **`Unable to remove some files. Please enable Full Disk Access`** — Homebrew's `cleanup = "zap"` requires Full Disk Access:
 
 System Settings → Privacy & Security → Full Disk Access → enable your terminal app
+
+**`sops-nix.service failed` on WSL** — sops-nix requires systemd. Enable it in WSL:
+
+```sh
+# On the WSL machine:
+sudo tee -a /etc/wsl.conf <<'EOF'
+[boot]
+systemd=true
+EOF
+```
+
+Then restart WSL from PowerShell: `wsl --shutdown`, reopen, and run `./switch` again.
