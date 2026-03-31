@@ -1,0 +1,82 @@
+# ==============================================================================
+# Font
+# ==============================================================================
+font-family = Maple Mono NF CN
+font-family = Apple Color Emoji
+font-size = 10
+font-feature = calt
+font-feature = liga
+
+# Map emoji codepoints to Apple Color Emoji so Nerd Font glyphs are unaffected
+font-codepoint-map = U+1F300-U+1F9FF=Apple Color Emoji
+font-codepoint-map = U+2600-U+26FF=Apple Color Emoji
+font-codepoint-map = U+2700-U+27BF=Apple Color Emoji
+font-codepoint-map = U+1F000-U+1F02F=Apple Color Emoji
+font-codepoint-map = U+1F0A0-U+1F0FF=Apple Color Emoji
+font-codepoint-map = U+1FA00-U+1FAFF=Apple Color Emoji
+
+# ==============================================================================
+# Theme — TokyoNight Night (matches tmux / nvim)
+# ==============================================================================
+theme = TokyoNight Night
+
+# ==============================================================================
+# Appearance
+# ==============================================================================
+background-opacity = 0.8
+background-opacity-cells = true
+background-blur = 10
+window-decoration = auto
+macos-titlebar-style = hidden
+macos-titlebar-proxy-icon = hidden
+maximize = true
+
+# ==============================================================================
+# Cursor
+# ==============================================================================
+cursor-style = block
+cursor-style-blink = false
+
+# ==============================================================================
+# Mouse
+# ==============================================================================
+mouse-hide-while-typing = true
+focus-follows-mouse = false
+
+# ==============================================================================
+# Shell integration
+# ==============================================================================
+# cursor  — shell reports vi mode so Ghostty changes cursor shape (block/bar/underline)
+# sudo    — preserve shell integration when running sudo
+# title   — shell sets window title to current command / directory
+shell-integration-features = cursor,sudo,title
+
+# ==============================================================================
+# Clipboard
+# ==============================================================================
+clipboard-read = allow
+clipboard-write = allow
+clipboard-trim-trailing-spaces = true
+
+# ==============================================================================
+# UX
+# ==============================================================================
+confirm-close-surface = false   # no "are you sure?" on Cmd+W
+
+# ==============================================================================
+# macOS
+# ==============================================================================
+macos-option-as-alt = left   # Option key = Alt for word navigation (Alt+←/→)
+
+# ==============================================================================
+# Quick terminal (Ctrl+Shift+I — dropdown from the right)
+# ==============================================================================
+quick-terminal-position = right
+quick-terminal-screen = main
+
+# ==============================================================================
+# Keybindings
+# ==============================================================================
+keybind = ctrl+shift+f=toggle_maximize
+keybind = global:ctrl+shift+h=toggle_visibility
+keybind = global:ctrl+shift+i=toggle_quick_terminal

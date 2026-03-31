@@ -18,4 +18,8 @@
     source = ../config/karabiner/karabiner.json;
   };
 
+  xdg.configFile."ghostty/config" = {
+    source = ../config/ghostty/config;
+  };
+
 }
