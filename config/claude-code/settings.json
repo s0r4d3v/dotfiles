@@ -24,23 +24,7 @@
       "Read(**/*secret*)",
       "Read(**/*password*)"
     ],
-    "deny": [
-      "Read(/Users/soranagano/.ssh/**)",
-      "Write(/Users/soranagano/.ssh/**)",
-      "Read(/Users/soranagano/.gnupg/**)",
-      "Write(/Users/soranagano/.gnupg/**)",
-      "Read(/Users/soranagano/.aws/credentials)",
-      "Read(/Users/soranagano/.azure/**)",
-      "Read(/Users/soranagano/.kube/config)",
-      "Read(/Users/soranagano/.config/gcloud/**)",
-      "Read(/Users/soranagano/.npmrc)",
-      "Read(/Users/soranagano/.pypirc)",
-      "Read(/Users/soranagano/.gem/credentials)",
-      "Write(/Users/soranagano/.bashrc)",
-      "Write(/Users/soranagano/.zshrc)",
-      "Read(/Users/soranagano/.git-credentials)",
-      "Read(/Users/soranagano/.netrc)"
-    ]
+    "deny": []
   },
   "hooks": {
     "PreToolUse": [
