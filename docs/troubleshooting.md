@@ -35,6 +35,11 @@ ls ~/.config/sops/age/keys.txt
 
 If missing, retrieve from Bitwarden and place it, then re-run `./switch`.
 
+**noice.nvim: "An error happened while handling a ui event" (E5560 `localtime` in fast event)** — a noice.nvim bug; update the plugin to fix it:
+```
+:Lazy update
+```
+
 **Local changes block git pull on `./switch`** — stash or commit first:
 ```sh
 git stash
