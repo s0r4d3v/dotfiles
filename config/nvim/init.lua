@@ -9,8 +9,19 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Clipboard — use system clipboard (pbcopy/pbpaste on macOS).
--- For SSH sessions, set DISPLAY or use OSC52 terminal support.
+-- Clipboard
+-- macOS: pbcopy/pbpaste are found automatically via clipboard provider detection.
+-- SSH remote: no clipboard tool available → use OSC 52, which sends/reads the
+-- clipboard through the terminal escape sequence over the SSH connection.
+-- Requires tmux set-clipboard=on + allow-passthrough=on (already set).
+if vim.env.SSH_TTY then
+  local osc52 = require("vim.ui.clipboard.osc52")
+  vim.g.clipboard = {
+    name  = "OSC 52",
+    copy  = { ["+"] = osc52.copy("+"),  ["*"] = osc52.copy("*") },
+    paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
+  }
+end
 vim.opt.clipboard = "unnamedplus"
 
 -- Options
