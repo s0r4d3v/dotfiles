@@ -22,7 +22,7 @@
 
     # File & navigation
     yazi       # TUI file manager with image preview
-    broot      # interactive directory navigator
+    # broot installed via programs.broot below
 
     # Data processing
     yq-go      # YAML/TOML/XML queries (mikefarah/yq) ← complements jq
@@ -92,6 +92,22 @@
   xdg.configFile."nvim" = {
     source = ../config/nvim;
     recursive = true;
+  };
+
+  # ===========================================================================
+  # Broot — interactive directory navigator
+  # Opens files with $EDITOR (nvim) instead of macOS `open`
+  # ===========================================================================
+  programs.broot = {
+    enable = true;
+    enableZshIntegration = true; # adds `br` shell function for cd-on-exit
+    settings.verbs = [
+      {
+        key       = "enter";
+        execution = "$EDITOR {file}";
+        apply_to  = "file";
+      }
+    ];
   };
 
   # ===========================================================================
