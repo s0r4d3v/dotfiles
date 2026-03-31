@@ -4,24 +4,53 @@
   home.packages = with pkgs; [
     # Core
     git
-    ripgrep # rg  — fast grep
-    fd # fd  — fast find
+    ripgrep    # rg           — fast grep
+    fd         # fd           — fast find
     fzf
-    jq
-    zoxide # z   — smart cd
-    # Modern replacements
-    eza # ls/ll/tree
-    bat # cat
-    delta # git diff pager
-    dust # du
-    btop # top
-    glow # markdown preview
-    tldr # quick man pages
-    # Dev
-    gh # GitHub CLI
-    lazygit # git TUI (used by tmux popup + nvim plugin)
+    jq         # JSON queries
+    zoxide     # z / zi       — smart cd
+
+    # Modern CLI replacements
+    eza        # ls/ll/tree   ← ls
+    bat        # cat          ← cat
+    delta      # diff pager   ← diff (git)
+    dust       # du           ← du
+    duf        # df           ← df
+    btop       # htop         ← top
+    procs      # ps           ← ps
+    sd         # find/replace ← sed
+
+    # File & navigation
+    yazi       # TUI file manager with image preview
+    broot      # interactive directory navigator
+
+    # Data processing
+    yq-go      # YAML/TOML/XML queries (mikefarah/yq) ← complements jq
+    fx         # interactive JSON explorer
+
+    # Dev workflow
+    just       # task runner  ← make
+    mise       # polyglot version manager (node/python/ruby/go/rust per project)
+    lazygit    # git TUI (used by tmux popup + nvim plugin)
+    lazydocker # docker TUI   ← docker CLI
+    difftastic # structure-aware diff (complements delta)
+    hyperfine  # statistical CLI benchmarking
+    tokei      # code line counter by language
+    gitleaks   # scan git history for accidentally committed secrets
+    vhs        # reproducible terminal recordings (.tape → GIF/video)
+
+    # Network & HTTP
+    xh         # HTTP client  ← curl / httpie
+    bandwhich  # real-time network usage per process
+
+    # Docs
+    glow       # markdown preview
+    tldr       # quick man pages
+
+    # Dev tools
+    gh         # GitHub CLI
     claude-code
-    nodejs # runtime for node-based LSP servers and tools
+    nodejs     # runtime for node-based LSP servers and tools
 
     # ===========================================================================
     # Neovim LSP servers (all managed by Nix; enabled via vim.lsp.enable in nvim)
@@ -64,6 +93,20 @@
     source = ../config/nvim;
     recursive = true;
   };
+
+  # ===========================================================================
+  # Direnv — auto-load .envrc / nix flake env per directory
+  # ===========================================================================
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true; # fast persistent nix flake evaluation
+  };
+
+  # ===========================================================================
+  # Yazi — TUI file manager
+  # ===========================================================================
+  xdg.configFile."yazi/yazi.toml".source = ../config/yazi/yazi.toml;
 
   # ===========================================================================
   # Tool configs — all managed declaratively
@@ -109,23 +152,25 @@
     shellAliases = {
       vim = "nvim";
       # eza
-      ls = "eza --group-directories-first";
-      ll = "eza -la --git --group-directories-first";
-      lt = "eza --tree --git-ignore -I '.git|node_modules|.cache|__pycache__|.DS_Store|*.pyc|dist|.next' --group-directories-first";
+      ls  = "eza --group-directories-first";
+      ll  = "eza -la --git --group-directories-first";
+      lt  = "eza --tree --git-ignore -I '.git|node_modules|.cache|__pycache__|.DS_Store|*.pyc|dist|.next' --group-directories-first";
       # bat
       cat = "bat --style=plain";
-      # fd / dust / zoxide
+      # modern replacements
       find = "fd";
-      du = "dust";
-      cd = "z";
-      cdi = "zi"; # interactive zoxide
+      du   = "dust";
+      df   = "duf";
+      ps   = "procs";
+      cd   = "z";
+      cdi  = "zi"; # interactive zoxide
       # nav
-      ".." = "cd ..";
+      ".."  = "cd ..";
       "..." = "cd ../..";
     };
     initContent = ''
       eval "$(zoxide init zsh)"
-      # Remove zsh default aliases not needed
+      eval "$(mise activate zsh)"
       # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
       zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
     '';
