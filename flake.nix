@@ -31,8 +31,6 @@
           {
             home-manager.useGlobalPkgs        = true;
             home-manager.useUserPackages      = true;
-            home-manager.backupFileExtension  = "bak";
-            home-manager.backupCommand        = "rm";
             home-manager.extraSpecialArgs     = { inherit username; };
             home-manager.sharedModules        = [ sops-nix.homeManagerModules.sops ];
             home-manager.users.${username}    = import ./home/darwin.nix;
