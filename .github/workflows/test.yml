@@ -15,6 +15,8 @@ jobs:
             name: Linux x86_64
           - os: macos-latest
             name: macOS Apple Silicon
+          - os: macos-15-intel
+            name: macOS Intel
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}
     steps:
