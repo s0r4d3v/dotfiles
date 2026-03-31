@@ -80,6 +80,6 @@ quick-terminal-screen = main
 keybind = ctrl+shift+f=toggle_maximize
 keybind = global:ctrl+shift+h=toggle_visibility
 keybind = global:ctrl+shift+i=toggle_quick_terminal
-keybind = super+shift+left=move_tab:-1
-keybind = super+shift+right=move_tab:1
+keybind = super+shift+h=move_tab:-1
+keybind = super+shift+l=move_tab:1
 keybind = super+shift+r=prompt_tab_title

@@ -1,0 +1,114 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(nix:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Edit",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "ask": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(git push:*)",
+      "Bash(git push --force:*)",
+      "Bash(npm publish:*)",
+      "Read(.env:*)",
+      "Read(**/*token*)",
+      "Read(**/*key*)",
+      "Read(**/*secret*)",
+      "Read(**/*password*)"
+    ],
+    "deny": [
+      "Read(/Users/soranagano/.ssh/**)",
+      "Write(/Users/soranagano/.ssh/**)",
+      "Read(/Users/soranagano/.gnupg/**)",
+      "Write(/Users/soranagano/.gnupg/**)",
+      "Read(/Users/soranagano/.aws/credentials)",
+      "Read(/Users/soranagano/.azure/**)",
+      "Read(/Users/soranagano/.kube/config)",
+      "Read(/Users/soranagano/.config/gcloud/**)",
+      "Read(/Users/soranagano/.npmrc)",
+      "Read(/Users/soranagano/.pypirc)",
+      "Read(/Users/soranagano/.gem/credentials)",
+      "Write(/Users/soranagano/.bashrc)",
+      "Write(/Users/soranagano/.zshrc)",
+      "Read(/Users/soranagano/.git-credentials)",
+      "Read(/Users/soranagano/.netrc)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/soranagano/.config/claude-code/hooks/block-rm.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/soranagano/.config/claude-code/hooks/block-force-push.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "MCP_TIMEOUT": "60000",
+    "MAX_MCP_OUTPUT_TOKENS": "50000",
+    "ENABLE_TOOL_SEARCH": "auto"
+  },
+  "statusLine": {
+    "command": "/Users/soranagano/.config/claude-code/hooks/statusline.sh",
+    "padding": 0,
+    "type": "command"
+  },
+  "theme": "dark",
+  "mcpServers": {
+    "mcp-nixos": {
+      "command": "uvx",
+      "args": ["mcp-nixos"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {
+        "ALLOWED_DIRECTORIES": "/Users/soranagano/ghq:/Users/soranagano/Projects:/Users/soranagano/Documents:/Users/soranagano/Downloads"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "git": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    }
+  }
+}
