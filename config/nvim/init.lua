@@ -51,6 +51,12 @@ vim.keymap.set("n", "N",           "Nzzzv")                  -- prev match, cent
 vim.keymap.set("v", "<",           "<gv")                    -- indent, stay in visual
 vim.keymap.set("v", ">",           ">gv")                    -- dedent, stay in visual
 
+-- Splits
+vim.keymap.set("n", "<leader>sv",  "<cmd>vsplit<cr>",        { desc = "Split vertical" })
+vim.keymap.set("n", "<leader>sh",  "<cmd>split<cr>",         { desc = "Split horizontal" })
+vim.keymap.set("n", "<leader>se",  "<C-w>=",                 { desc = "Equalize splits" })
+vim.keymap.set("n", "<leader>sx",  "<cmd>close<cr>",         { desc = "Close split" })
+
 -- Buffer
 vim.keymap.set("n", "[b",          "<cmd>bprev<cr>",         { desc = "Prev buffer" })
 vim.keymap.set("n", "]b",          "<cmd>bnext<cr>",         { desc = "Next buffer" })
