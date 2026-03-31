@@ -117,6 +117,19 @@
       # Remove zsh default aliases not needed
       # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
       zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
+
+      # Forward the local tmux socket to the remote host so that nvim running
+      # inside the SSH session can set @pane-is-vim in the local tmux, enabling
+      # C-hjkl to navigate remote nvim windows (see navigator.nvim autocmds).
+      function ssh() {
+        if [[ -n "$TMUX_PANE" && -n "$TMUX" ]]; then
+          local pane="''${TMUX_PANE#%}"
+          local sock="''${TMUX%%,*}"
+          command ssh -o "RemoteForward /tmp/tmux-bridge-''${pane}.sock ''${sock}" "$@"
+        else
+          command ssh "$@"
+        fi
+      }
     '';
   };
 

@@ -41,13 +41,30 @@ return {
       vim.keymap.set({ "n", "t" }, "<C-j>", "<CMD>NavigatorDown<CR>")
       vim.keymap.set({ "n", "t" }, "<C-k>", "<CMD>NavigatorUp<CR>")
       vim.keymap.set({ "n", "t" }, "<C-l>", "<CMD>NavigatorRight<CR>")
-      -- Tell tmux this pane is running nvim so it forwards C-hjkl here.
-      -- ps-based detection is unreliable with Nix-wrapped binaries.
+      -- Tell the local tmux this pane is running nvim so it forwards C-hjkl here.
+      -- Local: set directly.  Remote (SSH): use the socket forwarded by the ssh
+      -- wrapper in zsh config (/tmp/tmux-bridge-<pane>.sock → local tmux socket).
+      local function set_pane_is_vim(val)
+        if vim.env.TMUX then
+          vim.fn.system("tmux set-option -p @pane-is-vim " .. val)
+        elseif vim.env.SSH_TTY then
+          local socks = vim.fn.glob("/tmp/tmux-bridge-*.sock", false, true)
+          for _, sock in ipairs(socks) do
+            local pane = sock:match("tmux%-bridge%-(%d+)%.sock")
+            if pane then
+              vim.fn.system(string.format(
+                "tmux -S %s set-option -p -t %%%s @pane-is-vim %s 2>/dev/null",
+                sock, pane, val
+              ))
+            end
+          end
+        end
+      end
       vim.api.nvim_create_autocmd({ "VimEnter", "VimResume" }, {
-        callback = function() vim.fn.system("tmux set-option -p @pane-is-vim 1") end,
+        callback = function() set_pane_is_vim("1") end,
       })
       vim.api.nvim_create_autocmd({ "VimLeave", "VimSuspend" }, {
-        callback = function() vim.fn.system("tmux set-option -p @pane-is-vim 0") end,
+        callback = function() set_pane_is_vim("0") end,
       })
     end,
   },
