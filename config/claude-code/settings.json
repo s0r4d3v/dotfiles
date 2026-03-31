@@ -1,18 +1,15 @@
 {
+  "vim": true,
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)",
-      "Bash(touch:*)",
-      "Bash(ls:*)",
-      "Bash(cat:*)",
-      "Bash(nix:*)",
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)",
+      "Bash",
       "Edit",
+      "Write",
       "Read",
       "Glob",
-      "Grep"
+      "Grep",
+      "WebSearch",
+      "WebFetch"
     ],
     "ask": [
       "Bash(sudo:*)",

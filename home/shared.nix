@@ -130,7 +130,7 @@
   xdg.configFile."gh/config.yml".source        = ../config/gh/config.yml;
   xdg.configFile."gh/hosts.yml".source         = ../config/gh/hosts.yml;
 
-  xdg.configFile."claude-code/settings.json".source                    = ../config/claude-code/settings.json;
+  home.file.".claude/settings.json".source                             = ../config/claude-code/settings.json;
   xdg.configFile."claude-code/hooks/block-rm.sh"          = { source = ../config/claude-code/hooks/block-rm.sh;          executable = true; };
   xdg.configFile."claude-code/hooks/block-force-push.sh"  = { source = ../config/claude-code/hooks/block-force-push.sh;  executable = true; };
   xdg.configFile."claude-code/hooks/statusline.sh"        = { source = ../config/claude-code/hooks/statusline.sh;        executable = true; };
@@ -286,59 +286,6 @@
       "ssh/config" = {
         path = "${config.home.homeDirectory}/.ssh/config";
         mode = "0600";
-      };
-    };
-  };
-
-  # ===========================================================================
-  # Claude Code — MCP servers
-  # ===========================================================================
-  home.file.".claude/settings.json".text = builtins.toJSON {
-    vim = true; # vi keybindings in Claude Code prompt (Esc for normal mode)
-    mcpServers = {
-      # Nix knowledge: nixpkgs, nix-darwin, home-manager, and any other library
-      context7 = {
-        command = "npx";
-        args = [
-          "-y"
-          "@upstash/context7-mcp"
-        ];
-      };
-      # HTTP fetch — retrieve doc pages, APIs, or any URL
-      fetch = {
-        command = "npx";
-        args = [
-          "-y"
-          "@modelcontextprotocol/server-fetch"
-        ];
-      };
-      # Filesystem access rooted at home directory
-      filesystem = {
-        command = "npx";
-        args = [
-          "-y"
-          "@modelcontextprotocol/server-filesystem"
-          config.home.homeDirectory
-        ];
-      };
-      # Structured multi-step reasoning
-      sequential-thinking = {
-        command = "npx";
-        args = [
-          "-y"
-          "@modelcontextprotocol/server-sequential-thinking"
-        ];
-      };
-      # GitHub API — requires GITHUB_TOKEN in environment
-      github = {
-        command = "npx";
-        args = [
-          "-y"
-          "@modelcontextprotocol/server-github"
-        ];
-        env = {
-          GITHUB_TOKEN = "\${GITHUB_TOKEN}";
-        };
       };
     };
   };
