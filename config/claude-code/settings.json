@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/soranagano/.config/claude-code/hooks/block-rm.sh"
+            "command": "@HOME@/.config/claude-code/hooks/block-rm.sh"
           }
         ]
       },
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/soranagano/.config/claude-code/hooks/block-force-push.sh"
+            "command": "@HOME@/.config/claude-code/hooks/block-force-push.sh"
           }
         ]
       }
@@ -54,7 +54,7 @@
     "ENABLE_TOOL_SEARCH": "auto"
   },
   "statusLine": {
-    "command": "/Users/soranagano/.config/claude-code/hooks/statusline.sh",
+    "command": "@HOME@/.config/claude-code/hooks/statusline.sh",
     "padding": 0,
     "type": "command"
   },
@@ -68,7 +68,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem"],
       "env": {
-        "ALLOWED_DIRECTORIES": "/Users/soranagano/ghq:/Users/soranagano/Projects:/Users/soranagano/Documents:/Users/soranagano/Downloads"
+        "ALLOWED_DIRECTORIES": "@HOME@/ghq:@HOME@/Projects:@HOME@/Documents:@HOME@/Downloads"
       }
     },
     "memory": {

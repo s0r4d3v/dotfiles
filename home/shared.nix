@@ -131,7 +131,9 @@
   xdg.configFile."gh/config.yml".source        = ../config/gh/config.yml;
   xdg.configFile."gh/hosts.yml".source         = ../config/gh/hosts.yml;
 
-  home.file.".claude/settings.json".source = ../config/claude-code/settings.json;
+  home.file.".claude/settings.json".text =
+    builtins.replaceStrings [ "@HOME@" ] [ config.home.homeDirectory ]
+      (builtins.readFile ../config/claude-code/settings.json);
   xdg.configFile."claude-code/hooks/block-rm.sh"          = { source = ../config/claude-code/hooks/block-rm.sh;          executable = true; };
   xdg.configFile."claude-code/hooks/block-force-push.sh"  = { source = ../config/claude-code/hooks/block-force-push.sh;  executable = true; };
   xdg.configFile."claude-code/hooks/statusline.sh"        = { source = ../config/claude-code/hooks/statusline.sh;        executable = true; };
