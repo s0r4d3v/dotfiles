@@ -10,11 +10,35 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Clipboard
--- macOS: pbcopy/pbpaste are found automatically via clipboard provider detection.
--- SSH remote: no clipboard tool available → use OSC 52, which sends/reads the
--- clipboard through the terminal escape sequence over the SSH connection.
--- Requires tmux set-clipboard=on + allow-passthrough=on (already set).
-if vim.env.SSH_TTY then
+-- macOS (no SSH): pbcopy/pbpaste detected automatically — no override needed.
+--
+-- Inside tmux (TMUX set): use tmux buffer as the clipboard bridge.
+--   copy:  load-buffer -w writes to tmux buffer AND forwards to outer terminal
+--          clipboard via OSC 52 (requires set-clipboard=on in tmux.conf).
+--   paste: refresh-client -l makes tmux query the outer terminal's clipboard and
+--          load the response into its buffer; save-buffer - then reads it back.
+--          The pane-focus-in hook in tmux.conf pre-fetches this on every focus
+--          event so the buffer is ready before `p` is pressed.
+--
+-- SSH without remote tmux (SSH_TTY set, TMUX unset): raw OSC 52.
+--   copy:  OSC 52 write passes through SSH to macOS tmux → set-clipboard=on
+--          forwards to iTerm2/WezTerm → macOS clipboard updated.
+--   paste: OSC 52 query answered by macOS tmux from its buffer, which the
+--          pane-focus-in hook keeps in sync with the macOS clipboard.
+if vim.env.TMUX then
+  vim.g.clipboard = {
+    name  = "tmux",
+    copy  = {
+      ["+"] = { "tmux", "load-buffer", "-w", "-" },
+      ["*"] = { "tmux", "load-buffer", "-w", "-" },
+    },
+    paste = {
+      ["+"] = { "bash", "-c", "tmux refresh-client -l && sleep 0.05 && tmux save-buffer -" },
+      ["*"] = { "bash", "-c", "tmux refresh-client -l && sleep 0.05 && tmux save-buffer -" },
+    },
+    cache_enabled = 0,
+  }
+elseif vim.env.SSH_TTY then
   local osc52 = require("vim.ui.clipboard.osc52")
   vim.g.clipboard = {
     name  = "OSC 52",
