@@ -8,7 +8,10 @@ return {
       appearance = { use_nvim_cmp_as_default = false },
       fuzzy      = { implementation = "lua" }, -- pre-built Rust binaries unavailable on some Linux platforms
       sources = {
-        default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+        default = { "lsp", "path", "snippets", "buffer" },
+        per_filetype = {
+          lua = { "lazydev", "lsp", "path", "snippets", "buffer" },
+        },
         providers = {
           lazydev = {
             name         = "LazyDev",
