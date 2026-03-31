@@ -61,12 +61,14 @@ clipboard-trim-trailing-spaces = true
 # ==============================================================================
 # UX
 # ==============================================================================
-confirm-close-surface = false   # no "are you sure?" on Cmd+W
+# no "are you sure?" when closing with Cmd+W
+confirm-close-surface = false
 
 # ==============================================================================
 # macOS
 # ==============================================================================
-macos-option-as-alt = left   # Option key = Alt for word navigation (Alt+←/→)
+# Option key = Alt for word navigation (Alt+←/→)
+macos-option-as-alt = left
 
 # ==============================================================================
 # Quick terminal (Ctrl+Shift+I — dropdown from the right)
