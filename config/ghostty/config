@@ -27,9 +27,11 @@ background-opacity = 0.8
 background-opacity-cells = true
 background-blur = 10
 window-decoration = auto
-macos-titlebar-style = hidden
+macos-titlebar-style = tabs
+macos-window-buttons = hidden
 macos-titlebar-proxy-icon = hidden
 maximize = true
+window-show-tab-bar = auto
 
 # ==============================================================================
 # Cursor
