@@ -1,0 +1,65 @@
+{
+  "global": {
+    "check_for_updates_on_startup": false,
+    "show_in_menu_bar": true,
+    "show_profile_name_in_menu_bar": false
+  },
+  "profiles": [
+    {
+      "name": "Default",
+      "selected": true,
+      "simple_modifications": [],
+      "complex_modifications": {
+        "rules": [
+          {
+            "description": "Esc: send Esc and switch to English input",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "escape" },
+                "to": [
+                  { "key_code": "escape" },
+                  { "select_input_source": { "input_source_id": "com.apple.keylayout.ABC" } }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "Caps Lock: toggle English / Japanese input",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "caps_lock" },
+                "to": [
+                  { "select_input_source": { "input_source_id": "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" } }
+                ],
+                "conditions": [
+                  {
+                    "type": "input_source_if",
+                    "input_sources": [{ "input_source_id": "com.apple.keylayout.ABC" }]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "caps_lock" },
+                "to": [
+                  { "select_input_source": { "input_source_id": "com.apple.keylayout.ABC" } }
+                ],
+                "conditions": [
+                  {
+                    "type": "input_source_if",
+                    "input_sources": [{ "input_source_id": "^com.apple.inputmethod.Kotoeri" }]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "virtual_hid_keyboard": {
+        "keyboard_type_v2": "ansi"
+      }
+    }
+  ]
+}

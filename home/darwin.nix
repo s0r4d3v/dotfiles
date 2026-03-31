@@ -9,4 +9,13 @@
     "/opt/homebrew/sbin"
   ];
 
+  # ===========================================================================
+  # Karabiner-Elements — keyboard remapping
+  #   Esc        → send Esc + switch to English input
+  #   Caps Lock  → toggle English ↔ Japanese (Romaji) input
+  # ===========================================================================
+  xdg.configFile."karabiner/karabiner.json" = {
+    source = ../config/karabiner/karabiner.json;
+  };
+
 }

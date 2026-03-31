@@ -11,6 +11,7 @@
       "google-chrome"
       "zoom"
       "zotero"
+      "karabiner-elements"
     ];
     # Remove casks not listed here on next darwin-rebuild switch
     onActivation.cleanup = "zap";
