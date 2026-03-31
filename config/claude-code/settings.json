@@ -18,7 +18,7 @@
       "Bash(git push:*)",
       "Bash(git push --force:*)",
       "Bash(npm publish:*)",
-      "Read(.env:*)",
+      "Read(**/.env)",
       "Read(**/*token*)",
       "Read(**/*key*)",
       "Read(**/*secret*)",
