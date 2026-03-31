@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "@HOME@/.config/claude-code/hooks/block-rm.sh"
+            "command": "@HOME@/.claude/hooks/block-rm.sh"
           }
         ]
       },
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "@HOME@/.config/claude-code/hooks/block-force-push.sh"
+            "command": "@HOME@/.claude/hooks/block-force-push.sh"
           }
         ]
       }
@@ -54,7 +54,7 @@
     "ENABLE_TOOL_SEARCH": "auto"
   },
   "statusLine": {
-    "command": "@HOME@/.config/claude-code/hooks/statusline.sh",
+    "command": "@HOME@/.claude/hooks/statusline.sh",
     "padding": 0,
     "type": "command"
   },

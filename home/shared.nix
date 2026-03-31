@@ -91,7 +91,7 @@
   };
 
   xdg.configFile."nvim" = {
-    source = ../config/nvim;
+    source = ../config/.config/nvim;
     recursive = true;
   };
 
@@ -123,20 +123,20 @@
   # ===========================================================================
   # Yazi — TUI file manager
   # ===========================================================================
-  xdg.configFile."yazi/yazi.toml".source = ../config/yazi/yazi.toml;
+  xdg.configFile."yazi/yazi.toml".source = ../config/.config/yazi/yazi.toml;
 
   # ===========================================================================
   # Tool configs — all managed declaratively
   # ===========================================================================
-  xdg.configFile."gh/config.yml".source        = ../config/gh/config.yml;
-  xdg.configFile."gh/hosts.yml".source         = ../config/gh/hosts.yml;
+  xdg.configFile."gh/config.yml".source        = ../config/.config/gh/config.yml;
+  xdg.configFile."gh/hosts.yml".source         = ../config/.config/gh/hosts.yml;
 
   home.file.".claude/settings.json".text =
     builtins.replaceStrings [ "@HOME@" ] [ config.home.homeDirectory ]
-      (builtins.readFile ../config/claude-code/settings.json);
-  xdg.configFile."claude-code/hooks/block-rm.sh"          = { source = ../config/claude-code/hooks/block-rm.sh;          executable = true; };
-  xdg.configFile."claude-code/hooks/block-force-push.sh"  = { source = ../config/claude-code/hooks/block-force-push.sh;  executable = true; };
-  xdg.configFile."claude-code/hooks/statusline.sh"        = { source = ../config/claude-code/hooks/statusline.sh;        executable = true; };
+      (builtins.readFile ../config/.claude/settings.json);
+  home.file.".claude/hooks/block-rm.sh"          = { source = ../config/.claude/hooks/block-rm.sh;          executable = true; };
+  home.file.".claude/hooks/block-force-push.sh"  = { source = ../config/.claude/hooks/block-force-push.sh;  executable = true; };
+  home.file.".claude/hooks/statusline.sh"        = { source = ../config/.claude/hooks/statusline.sh;        executable = true; };
 
   # ===========================================================================
   # Zsh
@@ -236,7 +236,7 @@
   # ===========================================================================
   programs.tmux = {
     enable = true;
-    extraConfig = builtins.readFile ../config/tmux/tmux.conf;
+    extraConfig = builtins.readFile ../config/.config/tmux/tmux.conf;
   };
 
   # ===========================================================================

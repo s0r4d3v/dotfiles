@@ -15,11 +15,11 @@
   #   Caps Lock  → toggle English ↔ Japanese (Romaji) input
   # ===========================================================================
   xdg.configFile."karabiner/karabiner.json" = {
-    source = ../config/karabiner/karabiner.json;
+    source = ../config/.config/karabiner/karabiner.json;
   };
 
   xdg.configFile."ghostty/config" = {
-    source = ../config/ghostty/config;
+    source = ../config/.config/ghostty/config;
     force  = true;
   };
 
