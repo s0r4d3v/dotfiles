@@ -41,6 +41,14 @@ return {
       vim.keymap.set({ "n", "t" }, "<C-j>", "<CMD>NavigatorDown<CR>")
       vim.keymap.set({ "n", "t" }, "<C-k>", "<CMD>NavigatorUp<CR>")
       vim.keymap.set({ "n", "t" }, "<C-l>", "<CMD>NavigatorRight<CR>")
+      -- Tell tmux this pane is running nvim so it forwards C-hjkl here.
+      -- ps-based detection is unreliable with Nix-wrapped binaries.
+      vim.api.nvim_create_autocmd({ "VimEnter", "VimResume" }, {
+        callback = function() vim.fn.system("tmux set-option -p @pane-is-vim 1") end,
+      })
+      vim.api.nvim_create_autocmd({ "VimLeave", "VimSuspend" }, {
+        callback = function() vim.fn.system("tmux set-option -p @pane-is-vim 0") end,
+      })
     end,
   },
 
