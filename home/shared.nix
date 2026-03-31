@@ -343,6 +343,8 @@
     };
   };
 
+  home.file.".hushlogin".text = "";
+
   home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
 
   home.stateVersion = "25.11";
