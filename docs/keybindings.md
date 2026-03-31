@@ -1,5 +1,35 @@
 # Keybindings
 
+## Ghostty
+
+### Tabs
+| Key | Action |
+|-----|--------|
+| `Cmd+T` | New tab |
+| `Cmd+W` | Close tab |
+| `Cmd+1-9` | Jump to tab N |
+| `Cmd+Shift+]` / `Cmd+Shift+[` | Next / prev tab |
+| `Cmd+Shift+H` / `Cmd+Shift+L` | Move tab left / right |
+| `Cmd+Shift+R` | Rename tab |
+
+### Window & visibility
+| Key | Action |
+|-----|--------|
+| `Cmd+N` | New window |
+| `Cmd+Enter` | Toggle fullscreen |
+| `Ctrl+Shift+F` | Toggle maximize |
+| `Ctrl+Shift+H` | Toggle app visibility (global hotkey) |
+| `Ctrl+Shift+I` | Toggle quick terminal (global hotkey) |
+
+### Misc
+| Key | Action |
+|-----|--------|
+| `Cmd+K` | Clear screen |
+| `Cmd+F` | Search scrollback |
+| `Option+←` / `Option+→` | Word navigation (Option acts as Alt) |
+
+---
+
 ## Tmux (`prefix` = `Ctrl+A`)
 
 ### Popups
@@ -80,20 +110,27 @@
 | `K` | Hover |
 | `[d` / `]d` | Prev/next diagnostic |
 
-### Buffer & window
+### Splits & buffers
 | Key | Action |
 |-----|--------|
+| `<leader>sv` | Split vertical |
+| `<leader>sh` | Split horizontal |
+| `<leader>se` | Equalize splits |
+| `<leader>sx` | Close split |
+| `C-h/j/k/l` | Navigate splits / tmux panes |
 | `<leader>bd` | Close buffer |
 | `[b` / `]b` | Prev/next buffer |
-| `<leader>e` | File explorer |
+
+### Files & exploration
+| Key | Action |
+|-----|--------|
+| `<leader>e` | File explorer (oil.nvim) |
 | `<leader>w` | Save |
 | `<leader>q` | Quit |
 
 ### Quickfix
 | Key | Action |
 |-----|--------|
-| `<leader>xx` | Diagnostics list |
-| `<leader>xb` | Buffer diagnostics |
 | `<leader>xq` | Open quickfix |
 | `[q` / `]q` | Prev/next quickfix |
 
