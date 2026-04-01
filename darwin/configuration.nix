@@ -46,12 +46,35 @@
       "com.apple.swipescrolldirection" = false;
     };
 
+    controlcenter = {
+      BatteryShowPercentage = true;
+    };
+
+    CustomUserPreferences = {
+      NSGlobalDomain = {
+        AppleLanguages = [ "en-GB" ]; # language: English UK
+        AppleLocale = "en_GB";
+      };
+      "com.apple.BezelServices" = {
+        dAuto = false; # disable auto-adjust brightness
+      };
+      "com.apple.inputmethod.Kotoeri" = {
+        JIMPrefLiveConversionKey = false; # disable live conversion (ライブ変換)
+      };
+    };
+
+    CustomSystemPreferences = {
+      "/Library/Preferences/com.apple.CoreBrightness" = {
+        CBAdaptiveWhiteBalanceEnabled = 1; # True Tone
+      };
+    };
+
     dock = {
       autohide = true;
       autohide-delay = 0.0;
       autohide-time-modifier = 0.2;
       show-recents = false;
-      tilesize = 48;
+      tilesize = 60;
     };
 
     finder = {

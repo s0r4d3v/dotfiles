@@ -50,6 +50,7 @@
     # Dev tools
     gh         # GitHub CLI
     claude-code
+    opencode
     uv         # Python package manager (provides uvx for MCP servers)
     nodejs     # runtime for node-based LSP servers and tools
 
