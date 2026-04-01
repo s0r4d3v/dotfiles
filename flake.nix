@@ -49,6 +49,8 @@
     darwinConfigurations = {
       "soranagano-aarch64" = mkDarwin { username = "soranagano"; system = "aarch64-darwin"; };
       "soranagano-x86_64"  = mkDarwin { username = "soranagano"; system = "x86_64-darwin"; };
+      "m-x86_64"  = mkDarwin { username = "m"; system = "x86_64-darwin"; };
+      "snagano-aarch64" = mkDarwin { username = "snagano"; system = "aarch64-darwin"; };
     };
 
     homeConfigurations = {

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Pull latest if remote has new commits
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${REPO_DIR}"
 
@@ -30,20 +29,83 @@ esac
 
 FLAKE=".#${USERNAME}-${NIX_ARCH}"
 
+update_homebrew_if_needed() {
+  local brew_bin=""
+  local brew_repo=""
+  local core_repo=""
+  local cask_repo=""
+
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    brew_bin="/opt/homebrew/bin/brew"
+    brew_repo="/opt/homebrew/Library/Homebrew"
+    core_repo="/opt/homebrew/Library/Taps/homebrew/homebrew-core"
+    cask_repo="/opt/homebrew/Library/Taps/homebrew/homebrew-cask"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    brew_bin="/usr/local/bin/brew"
+    brew_repo="/usr/local/Homebrew"
+    core_repo="/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core"
+    cask_repo="/usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask"
+  else
+    return 0
+  fi
+
+  echo "Checking Homebrew..."
+
+  # Fast path: brew works
+  if "${brew_bin}" --version >/dev/null 2>&1; then
+    echo "Updating Homebrew..."
+    "${brew_bin}" update || true
+    return 0
+  fi
+
+  echo "brew is unhealthy — attempting Git-based Homebrew refresh..."
+
+  if [[ -d "${brew_repo}/.git" ]]; then
+    git -C "${brew_repo}" fetch origin
+    git -C "${brew_repo}" checkout main || true
+    git -C "${brew_repo}" pull --ff-only
+  fi
+
+  if [[ -d "${core_repo}/.git" ]]; then
+    git -C "${core_repo}" fetch origin
+    git -C "${core_repo}" checkout main || true
+    git -C "${core_repo}" pull --ff-only
+  fi
+
+  if [[ -d "${cask_repo}/.git" ]]; then
+    git -C "${cask_repo}" fetch origin
+    git -C "${cask_repo}" checkout main || true
+    git -C "${cask_repo}" pull --ff-only
+  fi
+
+  echo "Re-checking Homebrew..."
+  "${brew_bin}" --version >/dev/null 2>&1 || {
+    echo "Homebrew is still failing after refresh."
+    echo "Try reinstalling Homebrew with the official installer, then rerun ./switch."
+    exit 1
+  }
+
+  "${brew_bin}" update || true
+}
+
 case "${OS}" in
   Darwin)
     echo "Applying darwin config: ${FLAKE}"
-    if command -v darwin-rebuild &>/dev/null; then
+
+    update_homebrew_if_needed
+
+    if command -v darwin-rebuild >/dev/null 2>&1; then
       sudo darwin-rebuild switch --flake "${FLAKE}" "$@"
     else
-      echo "(darwin-rebuild not found — bootstrapping via nix run)"
-      sudo nix --extra-experimental-features 'nix-command flakes' \
-        run nix-darwin -- switch --flake "${FLAKE}" "$@"
+      echo "(darwin-rebuild not found — bootstrapping via nix build)"
+      nix --extra-experimental-features 'nix-command flakes' \
+        build nix-darwin#darwin-rebuild
+      sudo ./result/bin/darwin-rebuild switch --flake "${FLAKE}" "$@"
     fi
     ;;
   Linux)
     echo "Applying home-manager config: ${FLAKE}"
-    if command -v home-manager &>/dev/null; then
+    if command -v home-manager >/dev/null 2>&1; then
       home-manager switch --flake "${FLAKE}" "$@"
     else
       echo "(home-manager not found — bootstrapping via nix run)"
