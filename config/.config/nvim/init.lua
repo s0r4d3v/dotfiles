@@ -68,6 +68,7 @@ vim.keymap.set("n", "[q",          "<cmd>cprev<cr>",         { desc = "Prev quic
 vim.keymap.set("n", "]q",          "<cmd>cnext<cr>",         { desc = "Next quickfix" })
 
 -- Diagnostics
+vim.diagnostic.config({ virtual_lines = true, virtual_text = false })
 vim.keymap.set("n", "<leader>cd",  vim.diagnostic.open_float, { desc = "Diagnostic float" })
 
 -- LSP keymaps (on attach)
