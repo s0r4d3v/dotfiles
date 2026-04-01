@@ -10,7 +10,6 @@
       "zoom"
       "zotero"
       "karabiner-elements"
-      "warp"
     ];
     onActivation.cleanup = "zap";
   };
