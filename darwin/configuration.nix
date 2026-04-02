@@ -42,7 +42,7 @@
       NSAutomaticCapitalizationEnabled = false;
       NSAutomaticDashSubstitutionEnabled = false;
       NSAutomaticQuoteSubstitutionEnabled = false;
-      "com.apple.swipescrolldirection" = false;
+      "com.apple.swipescrolldirection" = true;
     };
 
     controlcenter = {
