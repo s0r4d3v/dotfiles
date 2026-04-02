@@ -1,72 +1,112 @@
-# Setup — New Machine
+# Setup
 
 ## 1. Install Nix
-
-Install Nix using the [Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer) (handles both macOS and Linux):
 
 ```sh
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-Open a new shell after installation so `nix` is on your PATH.
+Open a new shell after installation.
 
-## 2. Add yourself to `flake.nix`
+## 2. Place age key
 
-If your username isn't already listed, add entries for the platforms you use:
+The age private key must exist before applying. Retrieve it from Bitwarden:
+
+```sh
+mkdir -p ~/.config/sops/age
+vim ~/.config/sops/age/keys.txt   # paste your private key
+```
+
+## 3. Add yourself to `flake.nix` (if needed)
+
+If your username isn't already listed, add entries:
 
 ```nix
 darwinConfigurations = {
   "<username>-aarch64" = mkDarwin { username = "<username>"; system = "aarch64-darwin"; };
-  "<username>-x86_64"  = mkDarwin { username = "<username>"; system = "x86_64-darwin"; };
 };
 homeConfigurations = {
-  "<username>-x86_64"  = mkLinux { username = "<username>"; system = "x86_64-linux"; };
-  "<username>-aarch64" = mkLinux { username = "<username>"; system = "aarch64-linux"; };
+  "<username>-x86_64" = mkLinux { username = "<username>"; system = "x86_64-linux"; };
 };
-```
-
-## 3. Place age key
-
-The age private key must exist **before** applying. Retrieve it from Bitwarden:
-
-```sh
-mkdir -p ~/.config/sops/age
-vim ~/.config/sops/age/keys.txt    # paste your private key
 ```
 
 ## 4. Bootstrap
 
-> **Note:** Clone via HTTPS on first setup — SSH keys are not yet placed until after activation.
+Clone via HTTPS on first setup (SSH keys aren't placed until after activation):
 
 ```sh
 git clone https://github.com/s0r4d3v/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-**Mac (first time only — move files that conflict with nix-darwin):**
+**Mac first time only** -- move files that conflict with nix-darwin:
+
 ```sh
 sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
 sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
 ```
 
-**All platforms (first run and every run after):**
+**Apply (all platforms):**
+
 ```sh
 ./switch
 ```
 
-`./switch` auto-detects OS and architecture. On first run it bootstraps via `nix build` / `nix run` if `darwin-rebuild` or `home-manager` are not yet installed. On macOS it also updates Homebrew automatically.
+`./switch` auto-detects OS and architecture. On first run it bootstraps `darwin-rebuild` or `home-manager` if not yet installed. On macOS it also updates Homebrew.
 
-SSH keys are automatically decrypted to `~/.ssh/` during activation.
-
-After the first run, `./switch` migrates the repo into ghq automatically and switches the remote from HTTPS to SSH. Since a script cannot change the parent shell's directory, run this manually:
+After the first run, the repo is migrated into ghq and the remote switches to SSH. Move into the new location:
 
 ```sh
 cd ~/ghq/github.com/s0r4d3v/dotfiles
 ```
 
-## 5. Install Neovim plugins
+## 5. Neovim plugins
+
+Open a new shell, then launch Neovim to auto-install plugins:
 
 ```sh
-exec zsh && nvim
+exec zsh
+nvim
+```
+
+## Troubleshooting
+
+**`Unexpected files in /etc`** -- nix-darwin needs to own these files:
+```sh
+sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
+sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
+sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
+```
+
+**`Existing file '...' would be clobbered`** -- remove the conflicting file and re-apply:
+```sh
+rm ~/.ssh/config   # adjust path to match the error
+./switch
+```
+
+**`Unable to remove some files. Please enable Full Disk Access`** -- Homebrew's `cleanup = "zap"` requires Full Disk Access:
+
+System Settings > Privacy & Security > Full Disk Access > enable your terminal app
+
+**`sops-nix.service failed` on WSL** -- enable systemd:
+```sh
+sudo tee -a /etc/wsl.conf <<'EOF'
+[boot]
+systemd=true
+EOF
+```
+Then restart WSL: `wsl --shutdown`
+
+**`sops-nix.service failed` -- age key missing:**
+```sh
+ls ~/.config/sops/age/keys.txt
+```
+If missing, retrieve from Bitwarden and place it, then re-run `./switch`.
+
+**Local changes block git pull on `./switch`** -- stash or commit first:
+```sh
+git stash
+./switch
+git stash pop
 ```
