@@ -124,7 +124,6 @@ migrate_to_ghq() {
 
   echo ""
   echo "Migration complete. Removing original directory: ${REPO_DIR}"
-  cd "${expected_dir}"
   rm -rf "${REPO_DIR}"
 
   echo ""
