@@ -82,7 +82,7 @@ config/
   tmux/tmux.conf           — tmux config
   ghostty/config           — Ghostty terminal config (theme, font, keybinds)
   karabiner/karabiner.json — Karabiner-Elements: Esc→English, Caps Lock toggle
-  claude-code/             — Claude Code settings + safety hooks
+  .claude/                 — Claude Code settings + safety hooks
   gh/                      — GitHub CLI config
   yazi/                    — Yazi file manager config
 secrets/

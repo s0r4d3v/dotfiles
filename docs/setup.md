@@ -1,6 +1,16 @@
 # Setup — New Machine
 
-## 1. Add yourself to `flake.nix`
+## 1. Install Nix
+
+Install Nix using the [Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer) (handles both macOS and Linux):
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+Open a new shell after installation so `nix` is on your PATH.
+
+## 2. Add yourself to `flake.nix`
 
 If your username isn't already listed, add entries for the platforms you use:
 
@@ -15,7 +25,7 @@ homeConfigurations = {
 };
 ```
 
-## 2. Place age key
+## 3. Place age key
 
 The age private key must exist **before** applying. Retrieve it from Bitwarden:
 
@@ -24,7 +34,7 @@ mkdir -p ~/.config/sops/age
 vim ~/.config/sops/age/keys.txt    # paste your private key
 ```
 
-## 3. Bootstrap
+## 4. Bootstrap
 
 > **Note:** Clone via HTTPS on first setup — SSH keys are not yet placed until after activation.
 
@@ -45,17 +55,17 @@ sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
 ./switch
 ```
 
-`./switch` auto-detects OS and architecture. On first run it bootstraps via `nix run` if `darwin-rebuild` / `home-manager` are not yet installed.
+`./switch` auto-detects OS and architecture. On first run it bootstraps via `nix build` / `nix run` if `darwin-rebuild` or `home-manager` are not yet installed. On macOS it also updates Homebrew automatically.
 
 SSH keys are automatically decrypted to `~/.ssh/` during activation.
 
-After the first run, `./switch` migrates the repo into ghq automatically. Since a script cannot change the parent shell's directory, run this manually:
+After the first run, `./switch` migrates the repo into ghq automatically and switches the remote from HTTPS to SSH. Since a script cannot change the parent shell's directory, run this manually:
 
 ```sh
 cd ~/ghq/github.com/s0r4d3v/dotfiles
 ```
 
-## 4. Install Neovim plugins
+## 5. Install Neovim plugins
 
 ```sh
 exec zsh && nvim

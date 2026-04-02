@@ -13,10 +13,16 @@ macOS + Linux dotfiles managed with Nix + Home Manager + nix-darwin.
 ## Quick start
 
 ```sh
+# 1. Install Nix (if not already installed)
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# 2. Clone and apply
 git clone https://github.com/s0r4d3v/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./switch
-cd ~/ghq/github.com/s0r4d3v/dotfiles  # repo is migrated into ghq after first run
+
+# 3. Repo is auto-migrated into ghq after first run
+cd ~/ghq/github.com/s0r4d3v/dotfiles
 ```
 
 See [docs/setup.md](docs/setup.md) for full bootstrap instructions.
