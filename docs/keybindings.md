@@ -151,3 +151,19 @@
 | `<leader>sd` | Dashboard |
 | `<leader>Ss` | Restore session |
 | `<leader>Sl` | Restore last session |
+
+### Notebook (`<localleader>` = `,`)
+| Key | Action |
+|-----|--------|
+| `,mi` | Init Jupyter kernel |
+| `,rc` | Run cell |
+| `,ra` | Run cell and above |
+| `,rA` | Run all cells |
+| `,rl` | Run line |
+| `,r` (visual) | Run selection |
+| `,ml` | Run line (molten) |
+| `,mr` | Re-run cell (molten) |
+| `,mv` (visual) | Run selection (molten) |
+| `,mo` / `,mh` | Show / hide output |
+| `,mI` / `,mE` | Import / export notebook output |
+| `,md` | Delete cell output |

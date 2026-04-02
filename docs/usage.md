@@ -51,3 +51,4 @@ Plugins are split by category in `config/.config/nvim/lua/plugins/`:
 | `editor.lua` | surround, mini.*, multicursor, neogen |
 | `tools.lua` | grug-far, nvim-bqf, render-markdown, persistence |
 | `ui.lua` | snacks, lualine, which-key, noice, trouble, colorizer, zen-mode |
+| `notebook.lua` | Jupyter notebooks: molten, jupytext, quarto, otter, image.nvim |

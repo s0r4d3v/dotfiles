@@ -154,3 +154,18 @@ case "${OS}" in
 esac
 
 migrate_to_ghq
+
+# Register Jupyter kernel for Neovim (molten-nvim) if not already present
+# Also ensures ~/Library/Jupyter/runtime exists (macOS) for kernel connection files
+if command -v python3 >/dev/null 2>&1 && python3 -c "import ipykernel" 2>/dev/null; then
+  case "${OS}" in
+    Darwin) mkdir -p "${HOME}/Library/Jupyter/runtime" ;;
+    Linux)  mkdir -p "${HOME}/.local/share/jupyter/runtime" ;;
+  esac
+  local_kernel_dir="${HOME}/Library/Jupyter/kernels/python3"
+  [[ "${OS}" == "Linux" ]] && local_kernel_dir="${HOME}/.local/share/jupyter/kernels/python3"
+  if [[ ! -d "${local_kernel_dir}" ]]; then
+    echo "Registering Jupyter python3 kernel..."
+    python3 -m ipykernel install --user --name python3 --display-name "Python 3"
+  fi
+fi

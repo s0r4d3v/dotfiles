@@ -82,6 +82,14 @@
     # Secrets
     age # modern encryption (encrypt files, secrets)
     sops # secrets manager (wraps age/gpg, works with Nix)
+
+    # Jupyter / notebook
+    python3Packages.jupytext # ipynb ↔ plaintext conversion (used by jupytext.nvim)
+    (pkgs.python3.withPackages (
+      ps: with ps; [
+        ipykernel # Jupyter kernel registration + runtime (includes jupyter-client)
+      ]
+    )) # provides python3 + jupyter on PATH for kernel management
   ];
 
   # ===========================================================================
@@ -90,6 +98,16 @@
   programs.neovim = {
     enable = true;
     defaultEditor = true; # sets $EDITOR and $VISUAL
+    withPython3 = true; # Python3 provider for molten-nvim (Jupyter notebook runner)
+    extraPython3Packages =
+      ps: with ps; [
+        pynvim # Neovim ← Python bridge
+        jupyter-client # kernel protocol (molten-nvim)
+        ipykernel # register/run Python kernels
+        nbformat # import/export notebook outputs
+        cairosvg # render SVG plot output
+      ];
+    extraPackages = [ pkgs.imagemagick ]; # image processing for image.nvim
   };
 
   xdg.configFile."nvim" = {
@@ -209,6 +227,61 @@
         local dir
         dir=$(ghq list | fzf --height 40% --reverse --preview "ls $(ghq root)/{}")
         [[ -n "$dir" ]] && cd "$(ghq root)/$dir"
+      }
+
+      # Create a new Jupyter notebook and open in nvim
+      nb() {
+        local name lang display kernel
+
+        printf "Notebook name: "
+        read -r name
+        [[ -z "$name" ]] && echo "Aborted." && return 1
+        name="''${name%.ipynb}"
+
+        if [[ -f "''${name}.ipynb" ]]; then
+          echo "''${name}.ipynb already exists, opening..."
+          nvim "''${name}.ipynb"
+          return
+        fi
+
+        printf "Kernel language (python): "
+        read -r lang
+        lang="''${lang:-python}"
+
+        case "$lang" in
+          python)  display="Python 3"; kernel="python3" ;;
+          r)       display="R";        kernel="ir" ;;
+          julia)   display="Julia";    kernel="julia-1" ;;
+          *)       display="$lang";    kernel="$lang" ;;
+        esac
+
+        cat > "''${name}.ipynb" << NBEOF
+      {
+       "cells": [
+        {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": []
+        }
+       ],
+       "metadata": {
+        "kernelspec": {
+         "display_name": "$display",
+         "language": "$lang",
+         "name": "$kernel"
+        },
+        "language_info": {
+         "name": "$lang"
+        }
+       },
+       "nbformat": 4,
+       "nbformat_minor": 5
+      }
+      NBEOF
+        echo "Created ''${name}.ipynb ($display kernel)"
+        nvim "''${name}.ipynb"
       }
     '';
   };

@@ -25,6 +25,7 @@ vim.opt.clipboard = "unnamedplus"
 
 -- Options
 vim.g.mapleader = " "
+vim.g.maplocalleader = ","
 vim.opt.mouse          = ""     -- disable mouse
 vim.opt.number         = true
 vim.opt.relativenumber = true
