@@ -14,7 +14,7 @@
     },
     "fetch": {
       "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-fetch"],
+      "command": ["uvx", "mcp-server-fetch"],
       "enabled": true
     },
     "filesystem": {
@@ -24,14 +24,8 @@
     },
     "git": {
       "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-git"],
+      "command": ["uvx", "mcp-server-git"],
       "enabled": true
-    },
-    "github": {
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "enabled": true,
-      "oauth": {}
     },
     "sentry": {
       "type": "remote",
