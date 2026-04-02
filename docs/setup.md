@@ -49,6 +49,12 @@ sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
 
 SSH keys are automatically decrypted to `~/.ssh/` during activation.
 
+After the first run, `./switch` migrates the repo into ghq automatically. Since a script cannot change the parent shell's directory, run this manually:
+
+```sh
+cd ~/ghq/github.com/s0r4d3v/dotfiles
+```
+
 ## 4. Install Neovim plugins
 
 ```sh

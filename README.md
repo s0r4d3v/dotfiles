@@ -16,6 +16,7 @@ macOS + Linux dotfiles managed with Nix + Home Manager + nix-darwin.
 git clone https://github.com/s0r4d3v/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./switch
+cd ~/ghq/github.com/s0r4d3v/dotfiles  # repo is migrated into ghq after first run
 ```
 
 See [docs/setup.md](docs/setup.md) for full bootstrap instructions.
