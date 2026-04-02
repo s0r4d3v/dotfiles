@@ -4,55 +4,56 @@
   home.packages = with pkgs; [
     # Core
     git
-    ripgrep    # rg           — fast grep
-    fd         # fd           — fast find
+    ripgrep # rg           — fast grep
+    fd # fd           — fast find
     fzf
-    jq         # JSON queries
-    zoxide     # z / zi       — smart cd
+    jq # JSON queries
+    zoxide # z / zi       — smart cd
 
     # Modern CLI replacements
-    eza        # ls/ll/tree   ← ls
-    bat        # cat          ← cat
-    delta      # diff pager   ← diff (git)
-    dust       # du           ← du
-    duf        # df           ← df
-    btop       # htop         ← top
-    procs      # ps           ← ps
-    sd         # find/replace ← sed
+    eza # ls/ll/tree   ← ls
+    bat # cat          ← cat
+    delta # diff pager   ← diff (git)
+    dust # du           ← du
+    duf # df           ← df
+    btop # htop         ← top
+    procs # ps           ← ps
+    sd # find/replace ← sed
 
     # File & navigation
-    yazi       # TUI file manager with image preview
+    yazi # TUI file manager with image preview
     # broot installed via programs.broot below
 
     # Data processing
-    yq-go      # YAML/TOML/XML queries (mikefarah/yq) ← complements jq
-    fx         # interactive JSON explorer
+    yq-go # YAML/TOML/XML queries (mikefarah/yq) ← complements jq
+    fx # interactive JSON explorer
 
     # Dev workflow
-    just       # task runner  ← make
-    mise       # polyglot version manager (node/python/ruby/go/rust per project)
-    lazygit    # git TUI (used by tmux popup + nvim plugin)
+    just # task runner  ← make
+    mise # polyglot version manager (node/python/ruby/go/rust per project)
+    lazygit # git TUI (used by tmux popup + nvim plugin)
     lazydocker # docker TUI   ← docker CLI
+    ghq # remote repository manager
     difftastic # structure-aware diff (complements delta)
-    hyperfine  # statistical CLI benchmarking
-    tokei      # code line counter by language
-    gitleaks   # scan git history for accidentally committed secrets
-    vhs        # reproducible terminal recordings (.tape → GIF/video)
+    hyperfine # statistical CLI benchmarking
+    tokei # code line counter by language
+    gitleaks # scan git history for accidentally committed secrets
+    vhs # reproducible terminal recordings (.tape → GIF/video)
 
     # Network & HTTP
-    xh         # HTTP client  ← curl / httpie
-    bandwhich  # real-time network usage per process
+    xh # HTTP client  ← curl / httpie
+    bandwhich # real-time network usage per process
 
     # Docs
-    glow       # markdown preview
-    tldr       # quick man pages
+    glow # markdown preview
+    tldr # quick man pages
 
     # Dev tools
-    gh         # GitHub CLI
+    gh # GitHub CLI
     claude-code
     opencode
-    uv         # Python package manager (provides uvx for MCP servers)
-    nodejs     # runtime for node-based LSP servers and tools
+    uv # Python package manager (provides uvx for MCP servers)
+    nodejs # runtime for node-based LSP servers and tools
 
     # ===========================================================================
     # Neovim LSP servers (all managed by Nix; enabled via vim.lsp.enable in nvim)
@@ -105,9 +106,9 @@
     enableZshIntegration = true; # adds `br` shell function for cd-on-exit
     settings.verbs = [
       {
-        key       = "enter";
+        key = "enter";
         execution = "$EDITOR {file}";
-        apply_to  = "file";
+        apply_to = "file";
       }
     ];
   };
@@ -129,15 +130,24 @@
   # ===========================================================================
   # Tool configs — all managed declaratively
   # ===========================================================================
-  xdg.configFile."gh/config.yml".source        = ../config/.config/gh/config.yml;
-  xdg.configFile."gh/hosts.yml".source         = ../config/.config/gh/hosts.yml;
+  xdg.configFile."gh/config.yml".source = ../config/.config/gh/config.yml;
+  xdg.configFile."gh/hosts.yml".source = ../config/.config/gh/hosts.yml;
 
   home.file.".claude/settings.json".text =
     builtins.replaceStrings [ "@HOME@" ] [ config.home.homeDirectory ]
       (builtins.readFile ../config/.claude/settings.json);
-  home.file.".claude/hooks/block-rm.sh"          = { source = ../config/.claude/hooks/block-rm.sh;          executable = true; };
-  home.file.".claude/hooks/block-force-push.sh"  = { source = ../config/.claude/hooks/block-force-push.sh;  executable = true; };
-  home.file.".claude/hooks/statusline.sh"        = { source = ../config/.claude/hooks/statusline.sh;        executable = true; };
+  home.file.".claude/hooks/block-rm.sh" = {
+    source = ../config/.claude/hooks/block-rm.sh;
+    executable = true;
+  };
+  home.file.".claude/hooks/block-force-push.sh" = {
+    source = ../config/.claude/hooks/block-force-push.sh;
+    executable = true;
+  };
+  home.file.".claude/hooks/statusline.sh" = {
+    source = ../config/.claude/hooks/statusline.sh;
+    executable = true;
+  };
 
   # ===========================================================================
   # Zsh
@@ -172,20 +182,20 @@
     shellAliases = {
       vim = "nvim";
       # eza
-      ls  = "eza --group-directories-first";
-      ll  = "eza -la --git --group-directories-first";
-      lt  = "eza --tree --git-ignore -I '.git|node_modules|.cache|__pycache__|.DS_Store|*.pyc|dist|.next' --group-directories-first";
+      ls = "eza --group-directories-first";
+      ll = "eza -la --git --group-directories-first";
+      lt = "eza --tree --git-ignore -I '.git|node_modules|.cache|__pycache__|.DS_Store|*.pyc|dist|.next' --group-directories-first";
       # bat
       cat = "bat --style=plain";
       # modern replacements
       find = "fd";
-      du   = "dust";
-      df   = "duf";
-      ps   = "procs";
-      cd   = "z";
-      cdi  = "zi"; # interactive zoxide
+      du = "dust";
+      df = "duf";
+      ps = "procs";
+      cd = "z";
+      cdi = "zi"; # interactive zoxide
       # nav
-      ".."  = "cd ..";
+      ".." = "cd ..";
       "..." = "cd ../..";
     };
     initContent = ''
@@ -193,6 +203,13 @@
       eval "$(mise activate zsh)"
       # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
       zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
+
+      # Jump to a ghq-managed repo with fzf
+      repo() {
+        local dir
+        dir=$(ghq list | fzf --height 40% --reverse --preview "ls $(ghq root)/{}")
+        [[ -n "$dir" ]] && cd "$(ghq root)/$dir"
+      }
     '';
   };
 
