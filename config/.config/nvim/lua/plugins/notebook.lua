@@ -157,5 +157,71 @@ return {
         desc = "Run all cells (all languages)",
       },
     },
+    config = function(_, opts)
+      require("quarto").setup(opts)
+
+      -- :NotebookDiag — diagnostic command for debugging treesitter injection
+      -- and otter/quarto activation state.  Run this in a notebook buffer if
+      -- ,rc / ,rA report "No code chunks found".
+      vim.api.nvim_create_user_command("NotebookDiag", function()
+        local buf = vim.api.nvim_get_current_buf()
+        local ft = vim.bo[buf].filetype
+        local lines = { "--- NotebookDiag ---" }
+
+        -- 1. Filetype
+        table.insert(lines, ("filetype: %s"):format(ft))
+
+        -- 2. Treesitter parser
+        local parser_ok, parser = pcall(vim.treesitter.get_parser, buf, vim.treesitter.language.get_lang(ft) or ft)
+        if not parser_ok then
+          table.insert(lines, "parser: FAILED to get (" .. tostring(parser) .. ")")
+        else
+          table.insert(lines, ("parser: %s"):format(parser:lang()))
+          -- Force a full parse
+          parser:parse(true)
+          -- Children (injected languages)
+          local children = parser:children()
+          local child_keys = vim.tbl_keys(children)
+          table.insert(lines, ("injected languages: %s"):format(#child_keys > 0 and table.concat(child_keys, ", ") or "NONE"))
+          for _, lang in ipairs(child_keys) do
+            local child = children[lang]
+            local regions = child:included_regions()
+            local count = 0
+            for _ in pairs(regions) do count = count + 1 end
+            table.insert(lines, ("  %s: %d region(s)"):format(lang, count))
+          end
+        end
+
+        -- 3. Injection query
+        local lang = vim.treesitter.language.get_lang(ft) or ft
+        local query = vim.treesitter.query.get(lang, "injections")
+        table.insert(lines, ("injection query (%s): %s"):format(lang, query and "loaded" or "NIL (not found)"))
+
+        -- 4. Otter raft state
+        local keeper_ok, keeper = pcall(require, "otter.keeper")
+        if keeper_ok and keeper.rafts and keeper.rafts[buf] then
+          local raft = keeper.rafts[buf]
+          local chunks = raft.code_chunks or {}
+          local chunk_langs = vim.tbl_keys(chunks)
+          table.insert(lines, ("otter raft: active (languages: %s)"):format(
+            #chunk_langs > 0 and table.concat(chunk_langs, ", ") or "none"
+          ))
+          for _, l in ipairs(chunk_langs) do
+            table.insert(lines, ("  %s: %d chunk(s)"):format(l, #chunks[l]))
+          end
+        else
+          table.insert(lines, "otter raft: NOT active for this buffer")
+        end
+
+        -- 5. Molten status
+        local molten_ok, molten_status = pcall(function() return require("molten.status").initialized() end)
+        table.insert(lines, ("molten: %s"):format(molten_ok and molten_status or "not loaded"))
+
+        -- Print
+        for _, line in ipairs(lines) do
+          vim.api.nvim_echo({{ line, "Normal" }}, true, {})
+        end
+      end, { desc = "Diagnose notebook treesitter/otter/molten state" })
+    end,
   },
 }

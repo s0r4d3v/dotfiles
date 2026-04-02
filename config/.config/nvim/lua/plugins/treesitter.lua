@@ -4,67 +4,47 @@ return {
     build = ":TSUpdate",
     dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     config = function()
-      -- Register community grammar for mcfunction (not in official parser list).
-      -- nvim-treesitter v1 may not expose get_parser_configs; guard with pcall.
-      local ok, parsers = pcall(require, "nvim-treesitter.parsers")
-      if ok and type(parsers.get_parser_configs) == "function" then
-        parsers.get_parser_configs().mcfunction = {
-          install_info = {
-            url    = "https://github.com/misode/tree-sitter-mcfunction",
-            files  = { "src/parser.c" },
-            branch = "master",
-          },
-          filetype = "mcfunction",
-        }
-      end
+      -- nvim-treesitter (main branch) only accepts install_dir in setup().
+      -- Neovim 0.11+ enables treesitter highlight/indent by default.
+      -- Parsers are installed via :TSInstall (ensure_installed is gone).
+      require("nvim-treesitter").setup({})
 
-      require("nvim-treesitter").setup({
-        ensure_installed = {
-          "lua", "python", "bash", "go", "typescript", "javascript",
-          "json", "yaml", "toml", "markdown", "markdown_inline",
-          "html", "css", "nix", "vue",
-          -- mcfunction: install manually with :TSInstall mcfunction (community parser)
+      -- -- textobjects: config --
+      local ts_to = require("nvim-treesitter-textobjects")
+      ts_to.setup({
+        select = {
+          lookahead = true,
         },
-        highlight = { enable = true },
-        indent    = { enable = true },
-        textobjects = {
-          select = {
-            enable    = true,
-            lookahead = true,
-            keymaps = {
-              ["af"] = "@function.outer",
-              ["if"] = "@function.inner",
-              ["ac"] = "@class.outer",
-              ["ic"] = "@class.inner",
-              ["ib"] = { query = "@code_cell.inner", desc = "in code block" },
-              ["ab"] = { query = "@code_cell.outer", desc = "around code block" },
-            },
-          },
-          move = {
-            enable = true,
-            set_jumps = false,
-            goto_next_start     = {
-              ["]f"] = "@function.outer",
-              ["]c"] = "@class.outer",
-              ["]b"] = { query = "@code_cell.inner", desc = "next code block" },
-            },
-            goto_previous_start = {
-              ["[f"] = "@function.outer",
-              ["[c"] = "@class.outer",
-              ["[b"] = { query = "@code_cell.inner", desc = "previous code block" },
-            },
-          },
-          swap = {
-            enable = true,
-            swap_next = {
-              ["<leader>sbl"] = "@code_cell.outer",
-            },
-            swap_previous = {
-              ["<leader>sbh"] = "@code_cell.outer",
-            },
-          },
+        move = {
+          set_jumps = false,
         },
       })
+
+      -- -- textobjects: select keymaps --
+      local select = require("nvim-treesitter-textobjects.select")
+      local sel = function(capture, desc)
+        return function() select.select_textobject(capture, "textobjects") end
+      end
+      vim.keymap.set({ "x", "o" }, "af", sel("@function.outer"), { desc = "around function" })
+      vim.keymap.set({ "x", "o" }, "if", sel("@function.inner"), { desc = "in function" })
+      vim.keymap.set({ "x", "o" }, "ac", sel("@class.outer"),    { desc = "around class" })
+      vim.keymap.set({ "x", "o" }, "ic", sel("@class.inner"),    { desc = "in class" })
+      vim.keymap.set({ "x", "o" }, "ab", sel("@code_cell.outer"), { desc = "around code block" })
+      vim.keymap.set({ "x", "o" }, "ib", sel("@code_cell.inner"), { desc = "in code block" })
+
+      -- -- textobjects: move keymaps --
+      local move = require("nvim-treesitter-textobjects.move")
+      vim.keymap.set({ "n", "x", "o" }, "]f", function() move.goto_next_start("@function.outer") end,     { desc = "Next function" })
+      vim.keymap.set({ "n", "x", "o" }, "[f", function() move.goto_previous_start("@function.outer") end, { desc = "Prev function" })
+      vim.keymap.set({ "n", "x", "o" }, "]c", function() move.goto_next_start("@class.outer") end,        { desc = "Next class" })
+      vim.keymap.set({ "n", "x", "o" }, "[c", function() move.goto_previous_start("@class.outer") end,    { desc = "Prev class" })
+      vim.keymap.set({ "n", "x", "o" }, "]b", function() move.goto_next_start("@code_cell.inner") end,    { desc = "Next code block" })
+      vim.keymap.set({ "n", "x", "o" }, "[b", function() move.goto_previous_start("@code_cell.inner") end, { desc = "Prev code block" })
+
+      -- -- textobjects: swap keymaps --
+      local swap = require("nvim-treesitter-textobjects.swap")
+      vim.keymap.set("n", "<leader>sbl", function() swap.swap_next("@code_cell.outer") end,     { desc = "Swap code block down" })
+      vim.keymap.set("n", "<leader>sbh", function() swap.swap_previous("@code_cell.outer") end, { desc = "Swap code block up" })
     end,
   },
   {
