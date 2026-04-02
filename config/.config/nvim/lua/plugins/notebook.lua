@@ -168,27 +168,52 @@ return {
         local ft = vim.bo[buf].filetype
         local lines = { "--- NotebookDiag ---" }
 
-        -- 1. Filetype
-        table.insert(lines, ("filetype: %s"):format(ft))
-
-        -- 2. Treesitter parser
-        local parser_ok, parser = pcall(vim.treesitter.get_parser, buf, vim.treesitter.language.get_lang(ft) or ft)
-        if not parser_ok then
-          table.insert(lines, "parser: FAILED to get (" .. tostring(parser) .. ")")
-        else
-          table.insert(lines, ("parser: %s"):format(parser:lang()))
-          -- Force a full parse
-          parser:parse(true)
-          -- Children (injected languages)
+        local function get_children_info(parser)
           local children = parser:children()
           local child_keys = vim.tbl_keys(children)
-          table.insert(lines, ("injected languages: %s"):format(#child_keys > 0 and table.concat(child_keys, ", ") or "NONE"))
+          local info = {}
           for _, lang in ipairs(child_keys) do
             local child = children[lang]
             local regions = child:included_regions()
             local count = 0
             for _ in pairs(regions) do count = count + 1 end
-            table.insert(lines, ("  %s: %d region(s)"):format(lang, count))
+            table.insert(info, ("%s: %d region(s)"):format(lang, count))
+          end
+          return child_keys, info
+        end
+
+        -- 1. Filetype
+        table.insert(lines, ("filetype: %s"):format(ft))
+
+        -- 2. Treesitter parser — show state before and after invalidate+reparse
+        local parser_ok, parser = pcall(vim.treesitter.get_parser, buf, vim.treesitter.language.get_lang(ft) or ft)
+        if not parser_ok then
+          table.insert(lines, "parser: FAILED to get (" .. tostring(parser) .. ")")
+        else
+          table.insert(lines, ("parser: %s"):format(parser:lang()))
+
+          -- Show current (possibly stale) injection state
+          parser:parse(true)
+          local before_keys, before_info = get_children_info(parser)
+          table.insert(lines, ("injected languages (current): %s"):format(
+            #before_keys > 0 and table.concat(before_keys, ", ") or "NONE"))
+          for _, info in ipairs(before_info) do
+            table.insert(lines, "  " .. info)
+          end
+
+          -- Show internal injection cache state
+          local pir = parser._processed_injection_range
+          table.insert(lines, ("_processed_injection_range: %s"):format(
+            pir and vim.inspect(pir) or "nil"))
+
+          -- Force full reset and show new state
+          parser:invalidate(true)
+          parser:parse(true)
+          local after_keys, after_info = get_children_info(parser)
+          table.insert(lines, ("injected languages (after reset): %s"):format(
+            #after_keys > 0 and table.concat(after_keys, ", ") or "NONE"))
+          for _, info in ipairs(after_info) do
+            table.insert(lines, "  " .. info)
           end
         end
 
@@ -197,7 +222,11 @@ return {
         local query = vim.treesitter.query.get(lang, "injections")
         table.insert(lines, ("injection query (%s): %s"):format(lang, query and "loaded" or "NIL (not found)"))
 
-        -- 4. Otter raft state
+        -- 4. Python parser availability
+        local py_ok = pcall(vim.treesitter.language.add, "python")
+        table.insert(lines, ("python parser: %s"):format(py_ok and "available" or "NOT FOUND"))
+
+        -- 5. Otter raft state
         local keeper_ok, keeper = pcall(require, "otter.keeper")
         if keeper_ok and keeper.rafts and keeper.rafts[buf] then
           local raft = keeper.rafts[buf]
@@ -213,7 +242,7 @@ return {
           table.insert(lines, "otter raft: NOT active for this buffer")
         end
 
-        -- 5. Molten status
+        -- 6. Molten status
         local molten_ok, molten_status = pcall(function() return require("molten.status").initialized() end)
         table.insert(lines, ("molten: %s"):format(molten_ok and molten_status or "not loaded"))
 
