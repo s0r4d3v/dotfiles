@@ -27,12 +27,6 @@
       "command": ["uvx", "mcp-server-git"],
       "enabled": true
     },
-    "sentry": {
-      "type": "remote",
-      "url": "https://mcp.sentry.dev/mcp",
-      "enabled": true,
-      "oauth": {}
-    },
     "sqlite": {
       "type": "local",
       "command": ["uvx", "mcp-server-sqlite", "--db-path", "/Users/snagano/.local/share/mcp/sqlite.db"],
