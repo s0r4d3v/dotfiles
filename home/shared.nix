@@ -151,6 +151,10 @@
   # ===========================================================================
   xdg.configFile."gh/config.yml".source = ../config/.config/gh/config.yml;
   xdg.configFile."gh/hosts.yml".source = ../config/.config/gh/hosts.yml;
+  xdg.configFile."opencode" = {
+    source = ../config/.config/opencode;
+    recursive = true;
+  };
 
   home.file.".claude/settings.json".text =
     builtins.replaceStrings [ "@HOME@" ] [ config.home.homeDirectory ]
@@ -315,7 +319,8 @@
     # zsh-vi-mode overwrites these; zvm_after_init_commands in initContent re-binds them
   };
 
-  programs.starship.enable = true; # HM auto-adds `eval "$(starship init zsh)"`
+  programs.starship.enable = true; # config: config/.config/starship.toml
+  xdg.configFile."starship.toml".source = ../config/.config/starship.toml;
 
   home.sessionVariables = {
     LANG = "en_US.UTF-8";
