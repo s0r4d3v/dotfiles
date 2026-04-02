@@ -88,6 +88,49 @@ update_homebrew_if_needed() {
   "${brew_bin}" update || true
 }
 
+migrate_to_ghq() {
+  local ghq_bin
+  ghq_bin=$(command -v ghq 2>/dev/null) || return 0
+
+  local ghq_root
+  ghq_root=$("${ghq_bin}" root)
+
+  local remote
+  remote=$(git -C "${REPO_DIR}" remote get-url origin 2>/dev/null) || return 0
+
+  # Normalise remote to a host/user/repo path (works for both SSH and HTTPS)
+  local repo_path
+  repo_path=$(echo "${remote}" \
+    | sed 's|git@\([^:]*\):\(.*\)\.git$|\1/\2|' \
+    | sed 's|https://||; s|\.git$||')
+  local expected_dir="${ghq_root}/${repo_path}"
+
+  # Already in the right place
+  [[ "${REPO_DIR}" == "${expected_dir}" ]] && return 0
+
+  echo ""
+  echo "First-time setup detected: migrating dotfiles into ghq..."
+  echo "  from: ${REPO_DIR}"
+  echo "  to:   ${expected_dir}"
+
+  # Clone via whatever protocol the current remote uses (may be HTTPS on first setup)
+  "${ghq_bin}" get "${remote}"
+
+  # SSH keys are now available (sops-nix decrypted them) — switch remote to SSH
+  local ssh_remote
+  ssh_remote=$(echo "${repo_path}" | sed 's|\([^/]*\)/\(.*\)|git@\1:\2.git|')
+  git -C "${expected_dir}" remote set-url origin "${ssh_remote}"
+  echo "Remote updated to SSH: ${ssh_remote}"
+
+  echo ""
+  echo "Migration complete. Removing original directory: ${REPO_DIR}"
+  rm -rf "${REPO_DIR}"
+
+  echo ""
+  echo "Your dotfiles are now managed at: ${expected_dir}"
+  echo "Run: cd ${expected_dir}"
+}
+
 case "${OS}" in
   Darwin)
     echo "Applying darwin config: ${FLAKE}"
@@ -115,3 +158,5 @@ case "${OS}" in
     ;;
   *) echo "Unsupported OS: ${OS}"; exit 1 ;;
 esac
+
+migrate_to_ghq
