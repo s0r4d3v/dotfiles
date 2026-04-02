@@ -123,7 +123,6 @@ migrate_to_ghq() {
 
   echo ""
   echo "Your dotfiles are now managed at: ${expected_dir}"
-  echo "Run: cd ${expected_dir}"
 }
 
 case "${OS}" in
