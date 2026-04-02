@@ -113,18 +113,13 @@ migrate_to_ghq() {
   echo "  from: ${REPO_DIR}"
   echo "  to:   ${expected_dir}"
 
-  # Clone via whatever protocol the current remote uses (may be HTTPS on first setup)
-  "${ghq_bin}" get "${remote}"
+  "${ghq_bin}" migrate -y "${REPO_DIR}"
 
   # SSH keys are now available (sops-nix decrypted them) — switch remote to SSH
   local ssh_remote
   ssh_remote=$(echo "${repo_path}" | sed 's|\([^/]*\)/\(.*\)|git@\1:\2.git|')
   git -C "${expected_dir}" remote set-url origin "${ssh_remote}"
   echo "Remote updated to SSH: ${ssh_remote}"
-
-  echo ""
-  echo "Migration complete. Removing original directory: ${REPO_DIR}"
-  rm -rf "${REPO_DIR}"
 
   echo ""
   echo "Your dotfiles are now managed at: ${expected_dir}"
