@@ -54,6 +54,7 @@
     opencode
     uv # Python package manager (provides uvx for MCP servers)
     nodejs # runtime for node-based LSP servers and tools
+    tree-sitter # parser generator CLI (used by :TSInstall in nvim-treesitter)
 
     # ===========================================================================
     # Neovim LSP servers (all managed by Nix; enabled via vim.lsp.enable in nvim)
