@@ -35,8 +35,10 @@ config/.config/
   tmux/tmux.conf                 — tmux
   ghostty/config                 — Ghostty terminal
   karabiner/karabiner.json       — Karabiner-Elements
+  starship.toml                  — Starship prompt (Tokyo Night)
   gh/                            — GitHub CLI
   yazi/                          — Yazi file manager
+  opencode/                      — OpenCode (MCP servers, skills)
 config/.claude/                  — Claude Code settings + hooks
 secrets/
   secrets.yaml                   — sops-encrypted SSH keys and config
@@ -47,4 +49,5 @@ secrets/
 - [Setup](docs/setup.md) — new machine bootstrap + troubleshooting
 - [Usage](docs/usage.md) — daily workflow, common tasks
 - [Keybindings](docs/keybindings.md) — tmux, zsh, neovim
+- [Starship](docs/starship.md) — prompt layout, git status symbols
 - [Secrets](docs/secrets.md) — sops/age, SSH keys

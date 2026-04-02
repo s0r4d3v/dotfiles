@@ -16,6 +16,8 @@
 | Edit Neovim config | `config/.config/nvim/` |
 | Edit tmux config | `config/.config/tmux/tmux.conf` |
 | Edit Ghostty config | `config/.config/ghostty/config` |
+| Edit Starship prompt | `config/.config/starship.toml` |
+| Edit OpenCode config | `config/.config/opencode/opencode.json` |
 | Add/edit a secret | `sops secrets/secrets.yaml` |
 | Update all Nix inputs | `nix flake update` |
 
@@ -34,7 +36,12 @@
 
 ## Other CLI tools
 
-broot, lazygit (`lg`), lazydocker, yazi (`y`), ghq, just, mise, xh, sd, difftastic, hyperfine, tokei, gitleaks, bandwhich, glow, tldr, btop, delta, fx, vhs
+broot, lazygit, lazydocker, yazi, ghq, just, mise, xh, sd, difftastic, hyperfine, tokei, gitleaks, bandwhich, glow, tldr, btop, delta, fx, vhs
+
+## AI coding agents
+
+- **claude-code** — Claude Code (Anthropic)
+- **opencode** — OpenCode with MCP servers (config: `config/.config/opencode/opencode.json`)
 
 ## Neovim plugins
 
