@@ -118,8 +118,8 @@
 | `<leader>se` | Equalize splits |
 | `<leader>sx` | Close split |
 | `C-h/j/k/l` | Navigate splits / tmux panes |
-| `<leader>bd` | Close buffer |
-| `[b` / `]b` | Prev/next buffer |
+| `<leader>bd`  | Close buffer |
+| `[B` / `]B` | Prev/next buffer |
 
 ### Files & exploration
 | Key | Action |
@@ -156,14 +156,18 @@
 | Key | Action |
 |-----|--------|
 | `,mi` | Init Jupyter kernel |
+| `,e` | Evaluate operator (use with `ib` to run cell) |
 | `,rc` | Run cell |
 | `,ra` | Run cell and above |
 | `,rA` | Run all cells |
+| `,RA` | Run all cells (all languages) |
 | `,rl` | Run line |
 | `,r` (visual) | Run selection |
 | `,ml` | Run line (molten) |
 | `,mr` | Re-run cell (molten) |
 | `,mv` (visual) | Run selection (molten) |
-| `,mo` / `,mh` | Show / hide output |
-| `,mI` / `,mE` | Import / export notebook output |
+| `,mo` / `,mh` | Open / hide output |
 | `,md` | Delete cell output |
+| `]b` / `[b` | Next / previous code block |
+| `vib` / `vab` | Select in / around code block |
+| `<leader>sbl` / `<leader>sbh` | Swap code block forward / back |

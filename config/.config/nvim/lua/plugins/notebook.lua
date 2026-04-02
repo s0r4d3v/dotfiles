@@ -1,6 +1,10 @@
 -- Jupyter notebook support
--- Stack: jupytext.nvim (ipynb ↔ markdown) + molten-nvim (run cells, show output)
+-- Stack: jupytext.nvim (ipynb <-> markdown) + molten-nvim (run cells, show output)
 --        + quarto-nvim/otter.nvim (LSP in cells) + image.nvim (inline plots)
+--
+-- Activation: quarto is activated for markdown buffers via ftplugin/markdown.lua
+-- (per molten-nvim's official Notebook-Setup guide).
+
 return {
   -- jupytext: transparently convert .ipynb to markdown on open, back on save
   {
@@ -40,23 +44,72 @@ return {
     version = "^1.0.0",
     build = ":UpdateRemotePlugins",
     init = function()
+      vim.g.molten_auto_open_output = false
       vim.g.molten_image_provider = "image.nvim"
       vim.g.molten_output_win_max_height = 20
       vim.g.molten_virt_text_output = true
-      vim.g.molten_virt_lines_off_by_1 = true -- markdown: covered line is just ```
+      vim.g.molten_virt_lines_off_by_1 = true
       vim.g.molten_wrap_output = true
     end,
     keys = {
-      { "<localleader>mi", "<cmd>MoltenInit<cr>",              desc = "Molten init kernel" },
-      { "<localleader>ml", "<cmd>MoltenEvaluateLine<cr>",      desc = "Molten run line" },
-      { "<localleader>mr", "<cmd>MoltenReevaluateCell<cr>",    desc = "Molten re-run cell" },
-      { "<localleader>mv", ":<C-u>MoltenEvaluateVisual<cr>",   desc = "Molten run selection", mode = "v" },
-      { "<localleader>md", "<cmd>MoltenDelete<cr>",            desc = "Molten delete cell" },
-      { "<localleader>mo", "<cmd>MoltenShowOutput<cr>",        desc = "Molten show output" },
-      { "<localleader>mh", "<cmd>MoltenHideOutput<cr>",        desc = "Molten hide output" },
-      { "<localleader>mI", "<cmd>MoltenImportOutput<cr>",      desc = "Molten import output" },
-      { "<localleader>mE", "<cmd>MoltenExportOutput<cr>",      desc = "Molten export output" },
+      { "<localleader>mi", "<cmd>MoltenInit<cr>",                          desc = "Molten init kernel" },
+      { "<localleader>e",  "<cmd>MoltenEvaluateOperator<cr>",              desc = "Molten eval operator" },
+      { "<localleader>ml", "<cmd>MoltenEvaluateLine<cr>",                  desc = "Molten run line" },
+      { "<localleader>mr", "<cmd>MoltenReevaluateCell<cr>",                desc = "Molten re-run cell" },
+      { "<localleader>mv", ":<C-u>MoltenEvaluateVisual<cr>gv",             desc = "Molten run selection", mode = "v" },
+      { "<localleader>md", "<cmd>MoltenDelete<cr>",                        desc = "Molten delete cell" },
+      { "<localleader>mo", "<cmd>noautocmd MoltenEnterOutput<cr>",         desc = "Molten open output" },
+      { "<localleader>mh", "<cmd>MoltenHideOutput<cr>",                    desc = "Molten hide output" },
     },
+    config = function()
+      -- Auto-init kernel + import outputs when opening a notebook
+      -- (from molten-nvim Notebook-Setup guide)
+      local init_molten_buffer = function(e)
+        vim.schedule(function()
+          local kernels = vim.fn.MoltenAvailableKernels()
+          local try_kernel_name = function()
+            local metadata = vim.json.decode(io.open(e.file, "r"):read("a"))["metadata"]
+            return metadata.kernelspec.name
+          end
+          local ok, kernel_name = pcall(try_kernel_name)
+          if not ok or not vim.tbl_contains(kernels, kernel_name) then
+            kernel_name = nil
+            local venv = os.getenv("VIRTUAL_ENV") or os.getenv("CONDA_PREFIX")
+            if venv ~= nil then
+              kernel_name = string.match(venv, "/.+/(.+)")
+            end
+          end
+          if kernel_name ~= nil and vim.tbl_contains(kernels, kernel_name) then
+            vim.cmd(("MoltenInit %s"):format(kernel_name))
+          end
+          vim.cmd("MoltenImportOutput")
+        end)
+      end
+
+      vim.api.nvim_create_autocmd("BufAdd", {
+        pattern = { "*.ipynb" },
+        callback = init_molten_buffer,
+      })
+
+      vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = { "*.ipynb" },
+        callback = function(e)
+          if vim.api.nvim_get_vvar("vim_did_enter") ~= 1 then
+            init_molten_buffer(e)
+          end
+        end,
+      })
+
+      -- Auto-export outputs on save
+      vim.api.nvim_create_autocmd("BufWritePost", {
+        pattern = { "*.ipynb" },
+        callback = function()
+          if require("molten.status").initialized() == "Molten" then
+            vim.cmd("MoltenExportOutput!")
+          end
+        end,
+      })
+    end,
   },
 
   -- otter.nvim: LSP features inside embedded code blocks
@@ -66,6 +119,7 @@ return {
   },
 
   -- quarto-nvim: orchestrates otter + code runner for markdown notebooks
+  -- Activated for markdown buffers via ftplugin/markdown.lua
   {
     "quarto-dev/quarto-nvim",
     ft = { "quarto", "markdown" },
@@ -76,7 +130,7 @@ return {
     opts = {
       lspFeatures = {
         enabled = true,
-        chunks = "all", -- detect both ```python and ```{python} code blocks
+        chunks = "all", -- detect both ```python and ```{python} fences
         languages = { "python", "r", "julia", "bash", "lua" },
         diagnostics = {
           enabled = true,
@@ -91,26 +145,17 @@ return {
         default_method = "molten",
       },
     },
-    config = function(_, opts)
-      local quarto = require("quarto")
-      quarto.setup(opts)
-
-      -- Auto-activate quarto for markdown buffers (enables runner + LSP in cells)
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "markdown", "quarto" },
-        callback = function()
-          vim.schedule(function()
-            quarto.activate()
-          end)
-        end,
-      })
-    end,
     keys = {
-      { "<localleader>rc", function() require("quarto.runner").run_cell() end,       desc = "Run cell" },
-      { "<localleader>ra", function() require("quarto.runner").run_above() end,      desc = "Run cell and above" },
-      { "<localleader>rA", function() require("quarto.runner").run_all() end,        desc = "Run all cells" },
-      { "<localleader>rl", function() require("quarto.runner").run_line() end,       desc = "Run line" },
-      { "<localleader>r",  function() require("quarto.runner").run_range() end,      desc = "Run selection", mode = "v" },
+      { "<localleader>rc", function() require("quarto.runner").run_cell() end,  desc = "Run cell" },
+      { "<localleader>ra", function() require("quarto.runner").run_above() end, desc = "Run cell and above" },
+      { "<localleader>rA", function() require("quarto.runner").run_all() end,   desc = "Run all cells" },
+      { "<localleader>rl", function() require("quarto.runner").run_line() end,  desc = "Run line" },
+      { "<localleader>r",  function() require("quarto.runner").run_range() end, desc = "Run selection", mode = "v" },
+      {
+        "<localleader>RA",
+        function() require("quarto.runner").run_all(true) end,
+        desc = "Run all cells (all languages)",
+      },
     },
   },
 }

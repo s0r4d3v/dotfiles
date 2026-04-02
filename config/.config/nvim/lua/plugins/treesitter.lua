@@ -36,12 +36,32 @@ return {
               ["if"] = "@function.inner",
               ["ac"] = "@class.outer",
               ["ic"] = "@class.inner",
+              ["ib"] = { query = "@code_cell.inner", desc = "in code block" },
+              ["ab"] = { query = "@code_cell.outer", desc = "around code block" },
             },
           },
           move = {
             enable = true,
-            goto_next_start     = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
-            goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
+            set_jumps = false,
+            goto_next_start     = {
+              ["]f"] = "@function.outer",
+              ["]c"] = "@class.outer",
+              ["]b"] = { query = "@code_cell.inner", desc = "next code block" },
+            },
+            goto_previous_start = {
+              ["[f"] = "@function.outer",
+              ["[c"] = "@class.outer",
+              ["[b"] = { query = "@code_cell.inner", desc = "previous code block" },
+            },
+          },
+          swap = {
+            enable = true,
+            swap_next = {
+              ["<leader>sbl"] = "@code_cell.outer",
+            },
+            swap_previous = {
+              ["<leader>sbh"] = "@code_cell.outer",
+            },
           },
         },
       })

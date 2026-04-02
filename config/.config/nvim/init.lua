@@ -59,8 +59,8 @@ vim.keymap.set("n", "<leader>se",  "<C-w>=",                 { desc = "Equalize 
 vim.keymap.set("n", "<leader>sx",  "<cmd>close<cr>",         { desc = "Close split" })
 
 -- Buffer
-vim.keymap.set("n", "[b",          "<cmd>bprev<cr>",         { desc = "Prev buffer" })
-vim.keymap.set("n", "]b",          "<cmd>bnext<cr>",         { desc = "Next buffer" })
+vim.keymap.set("n", "[B",          "<cmd>bprev<cr>",         { desc = "Prev buffer" })
+vim.keymap.set("n", "]B",          "<cmd>bnext<cr>",         { desc = "Next buffer" })
 vim.keymap.set("n", "<leader>bd",  "<cmd>bd<cr>",            { desc = "Close buffer" })
 
 -- Quickfix
