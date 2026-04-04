@@ -4,7 +4,26 @@ return {
     build = ":TSUpdate",
     dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     config = function()
-      require("nvim-treesitter").setup({})
+      local install_dir = vim.fn.stdpath("data") .. "/site"
+      require("nvim-treesitter").setup({
+        -- Install parsers outside the plugin dir so they survive lazy.nvim updates.
+        install_dir = install_dir,
+      })
+
+      -- Auto-install required parsers if missing (runs once per session).
+      vim.api.nvim_create_autocmd("VimEnter", {
+        once = true,
+        callback = function()
+          local required = { "python", "markdown", "markdown_inline", "bash", "lua" }
+          local parser_dir = install_dir .. "/parser"
+          local missing = vim.tbl_filter(function(lang)
+            return not vim.uv.fs_stat(parser_dir .. "/" .. lang .. ".so")
+          end, required)
+          if #missing > 0 then
+            vim.cmd("TSInstall! " .. table.concat(missing, " "))
+          end
+        end,
+      })
 
       require("nvim-treesitter-textobjects").setup({
         select = { lookahead = true },

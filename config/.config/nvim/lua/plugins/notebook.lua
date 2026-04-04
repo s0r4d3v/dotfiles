@@ -116,12 +116,62 @@ return {
       codeRunner = { enabled = true, default_method = "molten" },
     },
     keys = {
-      { "<localleader>rc", function() require("quarto.runner").run_cell() end,      desc = "Run cell" },
-      { "<localleader>ra", function() require("quarto.runner").run_above() end,     desc = "Run cell and above" },
-      { "<localleader>rA", function() require("quarto.runner").run_all() end,       desc = "Run all cells" },
-      { "<localleader>rl", function() require("quarto.runner").run_line() end,      desc = "Run line" },
-      { "<localleader>r",  function() require("quarto.runner").run_range() end,     desc = "Run selection", mode = "v" },
-      { "<localleader>RA", function() require("quarto.runner").run_all(true) end,   desc = "Run all cells (all languages)" },
+      -- freshen_parser() invalidates the markdown treesitter parser before each
+      -- cell run so otter's sync_raft always sees injection children (python etc).
+      --
+      -- Why: otter's extract_code_chunks calls parser:parse(true) WITHOUT
+      -- invalidate().  If _processed_injection_range was set during a prior parse
+      -- where the python .so wasn't yet loaded, subsequent parse(true) calls skip
+      -- injection re-evaluation (cache thinks it already covered the document).
+      -- invalidate(true) clears cached trees + resets _processed_injection_range
+      -- so the next parse() re-runs _get_injections() and creates children.
+      {
+        "<localleader>rc",
+        function()
+          local ok, p = pcall(vim.treesitter.get_parser, 0, "markdown")
+          if ok then p:invalidate(true) end
+          require("quarto.runner").run_cell()
+        end,
+        desc = "Run cell",
+      },
+      {
+        "<localleader>ra",
+        function()
+          local ok, p = pcall(vim.treesitter.get_parser, 0, "markdown")
+          if ok then p:invalidate(true) end
+          require("quarto.runner").run_above()
+        end,
+        desc = "Run cell and above",
+      },
+      {
+        "<localleader>rA",
+        function()
+          local ok, p = pcall(vim.treesitter.get_parser, 0, "markdown")
+          if ok then p:invalidate(true) end
+          require("quarto.runner").run_all()
+        end,
+        desc = "Run all cells",
+      },
+      { "<localleader>rl", function() require("quarto.runner").run_line() end,  desc = "Run line" },
+      {
+        "<localleader>r",
+        function()
+          local ok, p = pcall(vim.treesitter.get_parser, 0, "markdown")
+          if ok then p:invalidate(true) end
+          require("quarto.runner").run_range()
+        end,
+        desc = "Run selection",
+        mode = "v",
+      },
+      {
+        "<localleader>RA",
+        function()
+          local ok, p = pcall(vim.treesitter.get_parser, 0, "markdown")
+          if ok then p:invalidate(true) end
+          require("quarto.runner").run_all(true)
+        end,
+        desc = "Run all cells (all languages)",
+      },
     },
   },
 }

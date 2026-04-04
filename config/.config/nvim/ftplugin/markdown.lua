@@ -1,3 +1,10 @@
+-- Start treesitter highlighting for this markdown buffer.
+-- nvim 0.11's built-in markdown ftplugin does NOT call vim.treesitter.start(),
+-- and nvim-treesitter (main branch) no longer auto-enables highlights.
+-- Without this call the buffer falls back to regex syntax, which cannot
+-- highlight injected languages (python inside fenced code blocks → all white).
+vim.treesitter.start()
+
 -- Activate quarto for markdown buffers (LSP via otter + code runner).
 -- Deferred so treesitter injection cache is fully reset before otter
 -- extracts code chunks (fixes "No code chunks found" in run_cell).
