@@ -34,6 +34,18 @@
     lazygit # git TUI (used by tmux popup + nvim plugin)
     lazydocker # docker TUI   ← docker CLI
     ghq # remote repository manager
+    (pkgs.buildGoModule {
+      pname = "gwq";
+      version = "0.0.17";
+      src = pkgs.fetchFromGitHub {
+        owner = "d-kuro";
+        repo = "gwq";
+        rev = "v0.0.17";
+        hash = "sha256-A7CUzLhhjKRhiL88l8j3xCmKrRDk+KOhdbaow8FAlCo=";
+      };
+      vendorHash = "sha256-4K01Xf1EXl/NVX1loQ76l1bW8QglBAQdvlZSo7J4NPI=";
+      doCheck = false; # tests require a writable home dir, unavailable in nix sandbox
+    }) # git worktree manager (mirrors ghq conventions)
     difftastic # structure-aware diff (complements delta)
     hyperfine # statistical CLI benchmarking
     tokei # code line counter by language
@@ -149,10 +161,22 @@
   # ===========================================================================
   # Tool configs — all managed declaratively
   # ===========================================================================
+  xdg.configFile."gwq/config.toml".text = ''
+    [worktree]
+    basedir = "${config.home.homeDirectory}/ghq"
+
+    [naming]
+    template = "{{.Host}}/{{.Owner}}/{{.Repository}}={{.Branch}}"
+  '';
+
   xdg.configFile."gh/config.yml".source = ../config/.config/gh/config.yml;
   xdg.configFile."gh/hosts.yml".source = ../config/.config/gh/hosts.yml;
-  xdg.configFile."opencode" = {
-    source = ../config/.config/opencode;
+  xdg.configFile."opencode/opencode.json".text = builtins.replaceStrings
+    [ "/Users/snagano" ]
+    [ config.home.homeDirectory ]
+    (builtins.readFile ../config/.config/opencode/opencode.json);
+  xdg.configFile."opencode/skills" = {
+    source = ../config/.config/opencode/skills;
     recursive = true;
   };
 
@@ -224,14 +248,38 @@
     initContent = ''
       eval "$(zoxide init zsh)"
       eval "$(mise activate zsh)"
+      export GH_TOKEN=$(cat ${config.sops.secrets."gh/token".path})
       # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
       zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
 
-      # Jump to a ghq-managed repo with fzf
+      # Jump to a ghq repo or gwq worktree with fzf; renames tmux window on select
       repo() {
         local dir
-        dir=$(ghq list | fzf --height 40% --reverse --preview "ls $(ghq root)/{}")
-        [[ -n "$dir" ]] && cd "$(ghq root)/$dir"
+        dir=$(
+          {
+            ghq list --full-path
+            gwq list -g --json 2>/dev/null | jq -r '.[].path' 2>/dev/null
+          } \
+            | sort -u \
+            | fzf --height 60% --reverse --prompt='repo/worktree > ' \
+                  --preview='git -C {} log --oneline -10 2>/dev/null; echo; eza -1 --group-directories-first --color=always {} 2>/dev/null | head -20'
+        )
+        [[ -z "$dir" ]] && return
+        z "$dir"
+        [[ -n $TMUX ]] && tmux rename-window "$(basename "$dir")"
+      }
+
+      # Checkout a PR into a dedicated worktree
+      # Usage: wpr <pr-number>
+      wpr() {
+        [[ -z "$1" ]] && echo "Usage: wpr <pr-number>" && return 1
+        local branch
+        branch=$(gh pr view "$1" --json headRefName -q .headRefName)
+        gwq add -b "$branch"
+        local wtdir
+        wtdir=$(gwq list -g --json 2>/dev/null | jq -r --arg b "$branch" '.[] | select(.branch == $b) | .path')
+        [[ -n "$wtdir" ]] && z "$wtdir"
+        [[ -n $TMUX ]] && tmux rename-window "$branch"
       }
 
       # Create a new Jupyter notebook and open in nvim
@@ -297,11 +345,11 @@
   programs.git = {
     enable = true;
     settings = {
-      user.name = "s0r4d3v";
-      user.email = "s0r4d3v@gmail.com";
       merge.conflictstyle = "diff3";
       diff.colorMoved = "default";
+      url."git@github.com:".insteadOf = "https://github.com/";
     };
+    includes = [{ path = config.sops.secrets."git/identity".path; }];
   };
 
   programs.delta = {
@@ -385,6 +433,11 @@
       };
       "ssh/config" = {
         path = "${config.home.homeDirectory}/.ssh/config";
+        mode = "0600";
+      };
+      "gh/token" = { };
+      "git/identity" = {
+        path = "${config.home.homeDirectory}/.config/git/identity";
         mode = "0600";
       };
     };

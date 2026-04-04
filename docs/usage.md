@@ -34,9 +34,53 @@
 | `cd` / `cdi` | zoxide | cd |
 | `vim` | neovim | vim |
 
+## Git worktree workflow (ghq + gwq)
+
+Repos are cloned via `ghq` into `~/ghq/github.com/owner/repo`.
+Worktrees are managed via `gwq` at `~/ghq/github.com/owner/repo=branch`.
+
+### Navigate
+
+```sh
+repo          # fzf picker: all repos + worktrees, preview git log + file list
+              # renames the tmux window on jump
+```
+
+### Worktree lifecycle
+
+```sh
+gwq add -b feat/my-feature    # create worktree for current repo
+gwq list                      # list worktrees for current repo
+gwq list -g                   # list all worktrees across all repos
+gwq remove                    # fzf-select and remove
+gwq remove -b feat/done       # remove worktree and delete branch
+```
+
+### PR review
+
+```sh
+wpr 123    # checkout PR #123 into its own worktree, jump there
+```
+
+### Typical flow
+
+```sh
+# Start a feature
+gwq add -b feat/my-thing
+repo                          # jump to the new worktree
+
+# Review a PR in parallel (open new tmux window: prefix+c)
+wpr 456
+# ... review done ...
+gwq remove -b pr-branch
+
+# Switch back to feature
+repo
+```
+
 ## Other CLI tools
 
-broot, lazygit, lazydocker, yazi, ghq, just, mise, xh, sd, difftastic, hyperfine, tokei, gitleaks, bandwhich, glow, tldr, btop, delta, fx, vhs
+broot, lazygit, lazydocker, yazi, ghq, gwq, just, mise, xh, sd, difftastic, hyperfine, tokei, gitleaks, bandwhich, glow, tldr, btop, delta, fx, vhs
 
 ## AI coding agents
 
