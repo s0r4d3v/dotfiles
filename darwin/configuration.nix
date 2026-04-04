@@ -25,7 +25,27 @@
   nixpkgs.config.allowUnfree = true;
 
   users.users.${username} = {
-    home = "/Users/${username}";
+    home  = "/Users/${username}";
+    shell = pkgs.zsh; # nix-darwin adds zsh to /etc/shells automatically
+  };
+
+  # Set login shell with fallback — runs as root so dscl works without password auth.
+  # Prefers nix zsh; falls back to macOS built-in /bin/zsh if nix zsh is unavailable.
+  system.activationScripts.setShell = {
+    deps = [ "users" ]; # run after nix-darwin sets the shell, so we can override on fallback
+    text = ''
+      nix_zsh="${pkgs.zsh}/bin/zsh"
+      if [[ -x "$nix_zsh" ]]; then
+        desired="$nix_zsh"
+      else
+        desired="/bin/zsh"
+        echo "warning: nix zsh not available, falling back to $desired"
+      fi
+      current=$(/usr/bin/dscl . -read /Users/${username} UserShell 2>/dev/null | /usr/bin/sed 's/UserShell: //')
+      if [[ "$current" != "$desired" ]]; then
+        /usr/bin/dscl . -create /Users/${username} UserShell "$desired"
+      fi
+    '';
   };
 
   system.primaryUser = username;

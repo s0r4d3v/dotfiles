@@ -61,7 +61,6 @@
     tldr # quick man pages
 
     # Dev tools
-    gh # GitHub CLI
     claude-code
     opencode
     uv # Python package manager (provides uvx for MCP servers)
@@ -169,12 +168,11 @@
     template = "{{.Host}}/{{.Owner}}/{{.Repository}}={{.Branch}}"
   '';
 
-  xdg.configFile."gh/config.yml".source = ../config/.config/gh/config.yml;
+  # gh/config.yml is managed by programs.gh.settings below
   xdg.configFile."gh/hosts.yml".source = ../config/.config/gh/hosts.yml;
-  xdg.configFile."opencode/opencode.json".text = builtins.replaceStrings
-    [ "/Users/snagano" ]
-    [ config.home.homeDirectory ]
-    (builtins.readFile ../config/.config/opencode/opencode.json);
+  xdg.configFile."opencode/opencode.json".text =
+    builtins.replaceStrings [ "/Users/snagano" ] [ config.home.homeDirectory ]
+      (builtins.readFile ../config/.config/opencode/opencode.json);
   xdg.configFile."opencode/skills" = {
     source = ../config/.config/opencode/skills;
     recursive = true;
@@ -349,7 +347,7 @@
       diff.colorMoved = "default";
       url."git@github.com:".insteadOf = "https://github.com/";
     };
-    includes = [{ path = config.sops.secrets."git/identity".path; }];
+    includes = [ { path = config.sops.secrets."git/identity".path; } ];
   };
 
   programs.delta = {
@@ -446,6 +444,11 @@
   home.file.".hushlogin".text = "";
 
   home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
+
+  programs.gh = {
+    enable = true;
+    extensions = [ pkgs.gh-notify ];
+  };
 
   home.stateVersion = "25.11";
 }

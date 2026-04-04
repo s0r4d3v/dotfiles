@@ -89,6 +89,9 @@ update_homebrew_if_needed() {
 }
 
 migrate_to_ghq() {
+  # Worktrees share the main repo's .git — skip migration, it's already in place
+  [[ -f "${REPO_DIR}/.git" ]] && return 0
+
   local ghq_bin
   ghq_bin=$(command -v ghq 2>/dev/null) || return 0
 
