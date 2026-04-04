@@ -198,7 +198,7 @@ return {
 				{ "<leader>f", group = "Find / Search" },
 				{ "<leader>g", group = "Git" },
 				{ "<leader>m", group = "Multicursor" },
-				{ "<leader>s", group = "UI / View" },
+				{ "<leader>s", group = "Window / UI" },
 				{ "<leader>S", group = "Session" },
 				{ "<leader>x", group = "Diagnostics" },
 			})
@@ -213,7 +213,6 @@ return {
 				override = {
 					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
 					["vim.lsp.util.stylize_markdown"] = true,
-					["cmp.entry.get_documentation"] = true,
 				},
 			},
 			presets = {

@@ -3,10 +3,10 @@
 
   home.packages = with pkgs; [
     # Core
-    git
+    # git is managed via programs.git below
     ripgrep # rg           — fast grep
     fd # fd           — fast find
-    fzf
+    # fzf is managed via programs.fzf below
     jq # JSON queries
     zoxide # z / zi       — smart cd
 
@@ -195,8 +195,8 @@
     ];
     history = {
       path = "${config.home.homeDirectory}/.zsh_history";
-      size = 10000;
-      save = 10000;
+      size = 100000;
+      save = 100000;
       ignoreDups = true;
       ignoreSpace = true;
       share = true;
@@ -221,45 +221,45 @@
       "..." = "cd ../..";
     };
     initContent = ''
-      eval "$(zoxide init zsh)"
-      eval "$(mise activate zsh)"
-      # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
-      zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
+            eval "$(zoxide init zsh)"
+            eval "$(mise activate zsh)"
+            # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
+            zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
 
-      # Jump to a ghq-managed repo with fzf
-      repo() {
-        local dir
-        dir=$(ghq list | fzf --height 40% --reverse --preview "ls $(ghq root)/{}")
-        [[ -n "$dir" ]] && cd "$(ghq root)/$dir"
-      }
+            # Jump to a ghq-managed repo with fzf
+            repo() {
+              local dir
+              dir=$(ghq list | fzf --height 40% --reverse --preview "ls $(ghq root)/{}")
+              [[ -n "$dir" ]] && cd "$(ghq root)/$dir"
+            }
 
-      # Create a new Jupyter notebook and open in nvim
-      nb() {
-        local name lang display kernel
+            # Create a new Jupyter notebook and open in nvim
+            nb() {
+              local name lang display kernel
 
-        printf "Notebook name: "
-        read -r name
-        [[ -z "$name" ]] && echo "Aborted." && return 1
-        name="''${name%.ipynb}"
+              printf "Notebook name: "
+              read -r name
+              [[ -z "$name" ]] && echo "Aborted." && return 1
+              name="''${name%.ipynb}"
 
-        if [[ -f "''${name}.ipynb" ]]; then
-          echo "''${name}.ipynb already exists, opening..."
-          nvim "''${name}.ipynb"
-          return
-        fi
+              if [[ -f "''${name}.ipynb" ]]; then
+                echo "''${name}.ipynb already exists, opening..."
+                nvim "''${name}.ipynb"
+                return
+              fi
 
-        printf "Kernel language (python): "
-        read -r lang
-        lang="''${lang:-python}"
+              printf "Kernel language (python): "
+              read -r lang
+              lang="''${lang:-python}"
 
-        case "$lang" in
-          python)  display="Python 3"; kernel="python3" ;;
-          r)       display="R";        kernel="ir" ;;
-          julia)   display="Julia";    kernel="julia-1" ;;
-          *)       display="$lang";    kernel="$lang" ;;
-        esac
+              case "$lang" in
+                python)  display="Python 3"; kernel="python3" ;;
+                r)       display="R";        kernel="ir" ;;
+                julia)   display="Julia";    kernel="julia-1" ;;
+                *)       display="$lang";    kernel="$lang" ;;
+              esac
 
-        cat > "''${name}.ipynb" << NBEOF
+              cat > "''${name}.ipynb" << 'NBEOF'
       {
        "cells": [
         {
@@ -272,21 +272,25 @@
        ],
        "metadata": {
         "kernelspec": {
-         "display_name": "$display",
-         "language": "$lang",
-         "name": "$kernel"
+         "display_name": "DISPLAY_PLACEHOLDER",
+         "language": "LANG_PLACEHOLDER",
+         "name": "KERNEL_PLACEHOLDER"
         },
         "language_info": {
-         "name": "$lang"
+         "name": "LANG_PLACEHOLDER"
         }
        },
        "nbformat": 4,
        "nbformat_minor": 5
       }
       NBEOF
-        echo "Created ''${name}.ipynb ($display kernel)"
-        nvim "''${name}.ipynb"
-      }
+              # Substitute placeholders (avoids heredoc indentation issues)
+              ${pkgs.sd}/bin/sd 'DISPLAY_PLACEHOLDER' "$display" "''${name}.ipynb"
+              ${pkgs.sd}/bin/sd 'LANG_PLACEHOLDER'    "$lang"    "''${name}.ipynb"
+              ${pkgs.sd}/bin/sd 'KERNEL_PLACEHOLDER'  "$kernel"  "''${name}.ipynb"
+              echo "Created ''${name}.ipynb ($display kernel)"
+              nvim "''${name}.ipynb"
+            }
     '';
   };
 
@@ -306,7 +310,12 @@
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
-    options.navigate = true;
+    options = {
+      navigate = true; # n/N to move between diff sections
+      side-by-side = true; # side-by-side diffs
+      line-numbers = true; # show line numbers
+      syntax-theme = "Nord"; # bundled theme; closest to Tokyo Night
+    };
   };
 
   # ===========================================================================

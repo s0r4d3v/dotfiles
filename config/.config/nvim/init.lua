@@ -1,6 +1,6 @@
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git", "clone", "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
@@ -40,6 +40,8 @@ vim.opt.termguicolors  = true
 vim.opt.splitbelow     = true
 vim.opt.splitright     = true
 vim.opt.scrolloff      = 8
+vim.opt.signcolumn     = "yes"  -- always show sign column (prevents text shifting)
+vim.opt.undofile       = true   -- persistent undo across sessions
 
 -- Keymaps
 vim.keymap.set("n", "<leader>w",   "<cmd>w<cr>",             { desc = "Save" })
@@ -52,11 +54,9 @@ vim.keymap.set("n", "N",           "Nzzzv")                  -- prev match, cent
 vim.keymap.set("v", "<",           "<gv")                    -- indent, stay in visual
 vim.keymap.set("v", ">",           ">gv")                    -- dedent, stay in visual
 
--- Splits
+-- Splits / Windows  (<leader>s prefix + symbol shortcuts)
 vim.keymap.set("n", "<leader>\\",  "<cmd>vsplit<cr>",        { desc = "Split vertical" })
 vim.keymap.set("n", "<leader>-",   "<cmd>split<cr>",         { desc = "Split horizontal" })
-vim.keymap.set("n", "<leader>sv",  "<cmd>vsplit<cr>",        { desc = "Split vertical" })
-vim.keymap.set("n", "<leader>sh",  "<cmd>split<cr>",         { desc = "Split horizontal" })
 vim.keymap.set("n", "<leader>se",  "<C-w>=",                 { desc = "Equalize splits" })
 vim.keymap.set("n", "<leader>sx",  "<cmd>close<cr>",         { desc = "Close split" })
 

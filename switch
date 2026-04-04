@@ -149,8 +149,17 @@ case "${OS}" in
       home-manager switch --flake "${FLAKE}" "$@"
     else
       echo "(home-manager not found — bootstrapping via nix run)"
+      # Attempt to derive the locked home-manager ref from flake.lock so the
+      # bootstrap uses the same version as the flake (not always-latest master).
+      HM_REF="master"
+      if command -v nix >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+        LOCKED_REF=$(nix flake metadata --json . 2>/dev/null \
+          | jq -r '.locks.nodes["home-manager"].original.ref // empty' 2>/dev/null)
+        [[ -n "${LOCKED_REF}" ]] && HM_REF="${LOCKED_REF}"
+      fi
+      echo "  Using home-manager ref: ${HM_REF}"
       nix --extra-experimental-features 'nix-command flakes' \
-        run home-manager/master -- switch --flake "${FLAKE}" "$@"
+        run "github:nix-community/home-manager/${HM_REF}" -- switch --flake "${FLAKE}" "$@"
     fi
     ;;
   *) echo "Unsupported OS: ${OS}"; exit 1 ;;
