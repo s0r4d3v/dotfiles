@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "@HOME@/.claude/hooks/block-rm.sh"
+            "command": "~/.claude/hooks/block-rm.sh"
           }
         ]
       },
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "@HOME@/.claude/hooks/block-force-push.sh"
+            "command": "~/.claude/hooks/block-force-push.sh"
           }
         ]
       }
@@ -54,7 +54,7 @@
     "ENABLE_TOOL_SEARCH": "auto"
   },
   "statusLine": {
-    "command": "@HOME@/.claude/hooks/statusline.sh",
+    "command": "~/.claude/hooks/statusline.sh",
     "padding": 0,
     "type": "command"
   },
@@ -68,7 +68,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem"],
       "env": {
-        "ALLOWED_DIRECTORIES": "@HOME@/ghq:@HOME@/Projects:@HOME@/Documents:@HOME@/Downloads"
+        "ALLOWED_DIRECTORIES": "~/ghq:~/Projects:~/Documents:~/Downloads"
       }
     },
     "memory": {

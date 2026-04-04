@@ -19,7 +19,7 @@
     },
     "filesystem": {
       "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "/Users/snagano"],
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "~"],
       "enabled": true
     },
     "git": {
@@ -29,7 +29,7 @@
     },
     "sqlite": {
       "type": "local",
-      "command": ["uvx", "mcp-server-sqlite", "--db-path", "/Users/snagano/.local/share/mcp/sqlite.db"],
+      "command": ["uvx", "mcp-server-sqlite", "--db-path", "~/.local/share/mcp/sqlite.db"],
       "enabled": true
     }
   }
