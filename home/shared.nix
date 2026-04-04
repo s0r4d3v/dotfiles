@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
 
   home.packages = with pkgs; [
@@ -168,8 +173,6 @@
     template = "{{.Host}}/{{.Owner}}/{{.Repository}}={{.Branch}}"
   '';
 
-  # gh/config.yml is managed by programs.gh.settings below
-  xdg.configFile."gh/hosts.yml".source = ../config/.config/gh/hosts.yml;
   xdg.configFile."opencode/opencode.json".text =
     builtins.replaceStrings [ "/Users/snagano" ] [ config.home.homeDirectory ]
       (builtins.readFile ../config/.config/opencode/opencode.json);
@@ -347,7 +350,7 @@
       diff.colorMoved = "default";
       url."git@github.com:".insteadOf = "https://github.com/";
     };
-    includes = [ { path = config.sops.secrets."git/identity".path; } ];
+    includes = [ { path = "${config.home.homeDirectory}/.config/git/identity"; } ];
   };
 
   programs.delta = {
@@ -434,12 +437,23 @@
         mode = "0600";
       };
       "gh/token" = { };
-      "git/identity" = {
-        path = "${config.home.homeDirectory}/.config/git/identity";
+      "gh/hosts" = {
+        path = "${config.home.homeDirectory}/.config/gh/hosts.yml";
         mode = "0600";
       };
+      "git/name" = { };
+      "git/email" = { };
     };
   };
+
+  home.activation.writeGitIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    mkdir -p "${config.home.homeDirectory}/.config/git"
+    printf '[user]\n\tname = %s\n\temail = %s\n' \
+      "$(cat ${config.sops.secrets."git/name".path})" \
+      "$(cat ${config.sops.secrets."git/email".path})" \
+      > "${config.home.homeDirectory}/.config/git/identity"
+    chmod 600 "${config.home.homeDirectory}/.config/git/identity"
+  '';
 
   home.file.".hushlogin".text = "";
 
