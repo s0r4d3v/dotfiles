@@ -43,7 +43,6 @@
         path = "${config.home.homeDirectory}/.ssh/config";
         mode = "0600";
       };
-      "gh/token" = { };
       "gh/hosts" = {
         path = "${config.home.homeDirectory}/.config/gh/hosts.yml";
         mode = "0600";

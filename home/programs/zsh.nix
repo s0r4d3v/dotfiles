@@ -45,7 +45,6 @@
     initContent = ''
       eval "$(zoxide init zsh)"
       eval "$(mise activate zsh)"
-      export GH_TOKEN=$(cat ${config.sops.secrets."gh/token".path})
       # Re-bind fzf keys after zsh-vi-mode initialises (zvm overwrites Ctrl+R/T, Alt+C)
       zvm_after_init_commands+=("source ${pkgs.fzf}/share/fzf/key-bindings.zsh")
 
