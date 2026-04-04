@@ -53,6 +53,8 @@ vim.keymap.set("v", "<",           "<gv")                    -- indent, stay in 
 vim.keymap.set("v", ">",           ">gv")                    -- dedent, stay in visual
 
 -- Splits
+vim.keymap.set("n", "<leader>\\",  "<cmd>vsplit<cr>",        { desc = "Split vertical" })
+vim.keymap.set("n", "<leader>-",   "<cmd>split<cr>",         { desc = "Split horizontal" })
 vim.keymap.set("n", "<leader>sv",  "<cmd>vsplit<cr>",        { desc = "Split vertical" })
 vim.keymap.set("n", "<leader>sh",  "<cmd>split<cr>",         { desc = "Split horizontal" })
 vim.keymap.set("n", "<leader>se",  "<C-w>=",                 { desc = "Equalize splits" })
@@ -69,7 +71,7 @@ vim.keymap.set("n", "[q",          "<cmd>cprev<cr>",         { desc = "Prev quic
 vim.keymap.set("n", "]q",          "<cmd>cnext<cr>",         { desc = "Next quickfix" })
 
 -- Diagnostics
-vim.diagnostic.config({ virtual_lines = true, virtual_text = false })
+vim.diagnostic.config({ virtual_lines = { current_line = true }, virtual_text = false })
 vim.keymap.set("n", "<leader>cd",  vim.diagnostic.open_float, { desc = "Diagnostic float" })
 
 -- LSP keymaps (on attach)

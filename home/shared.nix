@@ -49,7 +49,6 @@
     tldr # quick man pages
 
     # Dev tools
-    gh # GitHub CLI
     claude-code
     opencode
     uv # Python package manager (provides uvx for MCP servers)
@@ -149,7 +148,7 @@
   # ===========================================================================
   # Tool configs — all managed declaratively
   # ===========================================================================
-  xdg.configFile."gh/config.yml".source = ../config/.config/gh/config.yml;
+  # gh/config.yml is managed by programs.gh.settings below
   xdg.configFile."gh/hosts.yml".source = ../config/.config/gh/hosts.yml;
   xdg.configFile."opencode" = {
     source = ../config/.config/opencode;
@@ -393,6 +392,11 @@
   home.file.".hushlogin".text = "";
 
   home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
+
+  programs.gh = {
+    enable = true;
+    extensions = [ pkgs.gh-notify ];
+  };
 
   home.stateVersion = "25.11";
 }
