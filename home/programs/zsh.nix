@@ -21,8 +21,8 @@
     ];
     history = {
       path = "${config.home.homeDirectory}/.zsh_history";
-      size = 10000;
-      save = 10000;
+      size = 100000;
+      save = 100000;
       ignoreDups = true;
       ignoreSpace = true;
       share = true;
@@ -104,7 +104,7 @@
           *)       display="$lang";    kernel="$lang" ;;
         esac
 
-        cat > "''${name}.ipynb" << NBEOF
+        cat > "''${name}.ipynb" << 'NBEOF'
       {
        "cells": [
         {
@@ -117,18 +117,22 @@
        ],
        "metadata": {
         "kernelspec": {
-         "display_name": "$display",
-         "language": "$lang",
-         "name": "$kernel"
+         "display_name": "DISPLAY_PLACEHOLDER",
+         "language": "LANG_PLACEHOLDER",
+         "name": "KERNEL_PLACEHOLDER"
         },
         "language_info": {
-         "name": "$lang"
+         "name": "LANG_PLACEHOLDER"
         }
        },
        "nbformat": 4,
        "nbformat_minor": 5
       }
       NBEOF
+        # Substitute placeholders (avoids heredoc indentation issues)
+        ${pkgs.sd}/bin/sd 'DISPLAY_PLACEHOLDER' "$display" "''${name}.ipynb"
+        ${pkgs.sd}/bin/sd 'LANG_PLACEHOLDER'    "$lang"    "''${name}.ipynb"
+        ${pkgs.sd}/bin/sd 'KERNEL_PLACEHOLDER'  "$kernel"  "''${name}.ipynb"
         echo "Created ''${name}.ipynb ($display kernel)"
         nvim "''${name}.ipynb"
       }

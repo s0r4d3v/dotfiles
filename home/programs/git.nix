@@ -13,7 +13,12 @@
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
-    options.navigate = true;
+    options = {
+      navigate = true; # n/N to move between diff sections
+      side-by-side = true; # side-by-side diffs
+      line-numbers = true; # show line numbers
+      syntax-theme = "Nord"; # bundled theme; closest to Tokyo Night
+    };
   };
 
   home.activation.writeGitIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

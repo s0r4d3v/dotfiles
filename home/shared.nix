@@ -12,10 +12,10 @@
 
   home.packages = with pkgs; [
     # Core
-    git
+    # git is managed via programs.git below
     ripgrep # rg           — fast grep
     fd # fd           — fast find
-    fzf
+    # fzf is managed via programs.fzf below
     jq # JSON queries
     zoxide # z / zi       — smart cd
 
