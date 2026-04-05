@@ -39,6 +39,7 @@
 
     # Dev workflow
     just # task runner  ← make
+    devenv # declarative dev environments (nix-based, works with direnv)
     mise # polyglot version manager (node/python/ruby/go/rust per project)
     lazygit # git TUI (used by tmux popup + nvim plugin)
     lazydocker # docker TUI   ← docker CLI
